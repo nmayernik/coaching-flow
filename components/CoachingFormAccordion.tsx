@@ -132,8 +132,9 @@ export default function CoachingFormAccordion({
         setCompletedSteps([...completedSteps, 0]);
       }
       
-      // When step 1 changes, always reopen step 2 for topic selection
+      // Remove step 1 (topic selection) from completed steps so it reopens as accordion
       // This ensures users can choose appropriate topics for the new student/category
+      setCompletedSteps(prev => prev.filter(s => s !== 1));
       setStep(1);
       return;
     }
