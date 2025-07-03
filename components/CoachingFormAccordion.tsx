@@ -189,10 +189,6 @@ export default function CoachingFormAccordion({
 
   return (
     <div className="w-full mx-auto font-sans">
-      {/* Show summary cards for completed steps */}
-      {completedSteps.includes(0) && <Step1Summary />}
-      {completedSteps.includes(1) && <Step2Summary />}
-
       <Accordion.Root 
         type="single" 
         value={`step${step}`} 
@@ -200,8 +196,10 @@ export default function CoachingFormAccordion({
         collapsible 
         className="w-full"
       >
-        {/* Step 1 - Only show if not completed */}
-        {!completedSteps.includes(0) && (
+        {/* Step 1 - Show summary if completed, accordion if not */}
+        {completedSteps.includes(0) ? (
+          <Step1Summary />
+        ) : (
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-4 transform transition-all duration-500 ease-out animate-in slide-in-from-bottom-4 fade-in">
             <Accordion.Item value="step0" className="border-none">
               <Accordion.Header>
@@ -325,8 +323,10 @@ export default function CoachingFormAccordion({
           </div>
         )}
 
-        {/* Step 2 - Only show if not completed and step >= 1 */}
-        {!completedSteps.includes(1) && step >= 1 && (
+        {/* Step 2 - Show summary if completed, accordion if step >= 1 and not completed */}
+        {completedSteps.includes(1) ? (
+          <Step2Summary />
+        ) : step >= 1 && (
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm mb-4 overflow-hidden transform transition-all duration-500 ease-out animate-in slide-in-from-bottom-4 fade-in">
             <Accordion.Item value="step1" className="border-none">
               <Accordion.Header>
