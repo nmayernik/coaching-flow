@@ -81,20 +81,7 @@ export default function CoachingFormAccordion({
     }
   }, [category, selectedStudent, topic]);
 
-  // Handle step invalidation and auto-navigation
-  React.useEffect(() => {
-    // If step 1 is completed but step 2 becomes invalid (no topic selected), 
-    // remove step 1 from completed and navigate to step 2
-    if (completedSteps.includes(0) && !topic && selectedStudent && category) {
-      const topics = getAvailableTopics(category, selectedStudent.age);
-      if (topics.length > 0) {
-        // There are topics available, but none selected - user needs to select one
-        setCompletedSteps(completedSteps.filter(s => s !== 0));
-        setStep(1);
-        setError("");
-      }
-    }
-  }, [topic, selectedStudent, category, completedSteps]);
+
 
   // Notify parent of step changes
   React.useEffect(() => {
