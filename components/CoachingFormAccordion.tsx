@@ -280,7 +280,7 @@ export default function CoachingFormAccordion({
                         // Category descriptions
                         const categoryDescriptions: { [key: string]: string } = {
                           "Academic Foundations": "Setting your student up for success in education and beyond",
-                          "College Admissions": "Advice for college selection and applications",
+                          "College Admissions": "Learn how to make informed decisions about college planning—including academic and extracurricular opportunities, applications, and college selection—from a team of former admissions officers.",
                           "College Finance": "Advice on managing college costs and aid",
                           "College to Career": "Advice on navigating the transition to the workplace",
                           "Financial Wellness": "Advice on building and maintaining smart money habits",
