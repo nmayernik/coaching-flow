@@ -81,6 +81,21 @@ export default function CoachingFormAccordion({
     }
   }, [category, selectedStudent, topic]);
 
+  // Handle step invalidation and auto-navigation
+  React.useEffect(() => {
+    // If step 1 is completed but step 2 becomes invalid (no topic selected), 
+    // remove step 1 from completed and navigate to step 2
+    if (completedSteps.includes(0) && !topic && selectedStudent && category) {
+      const topics = getAvailableTopics(category, selectedStudent.age);
+      if (topics.length > 0) {
+        // There are topics available, but none selected - user needs to select one
+        setCompletedSteps(completedSteps.filter(s => s !== 0));
+        setStep(1);
+        setError("");
+      }
+    }
+  }, [topic, selectedStudent, category, completedSteps]);
+
   // Notify parent of step changes
   React.useEffect(() => {
     onStepChange?.(step);
@@ -123,7 +138,32 @@ export default function CoachingFormAccordion({
     }
     setError("");
     
-    // Mark current step as completed
+    // Special handling for step 0 (student/category selection)
+    if (idx === 0) {
+      // Mark step 0 as completed
+      if (!completedSteps.includes(0)) {
+        setCompletedSteps([...completedSteps, 0]);
+      }
+      
+      // Check if step 2 needs attention (no topic selected or invalid topic)
+      if (!topic || (selectedStudent && category && !getAvailableTopics(category, selectedStudent.age).includes(topic))) {
+        // Navigate to step 1 (topic selection) since it needs to be filled/updated
+        setStep(1);
+        return;
+      }
+      
+      // If step 2 is valid, check what the next step should be
+      if (completedSteps.includes(1) || topic) {
+        // If step 2 is already completed or has a valid topic, go to step 2
+        setStep(2);
+      } else {
+        // Otherwise go to step 1
+        setStep(1);
+      }
+      return;
+    }
+    
+    // For other steps, use normal logic
     if (!completedSteps.includes(idx)) {
       setCompletedSteps([...completedSteps, idx]);
     }
