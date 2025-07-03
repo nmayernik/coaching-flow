@@ -132,26 +132,9 @@ export default function CoachingFormAccordion({
         setCompletedSteps([...completedSteps, 0]);
       }
       
-      // Check if step 2 needs attention (no topic selected or invalid topic)
-      if (!topic || (selectedStudent && category && !getAvailableTopics(category, selectedStudent.age).includes(topic))) {
-        // Navigate to step 1 (topic selection) since it needs to be filled/updated
-        setStep(1);
-        return;
-      }
-      
-      // If we have a valid topic, check if step 2 is already completed
-      if (topic && selectedStudent && category && getAvailableTopics(category, selectedStudent.age).includes(topic)) {
-        if (completedSteps.includes(1)) {
-          // Step 2 is completed and topic is valid, go to step 3
-          setStep(2);
-        } else {
-          // Topic is valid but step 2 not completed, go to step 2 to complete it
-          setStep(1);
-        }
-      } else {
-        // Fallback to step 1
-        setStep(1);
-      }
+      // When step 1 changes, always reopen step 2 for topic selection
+      // This ensures users can choose appropriate topics for the new student/category
+      setStep(1);
       return;
     }
     
