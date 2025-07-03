@@ -139,12 +139,17 @@ export default function CoachingFormAccordion({
         return;
       }
       
-      // If step 2 is valid, check what the next step should be
-      if (completedSteps.includes(1) || topic) {
-        // If step 2 is already completed or has a valid topic, go to step 2
-        setStep(2);
+      // If we have a valid topic, check if step 2 is already completed
+      if (topic && selectedStudent && category && getAvailableTopics(category, selectedStudent.age).includes(topic)) {
+        if (completedSteps.includes(1)) {
+          // Step 2 is completed and topic is valid, go to step 3
+          setStep(2);
+        } else {
+          // Topic is valid but step 2 not completed, go to step 2 to complete it
+          setStep(1);
+        }
       } else {
-        // Otherwise go to step 1
+        // Fallback to step 1
         setStep(1);
       }
       return;
