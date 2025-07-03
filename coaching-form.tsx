@@ -44,7 +44,7 @@ export default function Component() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* Left Sidebar */}
-          <div className="lg:col-span-4">
+          <div className="lg:col-span-3">
 
             {/* Progress Steps Container */}
             <div className="sticky top-4 bg-white rounded-2xl w-full border border-gray-100 p-5">
@@ -117,7 +117,7 @@ export default function Component() {
           </div>
           
           {/* Main Form - Now using Accordion */}
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-9">
             <CoachingFormAccordion 
               onStepChange={setCurrentStep}
               onCompletedStepsChange={setCompletedSteps}
