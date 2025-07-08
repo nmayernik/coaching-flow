@@ -18,8 +18,14 @@ import CoachingFormAccordion from "./components/CoachingFormAccordion"
 export default function Component() {
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
-  const steps = [
+  const isIntroToCollegeCoach = selectedCategory === "Intro to College Coach";
+
+  const steps = isIntroToCollegeCoach ? [
+    { number: 1, title: "Student and expert", description: "Description" },
+    { number: 2, title: "Date & time", description: "Description" }
+  ] : [
     { number: 1, title: "Student and expert", description: "Description" },
     { number: 2, title: "Session topic", description: "Description" },
     { number: 3, title: "Date & time", description: "Description" }
@@ -47,23 +53,26 @@ export default function Component() {
           <div className="lg:col-span-3">
 
             {/* Progress Steps Container */}
-            <div className="sticky top-4 bg-white rounded-2xl w-full border border-gray-100 p-5">
+            <div className="sticky top-4 bg-white rounded-2xl w-full border border-gray-100 px-5 py-6">
               <div className="relative">
                 {/* Continuous vertical connector line */}
-                <div className="absolute left-4 w-0.5" style={{ top: '20px', bottom: '20px' }}>
+                <div className="absolute left-4 w-0.5" style={{ 
+                  top: '20px', 
+                  height: `${(steps.length - 1) * (isIntroToCollegeCoach ? 48 : 56)}px` 
+                }}>
                   {/* Blue solid line for completed progress */}
                   <div 
                     className="absolute w-full bg-blue-800 transition-all duration-300"
                     style={{
                       top: '0px',
-                      height: `${Math.max(0, (completedSteps.length) * 56 + (currentStep >= 2 ? 24 : 0))}px`
+                      height: `${Math.max(0, Math.min(completedSteps.length, steps.length - 1) * (isIntroToCollegeCoach ? 48 : 56))}px`
                     }}
                   />
                   {/* Dotted line for remaining progress */}
                   <div 
                     className="absolute w-full"
                     style={{
-                      top: `${(completedSteps.length) * 56 + (currentStep >= 2 ? 24 : 0)}px`,
+                      top: `${Math.min(completedSteps.length, steps.length - 1) * (isIntroToCollegeCoach ? 48 : 56)}px`,
                       bottom: '0px',
                       backgroundImage: `radial-gradient(circle, #d1d5db 1px, transparent 1px)`,
                       backgroundSize: '2px 8px',
@@ -102,7 +111,7 @@ export default function Component() {
                         {/* Step Content */}
                         <div className="min-w-0 flex-1">
                           
-                          <div className={`text-md font-semibold mt-1 ${
+                          <div className={`text-md font-medium mt-1 ${
                             state === "current" ? "text-blue-800" : "text-gray-700"
                           }`}>
                             {step.title}
@@ -121,6 +130,7 @@ export default function Component() {
             <CoachingFormAccordion 
               onStepChange={setCurrentStep}
               onCompletedStepsChange={setCompletedSteps}
+              onCategoryChange={setSelectedCategory}
             />
           </div>
         </div>
