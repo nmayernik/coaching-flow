@@ -164,47 +164,59 @@ function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onTimeChan
 
   const availableTimesForSelectedDate = selectedDateObj ? generateAvailableTimesForDate(selectedDateObj) : [];
 
+  const prevMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
+  };
+
+  const nextMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
+  };
+
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+    <div>
+      <div className="mb-3 lg:mb-4 font-medium text-base lg:text-lg text-gray-900">Choose a date and time <span className="text-red-500">*</span></div>
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 lg:gap-6">
         {/* Calendar */}
         <div className="lg:col-span-2">
-          <div className="mb-3 font-medium text-gray-800 text-sm">Choose a date</div>
-          <div className="bg-white border border-gray-200 rounded-xl p-3">
+          <div className="mb-2 lg:mb-3 font-medium text-gray-900 text-sm">Choose a date <span className="text-red-500">*</span></div>
+          <div className="bg-white border border-gray-200 rounded-lg lg:rounded-xl p-3 lg:p-4">
             {/* Calendar Header */}
-            <div className="flex items-center justify-between mb-3">
-              <button
-                onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
-                className="p-1 hover:bg-gray-100 rounded"
+            <div className="flex items-center justify-between mb-3 lg:mb-4">
+              <button 
+                onClick={prevMonth} 
+                className="p-1 hover:bg-gray-100 rounded transition-colors duration-200 ease-out"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
-              <h3 className="font-medium text-gray-800 text-sm">
-                {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+              <h3 className="font-medium text-sm lg:text-base text-gray-900">
+                {new Date(currentMonth.getFullYear(), currentMonth.getMonth()).toLocaleDateString('en-US', { 
+                  month: 'long', 
+                  year: 'numeric' 
+                })}
               </h3>
-              <button
-                onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
-                className="p-1 hover:bg-gray-100 rounded"
+              <button 
+                onClick={nextMonth} 
+                className="p-1 hover:bg-gray-100 rounded transition-colors duration-200 ease-out"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </button>
             </div>
             
             {/* Calendar Grid */}
-            <div className="grid grid-cols-7 gap-1 mb-1">
-              {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-                <div key={day} className="text-center text-xs font-medium text-gray-500 py-1">
+            <div className="grid grid-cols-7 gap-1">
+              {/* Day headers */}
+              {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(day => (
+                <div key={day} className="text-center text-xs lg:text-sm font-medium text-gray-500 p-1 lg:p-2">
                   {day}
                 </div>
               ))}
-            </div>
-            
-            <div className="grid grid-cols-7 gap-1">
-              {calendarDays.map((date, index) => {
+              
+              {/* Calendar days */}
+              {generateCalendar().map((date, index) => {
                 const isCurrentMonth = date.getMonth() === currentMonth.getMonth();
                 const isAvailable = isDateAvailable(date);
                 const isSelected = isDateSelected(date);
@@ -216,7 +228,7 @@ function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onTimeChan
                     onClick={() => handleDateSelect(date)}
                     disabled={!isAvailable}
                     className={`
-                      w-8 h-8 text-sm rounded-full transition-colors
+                      w-6 h-6 lg:w-8 lg:h-8 text-xs lg:text-sm rounded-full transition-colors duration-200 ease-out
                       ${!isCurrentMonth ? 'text-gray-300' : ''}
                       ${isAvailable ? 'hover:bg-blue-50 cursor-pointer text-blue-700' : 'cursor-not-allowed'}
                       ${isSelected ? 'bg-blue-700 text-white hover:bg-blue-600' : ''}
@@ -235,19 +247,19 @@ function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onTimeChan
 
         {/* Available Times */}
         <div className="lg:col-span-3">
-          <div className="mb-3 font-medium text-gray-900 text-sm">Choose a time</div>
+          <div className="mb-2 lg:mb-3 font-medium text-gray-900 text-sm">Choose a time <span className="text-red-500">*</span></div>
           {!selectedDateObj ? (
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
-              <div className="text-gray-500 text-sm">Please select a date first</div>
+            <div className="bg-gray-50 border border-gray-200 rounded-lg lg:rounded-xl p-4 lg:p-6 text-center">
+              <div className="text-gray-500 text-xs lg:text-sm">Please select a date first</div>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 lg:grid-cols-2 gap-2">
               {availableTimesForSelectedDate.map((time) => (
                 <button
                   key={time}
                   onClick={() => handleTimeSelect(time)}
                   className={`
-                    w-full p-3 text-center rounded-xl border transition-colors text-sm
+                    w-full p-2 lg:p-3 text-center rounded-lg lg:rounded-xl border transition-colors duration-200 ease-out text-xs lg:text-sm
                     ${selectedTime === time || 
                       (selectedTime === '09:00' && time === '9:00 AM') ||
                       (selectedTime === '10:00' && time === '10:00 AM') ||
@@ -340,13 +352,13 @@ function PhoneNumberSelector({ phone, onPhoneChange }: PhoneNumberSelectorProps)
   };
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+    <div className="space-y-3 lg:space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 lg:gap-3">
         {/* Existing phone numbers */}
         {existingPhoneNumbers.map((phoneOption) => (
           <label 
             key={phoneOption.id} 
-            className={`block p-4 rounded-xl border cursor-pointer transition-colors ${
+            className={`block p-3 lg:p-4 rounded-lg lg:rounded-xl border cursor-pointer transition-colors duration-200 ease-out ${
               selectedOption === phoneOption.id 
                 ? 'ring-blue-700 ring-2 border-white hover:bg-blue-25' 
                 : 'border-gray-400 hover:bg-gray-50'
@@ -362,15 +374,15 @@ function PhoneNumberSelector({ phone, onPhoneChange }: PhoneNumberSelectorProps)
             />
             <div className="flex justify-center items-center">
               <div className="text-center">
-                <div className="font-medium text-gray-800">{phoneOption.label}</div>
-                <div className="text-md text-gray-700">{phoneOption.number}</div>
+                <div className="font-medium text-sm lg:text-base text-gray-800">{phoneOption.label}</div>
+                <div className="text-sm lg:text-md text-gray-700">{phoneOption.number}</div>
               </div>
             </div>
           </label>
         ))}
         
         {/* Add one-time phone number option */}
-        <label className={`flex items-center justify-center p-4 rounded-xl border cursor-pointer transition-colors ${
+        <label className={`flex items-center justify-center p-3 lg:p-4 rounded-lg lg:rounded-xl border cursor-pointer transition-colors duration-200 ease-out ${
           selectedOption === 'custom' 
             ? 'ring-blue-700 ring-2 border-white hover:bg-blue-25' 
             : 'border-gray-400 hover:bg-gray-50'
@@ -383,14 +395,14 @@ function PhoneNumberSelector({ phone, onPhoneChange }: PhoneNumberSelectorProps)
             onChange={() => handleOptionChange('custom')}
             className="sr-only"
           />
-          <div className="font-medium text-gray-800 text-center">Add a one time phone number</div>
+          <div className="font-medium text-sm lg:text-base text-gray-800 text-center">Add a one time phone number</div>
         </label>
       </div>
       
       {/* Custom phone input - appears outside the grid when selected */}
       {selectedOption === 'custom' && (
         <div>
-          <label className="block text-sm font-medium text-gray-900 mb-2">
+          <label className="block text-xs lg:text-sm font-medium text-gray-900 mb-2">
             Enter phone number
           </label>
           <Input 
@@ -398,7 +410,7 @@ function PhoneNumberSelector({ phone, onPhoneChange }: PhoneNumberSelectorProps)
             value={customPhone} 
             onChange={e => handleCustomPhoneChange(e.target.value)} 
             placeholder="(000) 000-0000" 
-            className="rounded-xl border-gray-200" 
+            className="rounded-lg lg:rounded-xl border-gray-200 text-sm" 
           />
         </div>
       )}
@@ -429,10 +441,41 @@ export default function CoachingFormAccordion({
   const [time, setTime] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const [error, setError] = React.useState("");
+  const [isSubmitted, setIsSubmitted] = React.useState(false);
   
   // Conditional data based on selected student
   const [availableCategories, setAvailableCategories] = React.useState<string[]>([]);
   const [availableTopics, setAvailableTopics] = React.useState<string[]>([]);
+
+  // Featured topics configuration
+  const featuredTopics = [
+    "Preparing College Applications",
+    "Selecting Best Fit Colleges", 
+    "Senior Summer: Navigating the College Transition",
+    "Saving for College",
+    "Paying for College"
+  ];
+
+  // Featured topic descriptions
+  const featuredTopicDescriptions: { [key: string]: string } = {
+    "Preparing College Applications": "Get expert guidance on crafting compelling college applications that stand out to admissions committees.",
+    "Selecting Best Fit Colleges": "Find the perfect college match based on your academic profile, interests, and career goals.",
+    "Senior Summer: Navigating the College Transition": "Prepare for the exciting transition from high school to college life.",
+    "Saving for College": "Learn smart strategies to save money and plan financially for your child's college education.",
+    "Paying for College": "Navigate financial aid, scholarships, and payment options to make college affordable."
+  };
+
+  // Function to check if a topic is featured
+  const isFeaturedTopic = (topicTitle: string) => {
+    return featuredTopics.includes(topicTitle);
+  };
+
+  // Function to organize topics with featured ones first
+  const organizeTopics = (topics: string[]) => {
+    const featured = topics.filter(topic => isFeaturedTopic(topic));
+    const regular = topics.filter(topic => !isFeaturedTopic(topic));
+    return { featured, regular };
+  };
 
   // Update available categories when student selection changes
   React.useEffect(() => {
@@ -565,6 +608,32 @@ export default function CoachingFormAccordion({
     setError("");
   }
 
+  function handleSubmit() {
+    const err = validateStep(2);
+    if (err) {
+      setError(err);
+      return;
+    }
+    setError("");
+    
+    // Simulate form submission
+    setIsSubmitted(true);
+  }
+
+  function resetForm() {
+    setIsSubmitted(false);
+    setStep(0);
+    setCompletedSteps([]);
+    setSelectedStudent(null);
+    setCategory("");
+    setTopic("");
+    setNote("");
+    setDate("");
+    setTime("");
+    setPhone("");
+    setError("");
+  }
+
   // Handle accordion value change
   function handleAccordionChange(value: string) {
     if (value) {
@@ -575,20 +644,20 @@ export default function CoachingFormAccordion({
 
   // Summary components
   const Step1Summary = () => (
-    <div className="border border-gray-100 rounded-2xl p-6 mb-4 bg-white">
+    <div className="border border-gray-100 rounded-xl lg:rounded-2xl p-4 lg:p-6 mb-3 lg:mb-4 bg-white">
       <div className="flex justify-between items-center">
         <div className="space-y-1">
-         <h3 className="text-blue-600 font-medium text-sm">Appointment type</h3>
-          <p className="font-medium text-gray-800">{category} Appointment</p>
-          <p className="text-gray-700 text-sm">For {selectedStudent?.name} ({selectedStudent?.age})</p>
+         <h3 className="text-blue-600 font-medium text-xs lg:text-sm">Appointment type</h3>
+          <p className="font-medium text-sm lg:text-base text-gray-800">{category} Appointment</p>
+          <p className="text-gray-700 text-xs lg:text-sm">For {selectedStudent?.name} ({selectedStudent?.age})</p>
         </div>
         <Button 
           variant="outline" 
           size="default" 
           onClick={() => handleEdit(0)}
-          className="text-blue-700 border-gray-300 hover:bg-blue-50 transition-all duration-200"
+          className="text-blue-700 border-gray-300 hover:bg-blue-50 transition-colors duration-200 ease-out text-sm px-3 py-2"
         >
-          <SquarePen className="w-4 h-4" />
+          <SquarePen className="w-3 h-3 lg:w-4 lg:h-4" />
           Edit
         </Button>
       </div>
@@ -596,25 +665,120 @@ export default function CoachingFormAccordion({
   );
 
   const Step2Summary = () => (
-    <div className="border border-gray-100 rounded-2xl p-6 mb-4 bg-white">
+    <div className="border border-gray-100 rounded-xl lg:rounded-2xl p-4 lg:p-6 mb-3 lg:mb-4 bg-white">
       <div className="flex justify-between items-center">
         <div>
-          <h3 className="text-purple-600 font-semibold text-sm">Topic</h3>
-          <p className="font-medium text-gray-800">{topic}</p>
-          {note && <p className="text-gray-700 text-sm mt-1">Note: {note}</p>}
+          <h3 className="text-purple-600 font-semibold text-xs lg:text-sm">Topic</h3>
+          <p className="font-medium text-sm lg:text-base text-gray-800">{topic}</p>
+          {note && <p className="text-gray-700 text-xs lg:text-sm mt-1">Note: {note}</p>}
         </div>
         <Button 
           variant="outline" 
           size="default" 
           onClick={() => handleEdit(1)}
-          className="text-blue-700 border-gray-300 hover:bg-blue-50 transition-all duration-200 hover:scale-105"
+          className="text-blue-700 border-gray-300 hover:bg-blue-50 transition-colors duration-200 ease-out text-sm px-3 py-2"
         >
-          <SquarePen className="w-4 h-4 mr-1" />
+          <SquarePen className="w-3 h-3 lg:w-4 lg:h-4 mr-1" />
           Edit
         </Button>
       </div>
     </div>
   );
+
+  const SuccessScreen = () => (
+    <div className="bg-white rounded-xl lg:rounded-2xl border border-gray-100 shadow-sm p-6 lg:p-8 text-center transform transition-all duration-300 ease-out animate-in slide-in-from-bottom-4 fade-in">
+      {/* Success Icon */}
+      <div className="w-16 h-16 lg:w-20 lg:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 lg:mb-6">
+        <svg className="w-8 h-8 lg:w-10 lg:h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      
+      {/* Success Message */}
+      <h2 className="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 lg:mb-3">
+        Appointment Scheduled!
+      </h2>
+      <p className="text-gray-600 text-sm lg:text-base mb-6 lg:mb-8">
+        Your coaching appointment has been successfully scheduled. You'll receive a confirmation email shortly.
+      </p>
+      
+      {/* Appointment Details */}
+      <div className="bg-gray-50 rounded-lg lg:rounded-xl p-4 lg:p-6 mb-6 lg:mb-8 text-left">
+        <h3 className="font-medium text-gray-800 mb-3 lg:mb-4 text-sm lg:text-base">Appointment Details</h3>
+        <div className="space-y-2 lg:space-y-3 text-xs lg:text-sm">
+          <div className="flex justify-between">
+            <span className="text-gray-600">Student:</span>
+            <span className="font-medium text-gray-800">{selectedStudent?.name} ({selectedStudent?.age})</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-600">Category:</span>
+            <span className="font-medium text-gray-800">{category}</span>
+          </div>
+          {category !== "Intro to College Coach" && (
+            <div className="flex justify-between">
+              <span className="text-gray-600">Topic:</span>
+              <span className="font-medium text-gray-800">{topic}</span>
+            </div>
+          )}
+          <div className="flex justify-between">
+            <span className="text-gray-600">Date & Time:</span>
+            <span className="font-medium text-gray-800">
+              {date && new Date(date).toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })} at {time && (() => {
+                const timeMap: { [key: string]: string } = {
+                  '09:00': '9:00 AM',
+                  '10:00': '10:00 AM',
+                  '11:00': '11:00 AM',
+                  '12:00': '12:00 PM',
+                  '13:00': '1:00 PM',
+                  '14:00': '2:00 PM',
+                  '15:00': '3:00 PM',
+                  '16:00': '4:00 PM',
+                  '17:00': '5:00 PM'
+                };
+                return timeMap[time] || time;
+              })()}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-600">Phone:</span>
+            <span className="font-medium text-gray-800">{phone}</span>
+          </div>
+        </div>
+      </div>
+      
+      {/* Actions */}
+      <div className="flex flex-col sm:flex-row gap-3 lg:gap-4">
+        <Button 
+          variant="outline" 
+          size="lg" 
+          onClick={resetForm}
+          className="flex-1 text-sm lg:text-base text-blue-700 border-gray-300 hover:bg-blue-50 transition-colors duration-200 ease-out rounded-lg lg:rounded-xl py-3 lg:py-4"
+        >
+          Schedule Another
+        </Button>
+        <Button 
+          size="lg" 
+          className="flex-1 text-sm lg:text-base bg-yellow-500 hover:bg-yellow-400 text-blue-800 rounded-lg lg:rounded-xl font-semibold py-3 lg:py-4"
+        >
+          View Calendar
+        </Button>
+      </div>
+    </div>
+  );
+
+  // Show success screen if form is submitted
+  if (isSubmitted) {
+    return (
+      <div className="w-full mx-auto font-sans">
+        <SuccessScreen />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full mx-auto font-sans">
@@ -629,16 +793,16 @@ export default function CoachingFormAccordion({
         {completedSteps.includes(0) ? (
           <Step1Summary />
         ) : (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-4 transform transition-all duration-500 ease-out animate-in slide-in-from-bottom-4 fade-in">
+          <div className="bg-white rounded-xl lg:rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-3 lg:mb-4 transform transition-all duration-300 ease-out animate-in slide-in-from-bottom-4 fade-in">
             <Accordion.Item value="step0" className="border-none">
               <Accordion.Header>
                 <Accordion.Trigger className="w-full text-left font-semibold text-lg">
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Content className="px-8 pt-2 pb-8 space-y-12 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-top-1 data-[state=open]:slide-in-from-top-1">
+              <Accordion.Content className="px-4 sm:px-6 lg:px-8 pt-2 pb-6 lg:pb-8 space-y-6 lg:space-y-8 2xl:space-y-12 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-top-1 data-[state=open]:slide-in-from-top-1">
                 <div>
-                  <div className="mb-4 font-medium text-xl text-gray-800">Choose a student <span className="text-red-500">*</span></div>
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="mb-3 lg:mb-4 font-medium text-base text-gray-800">Choose a student <span className="text-red-500">*</span></div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4">
                     {students.map((s, index) => {
                       const initials = s.name.split(' ').map(name => name[0]).join('').toUpperCase();
                       const avatarColors = [
@@ -650,7 +814,7 @@ export default function CoachingFormAccordion({
                       const availableCategoriesCount = getAvailableCategories(s.age).length;
                       
                       return (
-                        <label key={s.id} className={`p-4 h-40 rounded-xl border cursor-pointer hover:bg-gray-25 transition-colors flex flex-col justify-between shadow-sm ${selectedStudent?.id === s.id ? "ring-blue-700 ring-2 border-0 hover:bg-blue-50" : "border-gray-400"}`}>
+                        <label key={s.id} className={`p-3 lg:p-4 h-32 sm:h-36 lg:h-40 rounded-lg lg:rounded-xl border cursor-pointer transition-colors duration-200 ease-out flex flex-col justify-between shadow-sm ${selectedStudent?.id === s.id ? "ring-blue-700 ring-2 border-0 hover:bg-blue-50" : "border-gray-400 hover:bg-gray-25"}`}>
                           <input
                             type="radio"
                             name="student"
@@ -659,22 +823,22 @@ export default function CoachingFormAccordion({
                             onChange={() => setSelectedStudent(s)}
                             className="sr-only"
                           />
-                          <div className="space-y-4">
-                            <div className={`w-8 h-8 ${avatarColor} rounded-full flex items-center justify-center mb-2`}>
-                              <span className="text-white font-medium text-sm">{initials}</span>
+                          <div className="space-y-3 lg:space-y-4">
+                            <div className={`w-7 h-7 lg:w-8 lg:h-8 ${avatarColor} rounded-full flex items-center justify-center mb-2`}>
+                              <span className="text-white font-medium text-xs lg:text-sm">{initials}</span>
                             </div>
                             <div>
-                              <div className="font-medium text-gray-800">{s.name}</div>
-                              <div className="text-sm text-gray-700">{s.age}</div>
+                              <div className="font-medium text-sm lg:text-base text-gray-800">{s.name}</div>
+                              <div className="text-xs lg:text-sm text-gray-700">{s.age}</div>
                             </div>
                           </div>
-                          <div className="text-sm text-gray-700">{availableCategoriesCount} categories available</div>
+                          <div className="text-xs lg:text-sm text-gray-700">{availableCategoriesCount} categories available</div>
                         </label>
                       );
                     })}
                   </div>
-                  <button className="flex items-center text-blue-700 hover:text-blue-700 mt-3 text-sm font-medium">
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <button className="flex items-center text-blue-700 hover:text-blue-700 mt-3 text-xs lg:text-sm font-medium">
+                    <svg className="w-3 h-3 lg:w-4 lg:h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
                     Add student
@@ -682,14 +846,14 @@ export default function CoachingFormAccordion({
                 </div>
                 
                 <div>
-                  <div className="mb-4 font-medium text-xl text-gray-800">Choose a category <span className="text-red-500">*</span></div>
+                  <div className="mb-3 lg:mb-4 font-medium text-lg lg:text-xl text-gray-800">Choose a category <span className="text-red-500">*</span></div>
                   {!selectedStudent && (
-                    <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 text-center text-gray-600">
+                    <div className="p-3 lg:p-4 bg-gray-50 rounded-lg lg:rounded-xl border border-gray-200 text-center text-gray-600 text-sm">
                       Please select a student first to see available categories
                     </div>
                   )}
                   {selectedStudent && (
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
                       {["Intro to College Coach", ...getAllCategories().filter(cat => cat !== "Intro to College Coach")].map((categoryName) => {
                         const isAvailable = selectedStudent ? (categoryName === "Intro to College Coach" ? true : isCategoryAvailable(categoryName, selectedStudent.age)) : false;
                         const availableTopicsCount = selectedStudent ? (categoryName === "Intro to College Coach" ? 1 : getAvailableTopics(categoryName, selectedStudent.age).length) : 0;
@@ -717,7 +881,7 @@ export default function CoachingFormAccordion({
                         return (
                           <label 
                             key={categoryName} 
-                            className={`p-4 rounded-xl border cursor-pointer transition-colors h-32 flex ${
+                            className={`p-3 lg:p-4 rounded-lg lg:rounded-xl border cursor-pointer transition-colors duration-200 ease-out h-24 sm:h-28 lg:h-32 flex ${
                               !isAvailable 
                                 ? "border-gray-200 bg-gray-50 cursor-not-allowed opacity-60" 
                                 : category === categoryName 
@@ -744,7 +908,7 @@ export default function CoachingFormAccordion({
                             />
                             
                             {/* Icon circle */}
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center mr-3 flex-shrink-0 ${
+                            <div className={`w-8 h-8 lg:w-10 lg:h-10 rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0 ${
                               isAvailable ? categoryIcons[categoryName]?.bgColor || "bg-gray-100" : "bg-gray-100"
                             }`}>
                               {(() => {
@@ -753,7 +917,7 @@ export default function CoachingFormAccordion({
                                 const IconComponent = iconData.icon;
                                 return (
                                   <IconComponent 
-                                    className={`w-5 h-5 ${isAvailable ? iconData.iconColor : "text-gray-400"}`}
+                                    className={`w-4 h-4 lg:w-5 lg:h-5 ${isAvailable ? iconData.iconColor : "text-gray-400"}`}
                                     strokeWidth={1.5}
                                   />
                                 );
@@ -762,20 +926,20 @@ export default function CoachingFormAccordion({
                             
                             {/* Content */}
                             <div className="flex flex-col flex-1">
-                              <div className={`font-medium ${isAvailable ? "text-gray-800" : "text-gray-500"}`}>
+                              <div className={`font-medium text-sm lg:text-base ${isAvailable ? "text-gray-800" : "text-gray-500"}`}>
                                 {categoryName}
                               </div>
-                              <div className={`text-sm mt-1 ${isAvailable ? "text-gray-700" : "text-gray-400"}`}>
+                              <div className={`text-xs lg:text-sm mt-1 ${isAvailable ? "text-gray-700" : "text-gray-400"}`}>
                                 {categoryDescriptions[categoryName] || "Category description"}
                               </div>
 
                               {!isAvailable && (
-                                <div className="text-xs text-gray-400 mt-2">
+                                <div className="text-xs text-gray-400 mt-1 lg:mt-2">
                                   Not available for {selectedStudent.age}
                                 </div>
                               )}
                               {categoryName === "Intro to College Coach" && (
-                                <span className="bg-blue-50 text-blue-700 text-xs font-medium px-2 py-0.5 rounded-full mt-2 self-start">
+                                <span className="bg-blue-50 text-blue-700 text-xs font-medium px-2 py-0.5 rounded-full mt-1 lg:mt-2 self-start">
                                   Recommended
                                 </span>
                               )}
@@ -788,7 +952,7 @@ export default function CoachingFormAccordion({
                 </div>
                 
                 {error && <div className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">{error}</div>}
-                <Button type="button" variant="default" size="lg" onClick={() => handleContinue(0)} className="w-full !text-lg bg-yellow-500 hover:bg-yellow-400 text-blue-800 rounded-xl font-semibold px-6 !py-8">Continue</Button>
+                <Button type="button" variant="default" size="lg" onClick={() => handleContinue(0)} className="w-full text-base lg:!text-lg bg-yellow-500 hover:bg-yellow-400 text-blue-800 rounded-lg lg:rounded-xl font-semibold px-4 lg:px-6 py-6 lg:!py-8">Continue</Button>
               </Accordion.Content>
             </Accordion.Item>
           </div>
@@ -798,16 +962,16 @@ export default function CoachingFormAccordion({
         {category !== "Intro to College Coach" && completedSteps.includes(1) ? (
           <Step2Summary />
         ) : category !== "Intro to College Coach" && step >= 1 && (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm mb-4 overflow-hidden transform transition-all duration-500 ease-out animate-in slide-in-from-bottom-4 fade-in">
+          <div className="bg-white rounded-xl lg:rounded-2xl border border-gray-100 shadow-sm mb-3 lg:mb-4 overflow-hidden transform transition-all duration-300 ease-out animate-in slide-in-from-bottom-4 fade-in">
             <Accordion.Item value="step1" className="border-none">
               <Accordion.Header>
                 <Accordion.Trigger className="hidden">
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Content className="p-6 space-y-6 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-top-1 data-[state=open]:slide-in-from-top-1">
+              <Accordion.Content className="p-4 sm:p-5 lg:p-6 space-y-4 lg:space-y-6 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-top-1 data-[state=open]:slide-in-from-top-1">
                 <div>
-                  <div className="mb-1 font-medium text-xl text-gray-800">Choose a topic in {category} <span className="text-red-500">*</span></div>
-                  <div className="mb-6 text-sm text-gray-700">
+                  <div className="mb-1 font-medium text-lg lg:text-xl text-gray-800">Choose a topic in {category} <span className="text-red-500">*</span></div>
+                  <div className="mb-4 lg:mb-6 text-xs lg:text-sm text-gray-700">
                     {(() => {
                       const categoryDescriptions: { [key: string]: string } = {
                         "Academic Foundations": "Academic Foundations topics are supported by our team of experienced educators and academic counselors.",
@@ -820,33 +984,100 @@ export default function CoachingFormAccordion({
                     })()}
                   </div>
                   {availableTopics.length === 0 ? (
-                    <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 text-center text-gray-600">
+                    <div className="p-3 lg:p-4 bg-gray-50 rounded-lg lg:rounded-xl border border-gray-200 text-center text-gray-600 text-sm">
                       {!selectedStudent || !category ? "Please select a student and category first" : "No topics available for this combination"}
                     </div>
                   ) : (
-                    <div className="grid grid-cols-2 gap-4">
-                      {availableTopics.map((topicTitle) => (
-                        <label key={topicTitle} className={`p-4 rounded-xl border cursor-pointer hover:bg-gray-50 transition-colors h-20 flex items-center ${topic === topicTitle ? "ring-blue-700 ring-2 border-gray-400 hover:bg-blue-25" : "border-gray-400"}`}>
-                          <input
-                            type="radio"
-                            name="topic"
-                            value={topicTitle}
-                            checked={topic === topicTitle}
-                            onChange={() => setTopic(topicTitle)}
-                            className="sr-only"
-                          />
-                          <div className="font-medium text-md text-gray-800">{topicTitle}</div>
-                        </label>
-                      ))}
+                    <div className="space-y-4 lg:space-y-6">
+                      {(() => {
+                        const { featured, regular } = organizeTopics(availableTopics);
+                        
+                        return (
+                          <>
+                            {/* Featured Topics Section */}
+                            {featured.length > 0 && (
+                              <div>
+                                <div className="mb-3 lg:mb-4 font-medium text-sm lg:text-base text-gray-800">Featured Topics</div>
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
+                                  {featured.map((topicTitle) => (
+                                    <label 
+                                      key={topicTitle} 
+                                      className={`p-3 lg:p-4 rounded-lg lg:rounded-xl border cursor-pointer transition-colors duration-200 ease-out min-h-[100px] lg:min-h-[120px] flex flex-col relative ${
+                                        topic === topicTitle 
+                                          ? "ring-blue-700 ring-2 border-white hover:bg-blue-25 bg-white" 
+                                          : "border-gray-200 bg-white hover:bg-gray-25"
+                                      }`}
+                                    >
+                                      <input
+                                        type="radio"
+                                        name="topic"
+                                        value={topicTitle}
+                                        checked={topic === topicTitle}
+                                        onChange={() => setTopic(topicTitle)}
+                                        className="sr-only"
+                                      />
+                                      
+                                      <div className="flex-1">
+                                        <div className="font-medium text-sm lg:text-base text-gray-800 mb-2">
+                                          {topicTitle}
+                                        </div>
+                                        <div className="text-xs lg:text-sm text-gray-600 mb-3">
+                                          {featuredTopicDescriptions[topicTitle] || ""}
+                                        </div>
+                                      </div>
+                                      
+                                      {/* Recommended Badge at bottom */}
+                                      <span className="bg-blue-50 text-blue-700 text-xs font-medium px-2 py-0.5 rounded-full self-start">
+                                        Recommended
+                                      </span>
+                                    </label>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            
+                            {/* Regular Topics Section */}
+                            {regular.length > 0 && (
+                              <div>
+                                {featured.length > 0 && (
+                                  <div className="mb-3 lg:mb-4 font-medium text-sm lg:text-base text-gray-800">Other Topics</div>
+                                )}
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
+                                  {regular.map((topicTitle) => (
+                                    <label 
+                                      key={topicTitle} 
+                                      className={`p-3 lg:p-4 rounded-lg lg:rounded-xl border cursor-pointer transition-colors duration-200 ease-out h-16 lg:h-20 flex items-center ${
+                                        topic === topicTitle 
+                                          ? "ring-blue-700 ring-2 border-gray-400 hover:bg-blue-25" 
+                                          : "border-gray-400 hover:bg-gray-50"
+                                      }`}
+                                    >
+                                      <input
+                                        type="radio"
+                                        name="topic"
+                                        value={topicTitle}
+                                        checked={topic === topicTitle}
+                                        onChange={() => setTopic(topicTitle)}
+                                        className="sr-only"
+                                      />
+                                      <div className="font-medium text-sm lg:text-md text-gray-800">{topicTitle}</div>
+                                    </label>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </>
+                        );
+                      })()}
                     </div>
                   )}
                 </div>
                 <div>
-                  <div className="mb-4 font-medium text-gray-900">Add a note to your coach</div>
-                  <Textarea value={note} onChange={e => setNote(e.target.value)} placeholder="Value" className="min-h-[100px] rounded-xl border-gray-200" />
+                  <div className="mb-3 lg:mb-4 font-medium text-base lg:text-lg text-gray-900">Add a note to your coach</div>
+                  <Textarea value={note} onChange={e => setNote(e.target.value)} placeholder="Value" className="min-h-[80px] lg:min-h-[100px] rounded-lg lg:rounded-xl border-gray-200 text-sm" />
                 </div>
                 {error && <div className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">{error}</div>}
-                <Button type="button" size="lg" onClick={() => handleContinue(1)} className="w-full !text-lg bg-yellow-500 hover:bg-yellow-400 text-blue-800 rounded-xl font-semibold px-6 !py-8">Continue</Button>
+                <Button type="button" size="lg" onClick={() => handleContinue(1)} className="w-full text-base lg:!text-lg bg-yellow-500 hover:bg-yellow-400 text-blue-800 rounded-lg lg:rounded-xl font-semibold px-4 lg:px-6 py-6 lg:!py-8">Continue</Button>
               </Accordion.Content>
             </Accordion.Item>
           </div>
@@ -854,13 +1085,13 @@ export default function CoachingFormAccordion({
 
         {/* Step 3 - Only show if step >= 2 */}
         {step >= 2 && (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm mb-4 overflow-hidden transform transition-all duration-500 ease-out animate-in slide-in-from-bottom-4 fade-in">
+          <div className="bg-white rounded-xl lg:rounded-2xl border border-gray-100 shadow-sm mb-3 lg:mb-4 overflow-hidden transform transition-all duration-300 ease-out animate-in slide-in-from-bottom-4 fade-in">
             <Accordion.Item value="step2" className="border-none">
               <Accordion.Header>
                 <Accordion.Trigger className="hidden">
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Content className="p-6 space-y-6 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-top-1 data-[state=open]:slide-in-from-top-1">
+              <Accordion.Content className="p-4 sm:p-5 lg:p-6 space-y-4 lg:space-y-6 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-top-1 data-[state=open]:slide-in-from-top-1">
                 <DateTimeSelector 
                   selectedDate={date} 
                   selectedTime={time} 
@@ -868,15 +1099,15 @@ export default function CoachingFormAccordion({
                   onTimeChange={setTime} 
                 />
                 <div>
-                  <div className="mb-4 font-medium text-gray-900">Phone number</div>
+                  <div className="mb-3 lg:mb-4 font-medium text-base lg:text-lg text-gray-900">Phone number <span className="text-red-500">*</span></div>
                   <PhoneNumberSelector phone={phone} onPhoneChange={setPhone} />
                 </div>
                 <div>
-                  <div className="mb-4 font-medium text-gray-900">Attach a document (optional)</div>
-                  <Input type="file" className="rounded-xl border-gray-200" />
+                  <div className="mb-3 lg:mb-4 font-medium text-base lg:text-lg text-gray-900">Attach a document (optional)</div>
+                  <Input type="file" className="rounded-lg lg:rounded-xl border-gray-200" />
                 </div>
                 {error && <div className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">{error}</div>}
-                <Button type="button" size="lg" className="w-full !text-lg bg-yellow-500 hover:bg-yellow-400 text-blue-800 rounded-xl font-semibold px-6 !py-8">Schedule Appointment</Button>
+                <Button type="button" size="lg" onClick={handleSubmit} className="w-full text-base lg:!text-lg bg-yellow-500 hover:bg-yellow-400 text-blue-800 rounded-lg lg:rounded-xl font-semibold px-4 lg:px-6 py-6 lg:!py-8">Schedule Appointment</Button>
               </Accordion.Content>
             </Accordion.Item>
           </div>

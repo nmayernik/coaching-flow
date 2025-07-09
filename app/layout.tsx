@@ -5,7 +5,7 @@ import './globals.css'
 const mulish = Mulish({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'v0 App',
+  title: 'Coaching prototype',
   description: 'Created with v0',
   generator: 'v0.dev',
 }
