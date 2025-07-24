@@ -229,7 +229,7 @@ export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onT
         {/* Available Times */}
         <div className="lg:col-span-3">
                           <div className="sr-only">Choose a time <span className="text-red-500">*</span></div>
-          <div className="mb-1 text-xs lg:text-sm text-gray-600">
+          <div className="text-sm lg:text-base font-medium mb-3 text-gray-800">
             {selectedDateObj ? `Available times on ${selectedDateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}` : 'Available times'}
           </div>
           {!selectedDateObj ? (
@@ -265,8 +265,8 @@ export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onT
                   </button>
                 ))}
               </div>
-              <div className="mt-2 text-xs lg:text-sm text-gray-600 text-center">
-                {category === "Intro to College Coach" ? "30-minute call" : "45-minute call"} · All times in EST
+              <div className="mt-3 text-xs lg:text-sm text-gray-700 text-center">
+                Showing in Eastern Time
               </div>
             </>
           )}
