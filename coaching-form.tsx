@@ -23,7 +23,7 @@ export default function Component() {
   const isIntroToCollegeCoach = selectedCategory === "Intro to College Coach";
 
   const steps = [
-    { number: 1, title: "Student and expert", description: "Description" },
+    { number: 1, title: "Student and topic", description: "Description" },
     { number: 2, title: "Focus area", description: "Description" },
     { number: 3, title: "Date and time", description: "Description" }
   ];

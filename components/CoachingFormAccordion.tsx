@@ -283,10 +283,10 @@ export default function CoachingFormAccordion({
                 </div>
                 
                 <div>
-                  <div className="mb-3 lg:mb-4 font-medium text-lg text-gray-800">Choose a category <span className="text-red-500">*</span></div>
+                  <div className="mb-3 lg:mb-4 font-medium text-lg text-gray-800">Choose a topic <span className="text-red-500">*</span></div>
                   {!selectedStudent && (
                     <div className="p-3 lg:p-4 bg-gray-50 rounded-lg lg:rounded-xl border  text-center text-gray-700 text-sm">
-                      Please select a student first to see available categories
+                      Please select a student first to see available topics
                     </div>
                   )}
                   {selectedStudent && (
