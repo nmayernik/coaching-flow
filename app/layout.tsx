@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Mulish } from 'next/font/google'
 import './globals.css'
+import AccessibilityProvider from '@/components/AccessibilityProvider'
 
 const mulish = Mulish({ subsets: ['latin'] })
 
@@ -17,7 +18,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={mulish.className}>{children}</body>
+      <body className={mulish.className}>
+        <AccessibilityProvider>
+          {children}
+        </AccessibilityProvider>
+      </body>
     </html>
   )
 }

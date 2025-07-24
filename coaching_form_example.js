@@ -103,7 +103,7 @@ const CoachingReservationForm = () => {
                 key={child.id}
                 type="button"
                 onClick={() => handleChildSelect(child)}
-                className={`p-3 text-left rounded-lg border-2 transition-colors ${
+                className={`p-3 text-left rounded-lg border-2 transition-colors duration-200 ease-out ${
                   selectedChild?.id === child.id
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
                     : 'border-gray-200 hover:border-gray-300'
@@ -184,7 +184,7 @@ const CoachingReservationForm = () => {
         <button
           type="submit"
           disabled={!selectedChild || !selectedCategory || !selectedTopic}
-          className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                      className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 ease-out"
         >
           Book Session
         </button>

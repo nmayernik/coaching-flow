@@ -12,22 +12,22 @@ export default function Footer() {
                     </div>
 
                 <div className="flex flex-wrap justify-center space-x-6 text-sm text-[#707070]">
-                    <a href="#" className="hover:text-[#333333]">
+                    <a href="#" className="transition-colors duration-200 ease-out hover:text-[#333333]">
                         Home
                     </a>
-                    <a href="#" className="hover:text-[#333333]">
+                    <a href="#" className="transition-colors duration-200 ease-out hover:text-[#333333]">
                         Contact Us
                     </a>
-                    <a href="#" className="hover:text-[#333333]">
+                    <a href="#" className="transition-colors duration-200 ease-out hover:text-[#333333]">
                         Cookie Notice
                     </a>
-                    <a href="#" className="hover:text-[#333333]">
+                    <a href="#" className="transition-colors duration-200 ease-out hover:text-[#333333]">
                         Accessible Use Policy
                     </a>
-                    <a href="#" className="hover:text-[#333333]">
+                    <a href="#" className="transition-colors duration-200 ease-out hover:text-[#333333]">
                         Privacy Notice
                     </a>
-                    <a href="#" className="hover:text-[#333333]">
+                    <a href="#" className="transition-colors duration-200 ease-out hover:text-[#333333]">
                         Trademark Policy
                     </a>
                 </div>

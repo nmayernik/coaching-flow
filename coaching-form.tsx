@@ -22,16 +22,18 @@ export default function Component() {
 
   const isIntroToCollegeCoach = selectedCategory === "Intro to College Coach";
 
-  const steps = isIntroToCollegeCoach ? [
-    { number: 1, title: "Student and expert", description: "Description" },
-    { number: 2, title: "Date & time", description: "Description" }
-  ] : [
+  const steps = [
     { number: 1, title: "Student and expert", description: "Description" },
     { number: 2, title: "Session topic", description: "Description" },
     { number: 3, title: "Date & time", description: "Description" }
   ];
 
   const getStepState = (stepIndex: number) => {
+    // Special handling for Intro to College Coach - step 2 should show as upcoming until step 3 is reached
+    if (isIntroToCollegeCoach && stepIndex === 1) {
+      return currentStep >= 2 ? "completed" : "upcoming";
+    }
+    
     if (completedSteps.includes(stepIndex)) return "completed";
     if (currentStep === stepIndex) return "current";
     return "upcoming";
@@ -42,37 +44,38 @@ export default function Component() {
       <Header />
       
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-8 sm:px-6 py-12">
-        <div className="mb-12 space-y-1">
-       <h1 className="text-[32px] font-semibold text-blue-800">Schedule a Coaching Session</h1>
-       <p className="text-base text-gray-700">Book a call with one of our experts to discuss your needs.</p>
-       </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-          {/* Left Sidebar */}
-          <div className="lg:col-span-3">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 sm:pt-3 lg:pt-12 pb-4 sm:pb-6 lg:pb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-16">
+          {/* Left Sidebar - Hidden on mobile, shows as progress bar instead */}
+          <div className="hidden lg:block lg:col-span-1">
+            <div className="sticky top-8">
+            {/* Header content moved to sidebar */}
+            <div className="mb-4 space-y-1">
+              <h1 className="text-2xl font-semibold text-blue-800">Schedule a Coaching Session</h1>
+              <p className="text-sm sm:text-base text-gray-700">Book a call with one of our experts to discuss your needs.</p>
+            </div>
 
             {/* Progress Steps Container */}
-            <div className="sticky top-4 bg-white rounded-2xl w-full border border-gray-100 px-5 py-6">
+            <div className="w-full py-4 lg:py-6">
               <div className="relative">
                 {/* Continuous vertical connector line */}
-                <div className="absolute left-4 w-0.5" style={{ 
+                <div className="absolute left-3 sm:left-4 w-0.5" style={{ 
                   top: '20px', 
-                  height: `${(steps.length - 1) * (isIntroToCollegeCoach ? 48 : 56)}px` 
+                  height: `${(steps.length - 1) * 56}px` 
                 }}>
                   {/* Blue solid line for completed progress */}
                   <div 
-                    className="absolute w-full bg-blue-800 transition-all duration-300"
+                    className="absolute w-full bg-blue-800 transition-all duration-300 ease-out"
                     style={{
                       top: '0px',
-                      height: `${Math.max(0, Math.min(completedSteps.length, steps.length - 1) * (isIntroToCollegeCoach ? 48 : 56))}px`
+                      height: `${Math.max(0, Math.min(completedSteps.length, steps.length - 1) * 56)}px`
                     }}
                   />
                   {/* Dotted line for remaining progress */}
                   <div 
                     className="absolute w-full"
                     style={{
-                      top: `${Math.min(completedSteps.length, steps.length - 1) * (isIntroToCollegeCoach ? 48 : 56)}px`,
+                      top: `${Math.min(completedSteps.length, steps.length - 1) * 56}px`,
                       bottom: '0px',
                       backgroundImage: `radial-gradient(circle, #d1d5db 1px, transparent 1px)`,
                       backgroundSize: '2px 8px',
@@ -81,14 +84,14 @@ export default function Component() {
                   />
                 </div>
                 
-                <div className="space-y-8">
+                <div className="space-y-6 lg:space-y-8">
                   {steps.map((step, index) => {
                     const state = getStepState(index);
                     
                     return (
-                      <div key={index} className="relative flex items-start space-x-4">
+                      <div key={index} className="relative flex items-start space-x-3 sm:space-x-4">
                         {/* Step Indicator - positioned to align with the vertical line */}
-                        <div className={`relative z-10 w-8 h-8 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                        <div className={`relative z-10 w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
                           state === "completed" 
                             ? "bg-blue-800 border-blue-800" 
                             : state === "current"
@@ -96,14 +99,20 @@ export default function Component() {
                             : "bg-gray-100 border-gray-100"
                         }`}>
                           {state === "completed" ? (
-                            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <svg className="w-3 h-3 sm:w-4 sm:h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                             </svg>
                           ) : (
-                            <span className={`text-sm font-medium ${
+                            <span className={`text-xs sm:text-sm font-medium ${
                               state === "current" ? "text-white" : "text-gray-700"
                             }`}>
-                              {step.number}
+                              {isIntroToCollegeCoach && index === 1 ? (
+                                <svg className="w-3 h-3 sm:w-4 sm:h-4 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                </svg>
+                              ) : (
+                                step.number
+                              )}
                             </span>
                           )}
                         </div>
@@ -111,11 +120,16 @@ export default function Component() {
                         {/* Step Content */}
                         <div className="min-w-0 flex-1">
                           
-                          <div className={`text-md font-medium mt-1 ${
+                          <div className={`text-sm lg:text-md font-medium mt-1 ${
                             state === "current" ? "text-blue-800" : "text-gray-700"
                           }`}>
                             {step.title}
                           </div>
+                          {isIntroToCollegeCoach && index === 1 && (
+                            <div className="text-xs text-gray-500 mt-1">
+                              not required for intro calls
+                            </div>
+                          )}
                         </div>
                       </div>
                     );
@@ -124,9 +138,75 @@ export default function Component() {
               </div>
             </div>
           </div>
+          </div>
           
+          {/* Mobile Horizontal Stepper */}
+          <div className="lg:hidden mb-4 sm:mb-6">
+            <div className="relative">
+              {/* Horizontal connector line */}
+              <div className="absolute top-4 left-6 right-6 h-0.5">
+                {/* Blue solid line for completed progress */}
+                <div 
+                  className="absolute h-full bg-blue-800 transition-all duration-300 ease-out"
+                  style={{
+                    left: '0px',
+                    width: `${Math.max(0, Math.min(completedSteps.length, steps.length - 1) / (steps.length - 1)) * 100}%`
+                  }}
+                />
+                {/* Dotted line for remaining progress */}
+                <div 
+                  className="absolute h-full"
+                  style={{
+                    left: `${Math.min(completedSteps.length, steps.length - 1) / (steps.length - 1) * 100}%`,
+                    right: '0px',
+                    backgroundImage: `radial-gradient(circle, #d1d5db 1px, transparent 1px)`,
+                    backgroundSize: '8px 2px',
+                    backgroundRepeat: 'repeat-x'
+                  }}
+                />
+              </div>
+              
+              <div className="flex justify-between items-center">
+                {steps.map((step, index) => {
+                  const state = getStepState(index);
+                  
+                  return (
+                    <div key={index} className="relative flex flex-col items-center">
+                      {/* Step Indicator */}
+                      <div className={`relative z-10 w-8 h-8 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                        state === "completed" 
+                          ? "bg-blue-800 border-blue-800" 
+                          : state === "current"
+                          ? "bg-blue-800 border-blue-800"
+                          : "bg-gray-100 border-gray-100"
+                      }`}>
+                        {state === "completed" ? (
+                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        ) : (
+                          <span className={`text-sm font-medium ${
+                            state === "current" ? "text-white" : "text-gray-700"
+                          }`}>
+                            {isIntroToCollegeCoach && index === 1 ? (
+                              <svg className="w-4 h-4 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                            ) : (
+                              step.number
+                            )}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
           {/* Main Form - Now using Accordion */}
-          <div className="lg:col-span-9">
+          <div className="lg:col-span-3">
             <CoachingFormAccordion 
               onStepChange={setCurrentStep}
               onCompletedStepsChange={setCompletedSteps}

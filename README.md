@@ -18,7 +18,6 @@ A modern, responsive coaching session scheduling form built with Next.js, React,
 - **Tailwind CSS** - Utility-first CSS framework
 - **Radix UI** - Accessible component primitives
 - **TypeScript** - Type safety
-- **Mulish Font** - Typography
 
 ## Getting Started
 
