@@ -61,15 +61,20 @@ interface Step2SummaryProps {
   topic: string;
   note: string;
   onEdit: () => void;
+  isIntroToCollegeCoach?: boolean;
 }
 
-export function Step2Summary({ topic, note, onEdit }: Step2SummaryProps) {
+export function Step2Summary({ topic, note, onEdit, isIntroToCollegeCoach = false }: Step2SummaryProps) {
   return (
     <div className="border border-gray-100 rounded-xl lg:rounded-2xl p-4 lg:p-6 mb-3 lg:mb-4 bg-white">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-purple-600 font-semibold text-xs lg:text-sm">Topic</h2>
-          <p className="font-medium text-sm lg:text-base text-gray-800">{topic}</p>
+          <h2 className="text-purple-600 font-semibold text-xs lg:text-sm">
+            {isIntroToCollegeCoach ? "Focus area" : "Topic"}
+          </h2>
+          <p className="font-medium text-sm lg:text-base text-gray-800">
+            {isIntroToCollegeCoach ? "General college planning discussion" : topic}
+          </p>
           {note && <p className="text-gray-700 text-xs lg:text-sm mt-1">Note: {note}</p>}
         </div>
         <Button 
@@ -123,7 +128,7 @@ export function SuccessScreen({
         Appointment Scheduled!
       </h2>
       <p className="text-gray-600 text-sm lg:text-base mb-6 lg:mb-8">
-        Your coaching appointment has been successfully scheduled. You'll receive a confirmation email shortly.
+        Your coaching appointment has been successfully scheduled. You&apos;ll receive a confirmation email shortly.
       </p>
       
       {/* Appointment Details */}

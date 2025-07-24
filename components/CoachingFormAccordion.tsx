@@ -4,6 +4,7 @@ import * as React from "react";
 import * as Accordion from "@radix-ui/react-accordion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { 
   getAvailableCategories, 
   getAvailableTopics, 
@@ -125,6 +126,12 @@ export default function CoachingFormAccordion({
       }
     }
     if (idx === 1) {
+      // For Intro to College Coach, we don't need topic validation since it's auto-set
+      if (category === "Intro to College Coach") {
+        // No validation needed for intro calls - they just need to proceed
+        return "";
+      }
+      
       if (!topic) return "Please select a topic.";
       // Additional validation for age-appropriate topic
       if (selectedStudent && category && topic && !isTopicAvailable(category, topic, selectedStudent.age)) {
@@ -153,15 +160,9 @@ export default function CoachingFormAccordion({
         setCompletedSteps([...completedSteps, 0]);
       }
       
-      // Special handling for "Intro to College Coach" - skip topic selection
-      if (category === "Intro to College Coach") {
-        // Auto-complete step 1 and go directly to step 2
-        if (!completedSteps.includes(1)) {
-          setCompletedSteps(prev => [...prev, 1]);
-        }
-        setStep(2);
-        return;
-      }
+      // For all categories, go to step 1 (topic/focus area selection)
+      setStep(1);
+      return;
       
       // Remove step 1 (topic selection) from completed steps so it reopens as accordion
       // This ensures users can choose appropriate topics for the new student/category
@@ -310,14 +311,15 @@ export default function CoachingFormAccordion({
           </div>
         )}
 
-        {/* Step 2 - Show summary if completed, accordion if step >= 1 and not completed - Hidden for "Intro to College Coach" */}
-        {category !== "Intro to College Coach" && completedSteps.includes(1) ? (
+        {/* Step 2 - Show summary if completed, accordion if step >= 1 and not completed */}
+        {completedSteps.includes(1) ? (
           <Step2Summary 
             topic={topic}
             note={note}
             onEdit={() => handleEdit(1)}
+            isIntroToCollegeCoach={category === "Intro to College Coach"}
           />
-        ) : category !== "Intro to College Coach" && step >= 1 && (
+        ) : step >= 1 && (
           <div className="bg-white rounded-xl lg:rounded-2xl border border-gray-100 shadow-sm mb-3 lg:mb-4 transform transition-all duration-300 ease-out animate-in slide-in-from-bottom-4 fade-in">
             <Accordion.Item value="step1" className="border-none">
               <Accordion.Header>
@@ -325,14 +327,32 @@ export default function CoachingFormAccordion({
                 </Accordion.Trigger>
               </Accordion.Header>
               <Accordion.Content className="p-4 sm:p-5 lg:p-6 space-y-4 lg:space-y-6 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-top-1 data-[state=open]:slide-in-from-top-1">
-                <TopicSelector
-                  category={category}
-                  availableTopics={availableTopics}
-                  selectedTopic={topic}
-                  note={note}
-                  onTopicChange={setTopic}
-                  onNoteChange={setNote}
-                />
+                {category === "Intro to College Coach" ? (
+                  // Special step 2 for Intro to College Coach - only note field
+                  <div className="space-y-4 lg:space-y-6">
+                    <div>
+                      <label htmlFor="coach-note-intro" className="mb-3 lg:mb-4 font-medium text-lg lg:text-xl text-gray-900 block">Add a note to your coach (optional)</label>
+                      <Textarea 
+                        id="coach-note-intro"
+                        value={note} 
+                        onChange={e => setNote(e.target.value)} 
+                        placeholder="Add any additional notes for your coach..." 
+                        className="min-h-[80px] lg:min-h-[100px] rounded-lg lg:rounded-xl border-gray-200 text-sm" 
+                        aria-describedby="coach-note-intro-description"
+                      />
+                      <div id="coach-note-intro-description" className="sr-only">Optional field for additional notes to your coach</div>
+                    </div>
+                  </div>
+                ) : (
+                  <TopicSelector
+                    category={category}
+                    availableTopics={availableTopics}
+                    selectedTopic={topic}
+                    note={note}
+                    onTopicChange={setTopic}
+                    onNoteChange={setNote}
+                  />
+                )}
                 {error && <div className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">{error}</div>}
                 <Button type="button" size="lg" onClick={() => handleContinue(1)} className="w-full text-base lg:!text-lg bg-yellow-500 hover:bg-yellow-400 active:bg-yellow-600 text-blue-800 rounded-lg lg:rounded-xl font-semibold px-4 lg:px-6 py-4 sm:py-5 lg:!py-8 touch-manipulation" style={{ minHeight: '52px' }}>Continue</Button>
               </Accordion.Content>

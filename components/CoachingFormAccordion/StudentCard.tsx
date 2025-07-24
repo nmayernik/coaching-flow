@@ -39,6 +39,7 @@ export function StudentCard({ student, index, isSelected, onSelect }: StudentCar
         checked={isSelected}
         onChange={() => onSelect(student)}
         className="sr-only"
+        aria-label={`Select ${student.name}, ${student.age}`}
       />
       <div className="space-y-2 lg:space-y-3">
         <div className="flex flex-col justify-between">

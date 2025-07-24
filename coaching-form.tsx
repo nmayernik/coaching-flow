@@ -24,16 +24,11 @@ export default function Component() {
 
   const steps = [
     { number: 1, title: "Student and expert", description: "Description" },
-    { number: 2, title: "Session topic", description: "Description" },
-    { number: 3, title: "Date & time", description: "Description" }
+    { number: 2, title: "Focus area", description: "Description" },
+    { number: 3, title: "Date and time", description: "Description" }
   ];
 
   const getStepState = (stepIndex: number) => {
-    // Special handling for Intro to College Coach - step 2 should show as upcoming until step 3 is reached
-    if (isIntroToCollegeCoach && stepIndex === 1) {
-      return currentStep >= 2 ? "completed" : "upcoming";
-    }
-    
     if (completedSteps.includes(stepIndex)) return "completed";
     if (currentStep === stepIndex) return "current";
     return "upcoming";
@@ -106,13 +101,7 @@ export default function Component() {
                             <span className={`text-xs sm:text-sm font-medium ${
                               state === "current" ? "text-white" : "text-gray-700"
                             }`}>
-                              {isIntroToCollegeCoach && index === 1 ? (
-                                <svg className="w-3 h-3 sm:w-4 sm:h-4 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                </svg>
-                              ) : (
-                                step.number
-                              )}
+                              {step.number}
                             </span>
                           )}
                         </div>
@@ -125,11 +114,7 @@ export default function Component() {
                           }`}>
                             {step.title}
                           </div>
-                          {isIntroToCollegeCoach && index === 1 && (
-                            <div className="text-xs text-gray-500 mt-1">
-                              not required for intro calls
-                            </div>
-                          )}
+
                         </div>
                       </div>
                     );
@@ -188,13 +173,7 @@ export default function Component() {
                           <span className={`text-sm font-medium ${
                             state === "current" ? "text-white" : "text-gray-700"
                           }`}>
-                            {isIntroToCollegeCoach && index === 1 ? (
-                              <svg className="w-4 h-4 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                              </svg>
-                            ) : (
-                              step.number
-                            )}
+                            {step.number}
                           </span>
                         )}
                       </div>

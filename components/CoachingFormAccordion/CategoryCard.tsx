@@ -50,6 +50,7 @@ export function CategoryCard({ categoryName, selectedStudent, selectedCategory, 
         checked={selectedCategory === categoryName}
         onChange={() => handleClick()}
         className="sr-only"
+        aria-label={`Select category: ${categoryName} - ${description}`}
       />
       
       {/* Icon circle */}
