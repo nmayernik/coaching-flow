@@ -152,7 +152,7 @@ export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onT
 
   return (
     <div>
-      <div className="mb-3 lg:mb-4 font-medium text-base lg:text-lg text-gray-900">Choose a date and time <span className="text-red-500">*</span></div>
+              <div className="mb-3 lg:mb-4 font-medium text-lg text-gray-900">Choose a date and time <span className="text-red-500">*</span></div>
       <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-5 lg:gap-6">
         {/* Calendar */}
         <div className="lg:col-span-2">
@@ -244,7 +244,7 @@ export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onT
                     key={time}
                     onClick={() => handleTimeSelect(time)}
                     className={`
-                      w-full p-3 lg:p-3 text-center rounded-lg lg:rounded-xl border transition-colors duration-200 ease-out text-sm lg:text-sm font-medium touch-manipulation
+                      w-full p-3 lg:p-3 text-center rounded-lg lg:rounded-xl border transition-colors duration-200 ease-out text-base font-medium touch-manipulation
                       ${selectedTime === time || 
                         (selectedTime === '09:00' && time === '9:00 AM') ||
                         (selectedTime === '10:00' && time === '10:00 AM') ||

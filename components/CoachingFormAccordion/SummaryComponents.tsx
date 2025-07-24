@@ -39,9 +39,8 @@ export function Step1Summary({ selectedStudent, category, onEdit }: Step1Summary
             </div>
           )}
           <div className="space-y-1">
-            <h2 className="text-blue-600 font-medium text-xs lg:text-sm">Appointment type</h2>
-            <p className="font-medium text-sm lg:text-base text-gray-800">{category}</p>
-            <p className="text-gray-700 text-xs lg:text-sm">For {selectedStudent?.name} ({selectedStudent?.age})</p>
+            <p className="font-medium text-sm lg:text-base text-gray-800">{category} appointment</p>
+            <p className="text-gray-700 text-xs lg:text-sm">For {selectedStudent?.name} ({selectedStudent?.age}) · 45 minutes</p>
           </div>
         </div>
         <Button 

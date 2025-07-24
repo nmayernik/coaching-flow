@@ -40,11 +40,11 @@ export default function Component() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fafafa]">
+    <div className="min-h-screen bg-[#fafafa] flex flex-col">
       <Header />
       
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 sm:pt-3 lg:pt-12 pb-4 sm:pb-6 lg:pb-8">
+      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 sm:pt-3 lg:pt-12 pb-4 sm:pb-6 lg:pb-8 min-h-screen">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-16">
           {/* Left Sidebar - Hidden on mobile, shows as progress bar instead */}
           <div className="hidden lg:block lg:col-span-1">

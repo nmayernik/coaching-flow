@@ -255,7 +255,7 @@ export default function CoachingFormAccordion({
             onEdit={() => handleEdit(0)}
           />
         ) : (
-          <div className="bg-white rounded-xl lg:rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-3 lg:mb-4 transform transition-all duration-300 ease-out animate-in slide-in-from-bottom-4 fade-in">
+          <div className="bg-white rounded-xl lg:rounded-2xl border border-gray-100 shadow-sm mb-3 lg:mb-4 transform transition-all duration-300 ease-out animate-in slide-in-from-bottom-4 fade-in">
             <Accordion.Item value="step0" className="border-none">
               <Accordion.Header>
                 <Accordion.Trigger className="w-full text-left font-semibold text-lg">
@@ -318,7 +318,7 @@ export default function CoachingFormAccordion({
             onEdit={() => handleEdit(1)}
           />
         ) : category !== "Intro to College Coach" && step >= 1 && (
-          <div className="bg-white rounded-xl lg:rounded-2xl border border-gray-100 shadow-sm mb-3 lg:mb-4 overflow-hidden transform transition-all duration-300 ease-out animate-in slide-in-from-bottom-4 fade-in">
+          <div className="bg-white rounded-xl lg:rounded-2xl border border-gray-100 shadow-sm mb-3 lg:mb-4 transform transition-all duration-300 ease-out animate-in slide-in-from-bottom-4 fade-in">
             <Accordion.Item value="step1" className="border-none">
               <Accordion.Header>
                 <Accordion.Trigger className="hidden">
@@ -342,7 +342,7 @@ export default function CoachingFormAccordion({
 
         {/* Step 3 - Only show if step >= 2 */}
         {step >= 2 && (
-          <div className="bg-white rounded-xl lg:rounded-2xl border border-gray-100 shadow-sm mb-3 lg:mb-4 overflow-hidden transform transition-all duration-300 ease-out animate-in slide-in-from-bottom-4 fade-in">
+          <div className="bg-white rounded-xl lg:rounded-2xl border border-gray-100 shadow-sm mb-3 lg:mb-4 transform transition-all duration-300 ease-out animate-in slide-in-from-bottom-4 fade-in">
             <Accordion.Item value="step2" className="border-none">
               <Accordion.Header>
                 <Accordion.Trigger className="hidden">
@@ -356,11 +356,11 @@ export default function CoachingFormAccordion({
                   onTimeChange={setTime} 
                 />
                 <div>
-                  <div className="mb-3 lg:mb-4 font-medium text-lg lg:text-xl text-gray-900">Where should we call you? <span className="text-red-500">*</span></div>
+                  <div className="mb-3 lg:mb-4 font-medium text-lg text-gray-900">Where should we call you? <span className="text-red-500">*</span></div>
                   <PhoneNumberSelector phone={phone} onPhoneChange={setPhone} />
                 </div>
                 <div>
-                  <div className="mb-3 lg:mb-4 font-medium text-lg lg:text-xl text-gray-900">Attach a document (optional)</div>
+                  <div className="mb-3 lg:mb-4 font-medium text-lg text-gray-900">Attach a document (optional)</div>
                   <Input type="file" className="rounded-lg lg:rounded-xl border-gray-200" />
                 </div>
                 {error && <div className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">{error}</div>}

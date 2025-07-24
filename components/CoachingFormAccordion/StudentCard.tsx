@@ -3,6 +3,7 @@
 import * as React from "react";
 import { getAvailableCategories } from "@/lib/topicLogicData";
 import { getAvatarColor, getInitials } from "./utils";
+import { Badge } from "@/components/ui/badge";
 
 interface Student {
   id: number;
@@ -42,9 +43,11 @@ export function StudentCard({ student, index, isSelected, onSelect }: StudentCar
       <div className="space-y-2 lg:space-y-3">
         <div className="flex flex-col justify-between">
           <div className="font-medium  text-gray-800">{student.name}</div>
-          <div className="text-sm text-gray-700">{student.age}</div>
+          <div className="text-sm text-gray-700 mb-2">{student.age}</div>
         </div>
-      <div className="text-sm text-gray-700">{availableCategoriesCount} categories available</div>
+        <Badge variant="session">
+          3/3 sessions available
+        </Badge>
       </div>
     </label>
   );
