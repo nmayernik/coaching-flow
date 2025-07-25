@@ -14,36 +14,12 @@ export const avatarColors = [
   "bg-emerald-600",  // Emerald
 ];
 
-// Featured topics configuration
-export const featuredTopics = [
-  "Preparing College Applications",
-  "Selecting Best Fit Colleges",
-  "Saving for College",
-  "Balancing Act: How to Save for College and Retirement While Repaying Student Loans",
-  "Education Loan Repayment Strategies",
-  "Paying for College",
-  "Associate to Bachelor's: Starting a College Career At a Two-Year School/Community College",
-  "Understanding the College Major: From Undecided to Employed"
-];
-
-// Featured topic descriptions
-export const featuredTopicDescriptions: { [key: string]: string } = {
-  "Preparing College Applications": "Get expert guidance on crafting compelling college applications that stand out to admissions committees.",
-  "Selecting Best Fit Colleges": "Find the perfect college match based on your academic profile, interests, and career goals.",
-  "Saving for College": "Learn smart strategies to save money and plan financially for your child's college education.",
-  "Balancing Act: How to Save for College and Retirement While Repaying Student Loans": "Learn strategies to balance saving for college and retirement while managing student loan debt.",
-  "Education Loan Repayment Strategies": "Get expert advice on managing and repaying your education loans effectively.",
-  "Paying for College": "Navigate financial aid, scholarships, and payment options to make college affordable.",
-  "Associate to Bachelor's: Starting a College Career At a Two-Year School/Community College": "Learn about the benefits and strategies for starting at a community college and transferring to a four-year institution.",
-  "Understanding the College Major: From Undecided to Employed": "Get guidance on choosing a college major that aligns with your career goals and interests."
-};
-
-// Category descriptions
+// Category descriptions from CSV
 export const categoryDescriptions: { [key: string]: string } = {
   "Intro to College Coach": "Learn how we can support you and discuss your goals",
   "Education Planning": "Setting your student up for success in education and beyond",
-  "College Admissions": "Advice on academic and extracurricular opportunities, applications, and college selection",
-  "College Finance": "Advice on managing college costs and aid",
+  "College Admissions": "Advice for college selection, applications and more",
+  "College Finance": "Advice on saving/paying for college, managing costs and aid",
   "Career Planning": "Advice on navigating the transition to the workplace",
   "Personal Finance": "Advice on building and maintaining smart money habits"
 };
@@ -57,16 +33,29 @@ export const categorySectionDescriptions: { [key: string]: string } = {
   "Personal Finance": "Personal Finance topics are led by our team of certified financial planners and money management experts."
 };
 
-// Function to check if a topic is featured
-export const isFeaturedTopic = (topicTitle: string) => {
-  return featuredTopics.includes(topicTitle);
-};
-
-// Function to organize topics alphabetically
-export const organizeTopics = (topics: string[]) => {
+// Function to organize topics - now uses dynamic featured topics from topicLogicData
+export const organizeTopics = (topics: string[], category: string, childAge: string) => {
+  // Import the helper functions from topicLogicData
+  const { getFeaturedTopics } = require('@/lib/topicLogicData');
+  
+  const featuredTopics = getFeaturedTopics(category, childAge).map((t: { topic: string }) => t.topic);
   const featured = topics.filter(topic => featuredTopics.includes(topic));
   const regular = topics.filter(topic => !featuredTopics.includes(topic)).sort((a, b) => a.localeCompare(b));
   return { featured, regular };
+};
+
+// Function to get featured topic descriptions
+export const getFeaturedTopicDescriptions = (category: string, childAge: string) => {
+  const { getFeaturedTopics } = require('@/lib/topicLogicData');
+  
+  const featuredTopics = getFeaturedTopics(category, childAge);
+  const descriptions: { [key: string]: string } = {};
+  
+  featuredTopics.forEach((topic: { topic: string; supportingText: string }) => {
+    descriptions[topic.topic] = topic.supportingText;
+  });
+  
+  return descriptions;
 };
 
 // Function to get avatar color for a student by index

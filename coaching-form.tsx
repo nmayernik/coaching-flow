@@ -1,6 +1,7 @@
 "use client"
 import Header from "./components/ui/header/header"
 import { useState } from "react"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -39,7 +40,7 @@ export default function Component() {
       <Header />
       
       {/* Main Content */}
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 sm:pt-3 lg:pt-12 pb-4 sm:pb-6 lg:pb-8 min-h-screen">
+      <main className="flex-1 md:max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 pt-2 sm:pt-3 lg:pt-12 pb-4 sm:pb-6 lg:pb-8 min-h-screen">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-16">
           {/* Left Sidebar - Hidden on mobile, shows as progress bar instead */}
           <div className="hidden lg:block lg:col-span-1">
@@ -125,8 +126,15 @@ export default function Component() {
           </div>
           </div>
           
-          {/* Mobile Horizontal Stepper */}
+          {/* Mobile Header and Stepper */}
           <div className="lg:hidden mb-4 sm:mb-6">
+            {/* Mobile Header */}
+            <div className="mb-4 space-y-1">
+              <h1 className="text-xl sm:text-2xl font-semibold text-blue-800">Schedule a Coaching Session</h1>
+              <p className="text-sm text-gray-700">Book a call with one of our experts to discuss your needs.</p>
+            </div>
+            
+            {/* Mobile Horizontal Stepper */}
             <div className="relative">
               {/* Horizontal connector line */}
               <div className="absolute top-4 left-6 right-6 h-0.5">

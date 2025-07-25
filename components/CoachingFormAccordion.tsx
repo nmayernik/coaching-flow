@@ -344,14 +344,15 @@ export default function CoachingFormAccordion({
                     </div>
                   </div>
                 ) : (
-                  <TopicSelector
-                    category={category}
-                    availableTopics={availableTopics}
-                    selectedTopic={topic}
-                    note={note}
-                    onTopicChange={setTopic}
-                    onNoteChange={setNote}
-                  />
+                                  <TopicSelector
+                  category={category}
+                  availableTopics={availableTopics}
+                  selectedTopic={topic}
+                  note={note}
+                  onTopicChange={setTopic}
+                  onNoteChange={setNote}
+                  selectedStudent={selectedStudent || undefined}
+                />
                 )}
                 {error && <div className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">{error}</div>}
                 <Button type="button" size="lg" onClick={() => handleContinue(1)} className="w-full text-base lg:!text-lg bg-yellow-500 hover:bg-yellow-400 active:bg-yellow-600 text-blue-800 rounded-lg lg:rounded-xl font-semibold px-4 lg:px-6 py-4 sm:py-5 lg:!py-8 touch-manipulation" style={{ minHeight: '52px' }}>Continue</Button>

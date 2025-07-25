@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { organizeTopics, featuredTopicDescriptions, categorySectionDescriptions } from "./utils";
+import { organizeTopics, getFeaturedTopicDescriptions, categorySectionDescriptions } from "./utils";
 
 interface TopicSelectorProps {
   category: string;
@@ -14,6 +14,7 @@ interface TopicSelectorProps {
   note: string;
   onTopicChange: (topic: string) => void;
   onNoteChange: (note: string) => void;
+  selectedStudent?: { age: string };
 }
 
 export function TopicSelector({ 
@@ -22,9 +23,12 @@ export function TopicSelector({
   selectedTopic, 
   note, 
   onTopicChange, 
-  onNoteChange 
+  onNoteChange,
+  selectedStudent
 }: TopicSelectorProps) {
-  const { featured, regular } = organizeTopics(availableTopics);
+  const childAge = selectedStudent?.age || "";
+  const { featured, regular } = organizeTopics(availableTopics, category, childAge);
+  const featuredTopicDescriptions = getFeaturedTopicDescriptions(category, childAge);
   const sectionDescription = categorySectionDescriptions[category] || "Our expert coaches specialize in this area to provide you with the most relevant guidance.";
   
   // Progressive disclosure: show first 6 regular topics initially
