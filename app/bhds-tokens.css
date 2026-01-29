@@ -240,11 +240,11 @@
   --bhds-spacing-80: 20rem;
   --bhds-spacing-96: 24rem;
   --bhds-spacing-px: 1px;
-  --bhds-spacing-0.5: 0.125rem;
-  --bhds-spacing-1.5: 0.375rem;
-  --bhds-spacing-2.5: 0.625rem;
-  --bhds-spacing-3.5: 0.875rem;
-  --bhds-spacing-4.5: 1.125rem;
+  --bhds-spacing-0\.5: 0.125rem;
+  --bhds-spacing-1\.5: 0.375rem;
+  --bhds-spacing-2\.5: 0.625rem;
+  --bhds-spacing-3\.5: 0.875rem;
+  --bhds-spacing-4\.5: 1.125rem;
   --bhds-typography-fontFamily-sans: var(--font-sans, 'Mulish', ui-sans-serif, system-ui, sans-serif);
   --bhds-typography-fontFamily-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --bhds-typography-fontSize-xs: 0.75rem;
