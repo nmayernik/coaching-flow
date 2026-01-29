@@ -1,7 +1,7 @@
 import * as React from "react";
 import { BookOpen, Briefcase, PiggyBank, MessageCircle } from "lucide-react";
 import { LucideIcon } from "lucide-react";
-import { Bank, GraduationHat01 } from "@bh-enterpriseux/bhds-icons";
+import { Bank, GraduationHat01 } from "@untitledui/icons";
 
 type CategoryIcon = LucideIcon | React.ComponentType<React.SVGProps<SVGSVGElement>>;
 

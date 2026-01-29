@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react";
-import { Button } from "bhds-react/button";
+import { Button } from "@/components/ui/button";
 import { PreviousCoachSession } from "./types";
 import { Calendar, RotateCw } from "lucide-react";
 
@@ -45,10 +45,10 @@ export function CoachContinuityBanner({
             </div>
           </div>
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 text-blue-700">
-            <Button variant="Tertiary" size="md" onClick={onMoreDetails}>
+            <Button variant="tertiary" size="default" onClick={onMoreDetails}>
               More details
             </Button>
-            <Button variant="Secondary" size="md" onClick={onToggle}>
+            <Button variant="secondary" size="default" onClick={onToggle}>
               Switch to your previous coach
             </Button>
           </div>
@@ -76,10 +76,10 @@ export function CoachContinuityBanner({
             </div>
           </div>
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 text-blue-700">
-            <Button variant="Tertiary" size="md" onClick={onMoreDetails}>
+            <Button variant="tertiary" size="default" onClick={onMoreDetails}>
               More details
             </Button>
-            <Button variant="Secondary" size="md" onClick={onToggle}>
+            <Button variant="secondary" size="default" onClick={onToggle}>
               Switch to any coach
             </Button>
           </div>

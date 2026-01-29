@@ -1,5 +1,5 @@
-/* BHDS design tokens (defines --bhds-colors-*, --bhds-semantic-*) */
-@import '@bh-enterpriseux/bhds-styles/css';
+/* BHDS design tokens (defines --bhds-colors-*, --bhds-semantic-*) – local copy */
+@import './bhds-tokens.css';
 
 @tailwind base;
 @tailwind components;

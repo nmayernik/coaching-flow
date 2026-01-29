@@ -9,7 +9,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  transpilePackages: ['bhds-react-monorepo'],
 }
 
 export default nextConfig

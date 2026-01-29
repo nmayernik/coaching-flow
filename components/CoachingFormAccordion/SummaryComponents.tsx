@@ -1,9 +1,9 @@
 "use client"
 
 import * as React from "react";
-import { Button } from "bhds-react/button";
+import { Button } from "@/components/ui/button";
 import { Calendar, CircleCheck, Copy } from "lucide-react";
-import { AlertCircle, Dotpoints01 } from "@bh-enterpriseux/bhds-icons";
+import { AlertCircle, Dotpoints01 } from "@untitledui/icons";
 import { Badge } from "@/components/ui/badge";
 import { formatDateForDisplay, formatShortDateForBadge, convertValueTimeToDisplay } from "./utils";
 import { categoryIcons } from "./categoryIcons";
@@ -48,7 +48,7 @@ export function Step1Summary({ selectedStudent, category, onEdit }: Step1Summary
           </div>
         </div>
         <Button
-          variant="Secondary"
+          variant="secondary"
           size="sm"
           onClick={onEdit}
         >
@@ -93,7 +93,7 @@ export function Step2Summary({ topic, note, onEdit, isIntroToCollegeCoach = fals
             )}
           </div>
         </div>
-        <Button variant="Secondary" size="sm" onClick={onEdit} className="flex-shrink-0">
+        <Button variant="secondary" size="sm" onClick={onEdit} className="flex-shrink-0">
           Edit
         </Button>
       </div>
@@ -339,7 +339,7 @@ export function SuccessScreen({
       {/* Actions */}
       <div className="flex flex-col sm:flex-row gap-3 lg:gap-4">
         <Button
-          variant="Secondary"
+          variant="secondary"
           size="lg"
           onClick={onScheduleAnother}
           className="flex-1 text-sm lg:text-base text-blue-700 border border-gray-300 hover:bg-blue-50 transition-colors duration-200 ease-out rounded-lg lg:rounded-xl py-3 lg:py-4"

@@ -8,12 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@bh-enterpriseux/bhds-icons':
-        specifier: ^0.2.0
-        version: 0.2.0(@angular/core@18.2.14(rxjs@7.8.2)(zone.js@0.14.10))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
-      '@bh-enterpriseux/bhds-styles':
-        specifier: ^0.2.0
-        version: 0.2.0
       '@hookform/resolvers':
         specifier: ^3.9.1
         version: 3.10.0(react-hook-form@7.61.1(react@19.1.1))
@@ -98,12 +92,12 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: 1.1.6
         version: 1.1.6(@types/react-dom@19.1.7(@types/react@19.1.9))(@types/react@19.1.9)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      '@untitledui/icons':
+        specifier: ^0.0.19
+        version: 0.0.19(react@19.1.1)
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.21(postcss@8.5.6)
-      bhds-react-monorepo:
-        specifier: github:BH-EnterpriseUX/BHDS
-        version: git+https://git@github.com:BH-EnterpriseUX/BHDS.git#bcf294de087d131f5c1fd12d8adc656f38915cac
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -202,29 +196,12 @@ packages:
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
 
-  '@angular/core@18.2.14':
-    resolution: {integrity: sha512-BIPrCs93ZZTY9ym7yfoTgAQ5rs706yoYeAdrgc8kh/bDbM9DawxKlgeKBx2FLt09Y0YQ1bFhKVp0cV4gDEaMxQ==}
-    engines: {node: ^18.19.1 || ^20.11.1 || >=22.0.0}
-    peerDependencies:
-      rxjs: ^6.5.3 || ^7.4.0
-      zone.js: ~0.14.10
-
   '@axe-core/react@4.10.2':
     resolution: {integrity: sha512-BIHQ+kMtOpPTmtMrJDGQMkXQT8C3YX5GIUmqXQ6tCAUaK7ZwhfbyNBaYlG0h0IdC7mHL0uxTXYxOI6r4Lgnw6w==}
 
   '@babel/runtime@7.28.2':
     resolution: {integrity: sha512-KHp2IflsnGywDjBWDkR9iEqiWSpc8GIi0lgTT3mOElT0PP1tG26P4tmFI2YvAdzgq9RGyoHZQEIEdZy6Ec5xCA==}
     engines: {node: '>=6.9.0'}
-
-  '@bh-enterpriseux/bhds-icons@0.2.0':
-    resolution: {integrity: sha512-UVLQbTrqacbXaiV2h5NYpNgFqQLJHcxsWkqv7ex5+Gps3w50iBY0XQpO8iP32d4g25DuDMrU6xZR3JdG+NN8Zw==, tarball: https://npm.pkg.github.com/download/@bh-enterpriseux/bhds-icons/0.2.0/c54d22eb583253c65bab98c5909ae1ca881ec186}
-    peerDependencies:
-      '@angular/core': ^17.0.0 || ^18.0.0
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
-
-  '@bh-enterpriseux/bhds-styles@0.2.0':
-    resolution: {integrity: sha512-0zDST/3/MXuYKyoEcCbH3NOTOcLMNj1a6J6dV/zLKaopafq85HcFPXfoflx9WEhgBDk/rxTFbsTBoRTnW+7eYg==, tarball: https://npm.pkg.github.com/download/@bh-enterpriseux/bhds-styles/0.2.0/40611b22daf032f65c2fba546a07217a067f4d21}
 
   '@emnapi/core@1.4.5':
     resolution: {integrity: sha512-XsLw1dEOpkSX/WucdqUhPWP7hDxSvZiY+fsUC14h+FtQ2Ifni4znbBt8punRX+Uj2JG/uDb8nEHVKvrVlvdZ5Q==}
@@ -1500,11 +1477,6 @@ packages:
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
 
-  bhds-react-monorepo@git+https://git@github.com:BH-EnterpriseUX/BHDS.git#bcf294de087d131f5c1fd12d8adc656f38915cac:
-    resolution: {commit: bcf294de087d131f5c1fd12d8adc656f38915cac, repo: git@github.com:BH-EnterpriseUX/BHDS.git, type: git}
-    version: 0.0.0
-    engines: {node: '>=18.0.0', pnpm: '>=10.0.0'}
-
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
     engines: {node: '>=8'}
@@ -2652,9 +2624,6 @@ packages:
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
 
-  rxjs@7.8.2:
-    resolution: {integrity: sha512-dhKf903U/PQZY6boNNtAGdWbG85WAbjT/1xYoZIC7FAY0yWapOBQVsVrDl58W86//e1VpMNBtRV4MaXfdMySFA==}
-
   safe-array-concat@1.1.3:
     resolution: {integrity: sha512-AURm5f0jYEOydBj7VQlVvDrjeFgthDdEF5H1dP+6mNpoXOMo1quQqJ4wvJDyRZ9+pO3kGWoOdmV08cSv2aJV6Q==}
     engines: {node: '>=0.4'}
@@ -2992,18 +2961,9 @@ packages:
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
-  zone.js@0.14.10:
-    resolution: {integrity: sha512-YGAhaO7J5ywOXW6InXNlLmfU194F8lVgu7bRntUF3TiG8Y3nBK0x1UJJuHUP/e8IyihkjCYqhCScpSwnlaSRkQ==}
-
 snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
-
-  '@angular/core@18.2.14(rxjs@7.8.2)(zone.js@0.14.10)':
-    dependencies:
-      rxjs: 7.8.2
-      tslib: 2.8.1
-      zone.js: 0.14.10
 
   '@axe-core/react@4.10.2':
     dependencies:
@@ -3011,15 +2971,6 @@ snapshots:
       requestidlecallback: 0.3.0
 
   '@babel/runtime@7.28.2': {}
-
-  '@bh-enterpriseux/bhds-icons@0.2.0(@angular/core@18.2.14(rxjs@7.8.2)(zone.js@0.14.10))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
-    dependencies:
-      '@angular/core': 18.2.14(rxjs@7.8.2)(zone.js@0.14.10)
-      '@untitledui/icons': 0.0.19(react@19.1.1)
-      react: 19.1.1
-      react-dom: 19.1.1(react@19.1.1)
-
-  '@bh-enterpriseux/bhds-styles@0.2.0': {}
 
   '@emnapi/core@1.4.5':
     dependencies:
@@ -4302,8 +4253,6 @@ snapshots:
   axobject-query@4.1.0: {}
 
   balanced-match@1.0.2: {}
-
-  bhds-react-monorepo@git+https://git@github.com:BH-EnterpriseUX/BHDS.git#bcf294de087d131f5c1fd12d8adc656f38915cac: {}
 
   binary-extensions@2.3.0: {}
 
@@ -5599,10 +5548,6 @@ snapshots:
     dependencies:
       queue-microtask: 1.2.3
 
-  rxjs@7.8.2:
-    dependencies:
-      tslib: 2.8.1
-
   safe-array-concat@1.1.3:
     dependencies:
       call-bind: 1.0.8
@@ -6089,5 +6034,3 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   zod@3.25.76: {}
-
-  zone.js@0.14.10: {}
