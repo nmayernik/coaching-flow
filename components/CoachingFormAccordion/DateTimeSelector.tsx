@@ -1,6 +1,21 @@
 "use client"
 
 import * as React from "react";
+import { getCoachAvailableDates, getCoachAvailableTimesForDate } from "@/lib/mockData";
+
+// Format date as local YYYY-MM-DD (avoids UTC timezone shift)
+function toLocalDateString(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+// Parse YYYY-MM-DD as local date (avoids UTC midnight shifting to previous day)
+function parseLocalDateString(dateStr: string): Date {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
 
 interface DateTimeSelectorProps {
   selectedDate: string;
@@ -8,55 +23,43 @@ interface DateTimeSelectorProps {
   onDateChange: (date: string) => void;
   onTimeChange: (time: string) => void;
   category?: string;
+  selectedCoachId?: string | null;
 }
 
-export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onTimeChange, category }: DateTimeSelectorProps) {
-  // Generate fake available dates (next 30 days, excluding weekends)
-  const generateAvailableDates = () => {
-    const dates = [];
-    const today = new Date();
-    
-    for (let i = 1; i <= 45; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
-      
-      // Skip weekends (Saturday = 6, Sunday = 0)
-      if (date.getDay() !== 0 && date.getDay() !== 6) {
-        dates.push(date);
-      }
-    }
-    
-    return dates.slice(0, 30); // Return first 30 weekdays
-  };
+export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onTimeChange, category, selectedCoachId = null }: DateTimeSelectorProps) {
+  // Get available dates based on coach selection (first date is tomorrow)
+  const availableDates = React.useMemo(() => {
+    return getCoachAvailableDates(selectedCoachId);
+  }, [selectedCoachId]);
 
-  // Generate fake available times for a given date
+  // Generate available times for a given date based on coach selection
   const generateAvailableTimesForDate = (date: Date) => {
-    const times = [
-      '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', 
-      '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM'
-    ];
-    
-    // Simulate some times being unavailable by randomly removing some
-    const dayOfMonth = date.getDate();
-    const unavailableCount = dayOfMonth % 3; // 0, 1, or 2 unavailable slots
-    
-    return times.slice(0, times.length - unavailableCount);
+    return getCoachAvailableTimesForDate(selectedCoachId, date);
   };
 
-  const availableDates = generateAvailableDates();
-  const [currentMonth, setCurrentMonth] = React.useState(new Date());
+  // Open calendar on month of first available date (tomorrow)
+  const initialMonth = availableDates.length > 0 ? new Date(availableDates[0]) : new Date();
+  const [currentMonth, setCurrentMonth] = React.useState(initialMonth);
   const [selectedDateObj, setSelectedDateObj] = React.useState<Date | null>(
-    selectedDate ? new Date(selectedDate) : null
+    selectedDate ? parseLocalDateString(selectedDate) : null
   );
 
-  // Auto-select first available date if none is selected
+  // Default to first available date (tomorrow) when none selected or selection invalid
   React.useEffect(() => {
-    if (!selectedDate && availableDates.length > 0) {
+    if (availableDates.length > 0) {
       const firstAvailableDate = availableDates[0];
-      setSelectedDateObj(firstAvailableDate);
-      onDateChange(firstAvailableDate.toISOString().split('T')[0]);
+      const firstDateString = toLocalDateString(firstAvailableDate);
+      const selectedInList = selectedDate && availableDates.some((d) => toLocalDateString(d) === selectedDate);
+
+      if (!selectedDate || !selectedInList) {
+        setSelectedDateObj(firstAvailableDate);
+        onDateChange(firstDateString);
+        setCurrentMonth(new Date(firstAvailableDate.getFullYear(), firstAvailableDate.getMonth()));
+      } else {
+        setSelectedDateObj(parseLocalDateString(selectedDate));
+      }
     }
-  }, [selectedDate, availableDates, onDateChange]);
+  }, [selectedDate, availableDates, onDateChange, selectedCoachId]);
 
   // Calendar generation
   const generateCalendar = () => {
@@ -119,7 +122,7 @@ export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onT
   const handleDateSelect = (date: Date) => {
     if (isDateAvailable(date)) {
       setSelectedDateObj(date);
-      onDateChange(date.toISOString().split('T')[0]);
+      onDateChange(toLocalDateString(date));
     }
   };
 
@@ -152,20 +155,20 @@ export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onT
 
   return (
     <div>
-              <div className="mb-3 lg:mb-4 font-medium text-lg text-gray-900">Choose a date and time <span className="text-red-500">*</span></div>
+              <div className="mb-3 font-medium text-base text-gray-800">Choose a date and time <span className="text-red-500">*</span></div>
       <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-5 lg:gap-6">
         {/* Calendar */}
         <div className="lg:col-span-2">
                           <div className="sr-only">Choose a date <span className="text-red-500">*</span></div>
           <div className="bg-white border border-gray-200 rounded-lg lg:rounded-xl p-3 lg:p-4">
             {/* Calendar Header */}
-            <div className="flex items-center justify-between mb-3 lg:mb-4">
+            <div className="flex items-center justify-between mb-0.5">
               <button 
                 onClick={prevMonth} 
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200 ease-out touch-manipulation"
+                className="px-3 py-2 bg-white hover:bg-blue-25 rounded-lg transition-colors duration-200 ease-out touch-manipulation"
                 style={{ minHeight: '44px', minWidth: '44px' }}
               >
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
@@ -177,10 +180,10 @@ export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onT
               </h2>
               <button 
                 onClick={nextMonth} 
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200 ease-out touch-manipulation"
+                className="px-3 py-2 bg-white hover:bg-blue-25 rounded-lg transition-colors duration-200 ease-out touch-manipulation"
                 style={{ minHeight: '44px', minWidth: '44px' }}
               >
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </button>
@@ -208,7 +211,7 @@ export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onT
                     onClick={() => handleDateSelect(date)}
                     disabled={!isAvailable}
                     className={`
-                      w-8 h-8 sm:w-9 sm:h-9 lg:w-8 lg:h-8 text-xs lg:text-sm rounded-full transition-colors duration-200 ease-out touch-manipulation
+                      w-10 h-10 sm:w-10 sm:h-10 lg:w-10 lg:h-10 text-xs lg:text-sm rounded-full transition-colors duration-200 ease-out touch-manipulation
                       ${!isCurrentMonth ? 'text-gray-300' : ''}
                       ${isAvailable ? 'hover:bg-blue-50 active:bg-blue-100 cursor-pointer text-blue-700' : 'cursor-not-allowed'}
                       ${isSelected ? 'bg-blue-700 text-white hover:bg-blue-600 active:bg-blue-800' : ''}
@@ -216,7 +219,7 @@ export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onT
                       ${isToday && !isAvailable ? 'bg-white border border-gray-200 text-gray-500' : ''}
                       ${!isAvailable && isCurrentMonth && !isToday ? 'text-gray-400' : ''}
                     `}
-                    style={{ minHeight: '32px', minWidth: '32px' }}
+                    style={{ minHeight: '40px', minWidth: '40px' }}
                   >
                     {date.getDate()}
                   </button>
@@ -265,7 +268,7 @@ export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onT
                   </button>
                 ))}
               </div>
-              <div className="mt-3 text-xs lg:text-sm text-gray-700 text-center">
+              <div className="mt-3 text-xs lg:text-sm text-gray-700">
                 Showing in Eastern Time
               </div>
             </>

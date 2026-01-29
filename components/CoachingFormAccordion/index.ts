@@ -8,6 +8,8 @@ export { AddStudentModal } from './AddStudentModal';
 export { StudentCard } from './StudentCard';
 export { CategoryCard } from './CategoryCard';
 export { TopicSelector } from './TopicSelector';
+export { NoTopicsEmptyState } from './NoTopicsEmptyState';
+export { NoCategoriesEmptyState } from './NoCategoriesEmptyState';
 export { Step1Summary, Step2Summary, SuccessScreen } from './SummaryComponents';
 
 // Utilities and types

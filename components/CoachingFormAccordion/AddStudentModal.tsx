@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { TextInput } from "@/components/ui/input-with-label";
 import { Button } from "@/components/ui/button";
 
 interface Student {
@@ -25,10 +25,19 @@ interface AddStudentForm {
 interface AddStudentModalProps {
   students: Student[];
   onAddStudent: (student: Student) => void;
+  prefillData?: {
+    firstName: string;
+    lastName: string;
+    age: string;
+  };
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export function AddStudentModal({ students, onAddStudent }: AddStudentModalProps) {
-  const [isOpen, setIsOpen] = React.useState(false);
+export function AddStudentModal({ students, onAddStudent, prefillData, isOpen: externalIsOpen, onOpenChange }: AddStudentModalProps) {
+  const [internalIsOpen, setInternalIsOpen] = React.useState(false);
+  const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
+  const setIsOpen = onOpenChange || setInternalIsOpen;
   const [form, setForm] = React.useState<AddStudentForm>({
     firstName: "",
     lastName: "",
@@ -36,6 +45,18 @@ export function AddStudentModal({ students, onAddStudent }: AddStudentModalProps
     relationshipToStudent: "",
     inviteStudent: false
   });
+
+  // Update form when prefill data changes
+  React.useEffect(() => {
+    if (prefillData) {
+      setForm(prev => ({
+        ...prev,
+        firstName: prefillData.firstName,
+        lastName: prefillData.lastName,
+        yearOfGraduation: prefillData.age
+      }));
+    }
+  }, [prefillData]);
   const [error, setError] = React.useState("");
 
   const resetForm = () => {
@@ -93,10 +114,10 @@ export function AddStudentModal({ students, onAddStudent }: AddStudentModalProps
         </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md rounded-xl lg:rounded-2xl p-6">
-        <div className="flex items-center justify-between mb-6">
+        <div className="mb-4">
           <DialogHeader className="flex-1">
             <DialogTitle className="text-xl font-semibold text-gray-800">Student Details</DialogTitle>
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-sm text-gray-700">
               An asterisk (<span className="text-red-500">*</span> ) indicates a required field.
             </p>
           </DialogHeader>
@@ -105,41 +126,31 @@ export function AddStudentModal({ students, onAddStudent }: AddStudentModalProps
         <div className="space-y-6">
           {/* First Name and Last Name Row */}
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="firstName" className="text-lg font-medium text-gray-700 mb-2 block">
-                First Name <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="firstName"
-                type="text"
-                value={form.firstName}
-                onChange={(e) => setForm(prev => ({ ...prev, firstName: e.target.value }))}
-                className="rounded-lg lg:rounded-xl border-gray-300"
-                placeholder=""
-              />
-            </div>
-            <div>
-              <Label htmlFor="lastName" className="text-lg font-medium text-gray-700 mb-2 block">
-                Last Name <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="lastName"
-                type="text"
-                value={form.lastName}
-                onChange={(e) => setForm(prev => ({ ...prev, lastName: e.target.value }))}
-                className="rounded-lg lg:rounded-xl border-gray-300"
-                placeholder=""
-              />
-            </div>
+            <TextInput
+              label="First Name"
+              required
+              type="text"
+              value={form.firstName}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setForm(prev => ({ ...prev, firstName: e.target.value }))}
+              placeholder=""
+            />
+            <TextInput
+              label="Last Name"
+              required
+              type="text"
+              value={form.lastName}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setForm(prev => ({ ...prev, lastName: e.target.value }))}
+              placeholder=""
+            />
           </div>
 
           {/* Year of Graduation */}
           <div>
-            <Label htmlFor="yearOfGraduation" className="text-lg font-medium text-gray-700 mb-2 block">
+            <Label htmlFor="yearOfGraduation" className="text-sm font-medium text-gray-800 mb-2 block">
               Year of Graduation <span className="text-red-500">*</span>
             </Label>
             <Select value={form.yearOfGraduation} onValueChange={(value) => setForm(prev => ({ ...prev, yearOfGraduation: value }))}>
-              <SelectTrigger className="rounded-lg lg:rounded-xl border-gray-300">
+              <SelectTrigger>
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
               <SelectContent>
@@ -168,11 +179,11 @@ export function AddStudentModal({ students, onAddStudent }: AddStudentModalProps
 
           {/* Relationship to Student */}
           <div>
-            <Label htmlFor="relationshipToStudent" className="text-lg font-medium text-gray-700 mb-2 block">
+            <Label htmlFor="relationshipToStudent" className="text-sm font-medium text-gray-800 mb-2 block">
               Relationship to Student <span className="text-red-500">*</span>
             </Label>
             <Select value={form.relationshipToStudent} onValueChange={(value) => setForm(prev => ({ ...prev, relationshipToStudent: value }))}>
-              <SelectTrigger className="rounded-lg lg:rounded-xl border-gray-300">
+              <SelectTrigger>
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
               <SelectContent>
@@ -195,7 +206,7 @@ export function AddStudentModal({ students, onAddStudent }: AddStudentModalProps
               onCheckedChange={(checked) => setForm(prev => ({ ...prev, inviteStudent: checked as boolean }))}
               className="rounded border-gray-300"
             />
-            <Label htmlFor="inviteStudent" className="text-sm text-gray-700 leading-5">
+            <Label htmlFor="inviteStudent" className="text-sm text-gray-800 leading-5">
               Invite your student to set up their own College Coach login
             </Label>
           </div>
@@ -217,14 +228,15 @@ export function AddStudentModal({ students, onAddStudent }: AddStudentModalProps
               resetForm();
               setIsOpen(false);
             }}
-            className="flex-1 text-gray-700 border-gray-300 hover:bg-gray-50 rounded-lg lg:rounded-xl py-3 transition-colors duration-200 ease-out"
+            className="flex-1"
           >
             Cancel
           </Button>
           <Button
             type="button"
+            variant="primary"
             onClick={handleSubmit}
-            className="flex-1 bg-yellow-500 hover:bg-yellow-400 text-blue-800 rounded-lg lg:rounded-xl py-3 font-semibold transition-colors duration-200 ease-out"
+            className="flex-1"
           >
             Add
           </Button>
