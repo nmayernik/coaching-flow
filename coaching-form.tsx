@@ -13,12 +13,15 @@ import { Badge } from "@/components/ui/badge"
 import { Search, Plus, Users, HelpCircle, Grid3X3, User, ChevronLeft, ChevronRight, Grip } from "lucide-react"
 import Footer  from "./components/ui/footer"
 import CoachingFormAccordion from "./components/CoachingFormAccordion"
+import { ScenarioProvider, useScenario } from "./contexts/ScenarioContext"
+import { ScenarioSwitcher } from "./components/ScenarioSwitcher"
 
 
-export default function Component() {
+function CoachingFormContent() {
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const { currentScenario, setScenario, isScenarioSwitcherOpen, toggleScenarioSwitcher, coachContinuityEnabled, setCoachContinuityEnabled, teamsCallsEnabled, setTeamsCallsEnabled } = useScenario();
 
   const isIntroToCollegeCoach = selectedCategory === "Intro to College Coach";
 
@@ -38,8 +41,28 @@ export default function Component() {
     <div className="min-h-screen bg-[#fafafa] flex flex-col">
       <Header />
       
+      {/* Scenario Switcher */}
+      <ScenarioSwitcher
+        currentScenario={currentScenario}
+        onScenarioChange={setScenario}
+        isOpen={isScenarioSwitcherOpen}
+        onToggle={toggleScenarioSwitcher}
+        coachContinuityEnabled={coachContinuityEnabled}
+        onCoachContinuityChange={setCoachContinuityEnabled}
+        teamsCallsEnabled={teamsCallsEnabled}
+        onTeamsCallsChange={setTeamsCallsEnabled}
+      />
+      
       {/* Main Content */}
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 sm:pt-3 lg:pt-12 pb-4 sm:pb-6 lg:pb-8 min-h-screen">
+      <main className="flex-1 lg:max-w-7xl lg:mx-auto px-4 sm:px-6 lg:px-8 pt-2 sm:pt-3 lg:pt-12 pb-4 sm:pb-6 lg:pb-8 min-h-screen">
+        {/* Mobile Header - Only visible on mobile */}
+        <div className="lg:hidden">
+          <div className="space-y-2">
+            <h1 className="text-xl font-semibold text-blue-800">Schedule a Coaching Session</h1>
+            <p className="text-sm text-gray-700">Book a call with one of our experts to discuss your needs.</p>
+          </div>
+        </div>
+        
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-16">
           {/* Left Sidebar - Hidden on mobile, shows as progress bar instead */}
           <div className="hidden lg:block lg:col-span-1">
@@ -126,7 +149,7 @@ export default function Component() {
           </div>
           
           {/* Mobile Horizontal Stepper */}
-          <div className="lg:hidden mb-4 sm:mb-6">
+          <div className="lg:hidden mb-2 sm:mb-3">
             <div className="relative">
               {/* Horizontal connector line */}
               <div className="absolute top-4 left-6 right-6 h-0.5">
@@ -185,7 +208,7 @@ export default function Component() {
           </div>
 
           {/* Main Form - Now using Accordion */}
-          <div className="lg:col-span-3">
+          <div className="relative z-10 pointer-events-auto lg:col-span-3">
             <CoachingFormAccordion 
               onStepChange={setCurrentStep}
               onCompletedStepsChange={setCompletedSteps}
@@ -197,5 +220,13 @@ export default function Component() {
       
       <Footer/>
     </div>
-  )
+  );
+}
+
+export default function Component() {
+  return (
+    <ScenarioProvider>
+      <CoachingFormContent />
+    </ScenarioProvider>
+  );
 }

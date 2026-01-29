@@ -115,9 +115,18 @@ export const convertValueTimeToDisplay = (valueTime: string): string => {
 export const formatDateForDisplay = (dateString: string): string => {
   if (!dateString) return '';
   return new Date(dateString).toLocaleDateString('en-US', { 
-    weekday: 'long', 
     year: 'numeric', 
     month: 'long', 
     day: 'numeric' 
   });
+};
+
+// Short date for success screen badge (e.g. { month: "Oct", day: "1" })
+export const formatShortDateForBadge = (dateString: string): { month: string; day: string } => {
+  if (!dateString) return { month: '', day: '' };
+  const d = new Date(dateString);
+  return {
+    month: d.toLocaleDateString('en-US', { month: 'short' }),
+    day: d.getDate().toString(),
+  };
 }; 

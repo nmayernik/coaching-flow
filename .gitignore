@@ -1,5 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# os
+.DS_Store
+
 # dependencies
 /node_modules
 
@@ -18,6 +21,9 @@ yarn-error.log*
 
 # env files
 .env*
+
+# npm auth (contains GitHub token for @bh-enterpriseux packages)
+.npmrc
 
 # vercel
 .vercel
