@@ -116,6 +116,8 @@ interface SuccessScreenProps {
   coachContinuityEnabled?: boolean;
   /** When true (and coachContinuityEnabled), user chose to meet with previous coach */
   meetingWithPreviousCoach?: boolean;
+  /** Name of the previous coach; when set, shown in the badge as "Meeting with previous coach, {name}" */
+  previousCoachName?: string;
 }
 
 export function SuccessScreen({ 
@@ -129,9 +131,13 @@ export function SuccessScreen({
   onViewCalendar,
   teamsCallsMode = false,
   coachContinuityEnabled = false,
-  meetingWithPreviousCoach = false
+  meetingWithPreviousCoach = false,
+  previousCoachName
 }: SuccessScreenProps) {
   const showPreviousCoachBadge = coachContinuityEnabled && meetingWithPreviousCoach;
+  const previousCoachBadgeLabel = previousCoachName
+    ? `Meeting with previous coach, ${previousCoachName}`
+    : "Meeting with previous coach";
   const iconData = categoryIcons[category];
   const shortDate = formatShortDateForBadge(date);
   const appointmentTypeLabel = `${category} Appointment`;
@@ -241,7 +247,7 @@ export function SuccessScreen({
               </p>
               {showPreviousCoachBadge && (
                 <Badge variant="session" className="mt-1.5 w-fit">
-                  Meeting with previous coach
+                  {previousCoachBadgeLabel}
                 </Badge>
               )}
             </div>
@@ -315,7 +321,7 @@ export function SuccessScreen({
                 </p>
                 {showPreviousCoachBadge && (
                   <Badge variant="session" className="mt-1.5 w-fit">
-                    Meeting with previous coach
+                    {previousCoachBadgeLabel}
                   </Badge>
                 )}
               </div>

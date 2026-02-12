@@ -1,9 +1,6 @@
 "use client"
 
 import * as React from "react";
-import { getAvailableCategories } from "@/lib/topicLogicData";
-import { getAvatarColor, getInitials } from "./utils";
-import { Badge } from "@/components/ui/badge";
 
 interface Student {
   id: number;
@@ -20,9 +17,6 @@ interface StudentCardProps {
 }
 
 export function StudentCard({ student, index, isSelected, onSelect }: StudentCardProps) {
-  const initials = getInitials(student.name);
-  const avatarColor = getAvatarColor(index);
-  const availableCategoriesCount = getAvailableCategories(student.age).length;
   const sessionsAvailable = student.sessionsAvailable ?? 3;
   const isDisabled = sessionsAvailable === 0;
 
@@ -50,9 +44,6 @@ export function StudentCard({ student, index, isSelected, onSelect }: StudentCar
           <div className={`font-medium ${isDisabled ? "text-gray-500" : "text-gray-800"}`}>{student.name}</div>
           <div className={`text-sm ${isDisabled ? "text-gray-400" : "text-gray-700"}`}>{student.age}</div>
         </div>
-        <Badge variant="session" className="whitespace-nowrap text-xs px-1.5 w-fit pointer-events-none">
-          {sessionsAvailable}/3 sessions available
-        </Badge>
       </div>
     </button>
   );

@@ -347,6 +347,7 @@ export default function CoachingFormAccordion({
           teamsCallsMode={teamsCallsEnabled}
           coachContinuityEnabled={coachContinuityEnabled}
           meetingWithPreviousCoach={usePreviousCoach}
+          previousCoachName={usePreviousCoach && previousCoach ? previousCoach.coachName : undefined}
         />
       </div>
     );
