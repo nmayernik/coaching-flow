@@ -24,9 +24,11 @@ interface DateTimeSelectorProps {
   onTimeChange: (time: string) => void;
   category?: string;
   selectedCoachId?: string | null;
+  /** When true, do not render the "Choose a date and time" section label (parent renders it). */
+  hideSectionLabel?: boolean;
 }
 
-export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onTimeChange, category, selectedCoachId = null }: DateTimeSelectorProps) {
+export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onTimeChange, category, selectedCoachId = null, hideSectionLabel = false }: DateTimeSelectorProps) {
   // Get available dates based on coach selection (first date is tomorrow)
   const availableDates = React.useMemo(() => {
     return getCoachAvailableDates(selectedCoachId);
@@ -155,7 +157,9 @@ export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onT
 
   return (
     <div>
-              <div className="mb-3 font-medium text-base text-gray-800">Choose a date and time <span className="text-red-500">*</span></div>
+      {!hideSectionLabel && (
+        <div className="mb-3 font-medium text-base text-gray-800">Choose a date and time <span className="text-red-500">*</span></div>
+      )}
       <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-5 lg:gap-6">
         {/* Calendar */}
         <div className="lg:col-span-2">

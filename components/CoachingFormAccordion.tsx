@@ -29,7 +29,8 @@ import { getStudentsForScenario, getExistingStudentsForScenario, getTopicsForSce
 import { Alert } from "@/components/ui/alert";
 import { NoAppointmentsBanner } from "./CoachingFormAccordion/NoAppointmentsBanner";
 import { NoCategoriesEmptyState } from "./CoachingFormAccordion/NoCategoriesEmptyState";
-import { CoachContinuityBanner } from "./CoachingFormAccordion/CoachContinuityBanner";
+import { CoachAvailabilityDropdown } from "./CoachingFormAccordion/CoachAvailabilityDropdown";
+import { CoachContinuityLine } from "./CoachingFormAccordion/CoachContinuityLine";
 import { CoachContinuityDialog } from "./CoachingFormAccordion/CoachContinuityDialog";
 import { VideoCallsDialog } from "./CoachingFormAccordion/VideoCallsDialog";
 import { getPreviousCoachForTopic } from "@/lib/mockData";
@@ -525,24 +526,40 @@ export default function CoachingFormAccordion({
               </Accordion.Header>
               <Accordion.Content className="lg:p-6 space-y-4 lg:space-y-6 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-top-1 data-[state=open]:slide-in-from-top-1">
                 {error && <Alert variant="destructive" className="mb-4 text-sm">{error}</Alert>}
-                
-                {/* Coach Continuity Banner - only when Coach Continuity is enabled */}
-                {coachContinuityEnabled && previousCoach && (
-                  <CoachContinuityBanner
-                    previousCoach={previousCoach}
-                    isPreviousCoachSelected={usePreviousCoach}
-                    onToggle={() => setUsePreviousCoach(!usePreviousCoach)}
-                    onMoreDetails={() => setIsCoachDialogOpen(true)}
+
+                {coachContinuityEnabled && previousCoach ? (
+                  <>
+                    <div className="flex justify-between items-center gap-4 mb-3">
+                      <span className="font-medium text-base text-gray-800">Choose a date and time <span className="text-red-500">*</span></span>
+                      <span className="inline-flex items-center gap-2 text-base text-gray-800">
+                        Showing availability for:
+                        <CoachAvailabilityDropdown
+                          value={usePreviousCoach ? "previous" : "all"}
+                          onChange={(value) => setUsePreviousCoach(value === "previous")}
+                          onMoreDetails={() => setIsCoachDialogOpen(true)}
+                          previousCoach={previousCoach}
+                        />
+                      </span>
+                    </div>
+                    {usePreviousCoach && <CoachContinuityLine previousCoach={previousCoach} />}
+                    <DateTimeSelector
+                      selectedDate={date}
+                      selectedTime={time}
+                      onDateChange={setDate}
+                      onTimeChange={setTime}
+                      selectedCoachId={usePreviousCoach ? previousCoach?.coachId ?? null : null}
+                      hideSectionLabel
+                    />
+                  </>
+                ) : (
+                  <DateTimeSelector
+                    selectedDate={date}
+                    selectedTime={time}
+                    onDateChange={setDate}
+                    onTimeChange={setTime}
+                    selectedCoachId={null}
                   />
                 )}
-
-                <DateTimeSelector
-                  selectedDate={date}
-                  selectedTime={time}
-                  onDateChange={setDate}
-                  onTimeChange={setTime}
-                  selectedCoachId={coachContinuityEnabled && usePreviousCoach ? previousCoach?.coachId ?? null : null}
-                />
                 <div>
                   <div className={cn("font-medium text-base text-gray-800", teamsCallsEnabled ? "mt-0.5 mb-0.5" : "mb-3")}>
                     {teamsCallsEnabled
