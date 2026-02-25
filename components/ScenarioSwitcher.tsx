@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import { Settings, X, Copy, Check, Paintbrush } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -14,6 +15,7 @@ export type Scenario =
   | "no-topics-available" 
   | "with-existing-students"
   | "no-dates-available"
+  | "hide-intro-after-call"
 
 interface ScenarioSwitcherProps {
   currentScenario: Scenario
@@ -56,6 +58,12 @@ const scenarios = [
     name: "No Dates Available",
     description: "No dates/times available for selected topic",
     url: "/?scenario=no-dates-available"
+  },
+  {
+    id: "hide-intro-after-call" as Scenario,
+    name: "Hide Intro (student has had calls)",
+    description: "Intro to College Coach hidden for students with >0 prior calls",
+    url: "/?scenario=hide-intro-after-call"
   }
 ]
 
@@ -100,7 +108,15 @@ export function ScenarioSwitcher({ currentScenario, onScenarioChange, isOpen, on
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-semibold text-gray-800">UI Scenarios</h2>
+              <h2 className="text-lg font-semibold text-gray-800">
+                <Link
+                  href="/changelog"
+                  className="text-gray-800 no-underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
+                  title="Changelog"
+                >
+                  UI Scenarios
+                </Link>
+              </h2>
               <Button variant="ghost" size="sm" onClick={onToggle}>
                 <X className="w-4 h-4" />
               </Button>

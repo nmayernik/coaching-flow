@@ -261,7 +261,7 @@ export function SuccessScreen({
             <div>
               <p className="font-semibold text-gray-800 text-sm lg:text-base">Need to reschedule?</p>
               <p className="text-gray-700 text-xs lg:text-sm mt-1">
-                Please note that cancellations made less than 24 hours in advance of the counseling session start time or &apos;no shows&apos; are considered sessions held.
+                Please note that &quot;no-shows&quot; and cancellations made less than one business day in advance are considered sessions held.
               </p>
             </div>
           </div>
@@ -335,7 +335,7 @@ export function SuccessScreen({
             <div>
               <p className="font-semibold text-gray-800 text-sm lg:text-base">Need to reschedule?</p>
               <p className="text-gray-700 text-xs lg:text-sm mt-1">
-                Please note that cancellations made less than 24 hours in advance of the counseling session start time or &apos;no shows&apos; are considered sessions held.
+                Please note that &quot;no-shows&quot; and cancellations made less than one business day in advance are considered sessions held.
               </p>
             </div>
           </div>

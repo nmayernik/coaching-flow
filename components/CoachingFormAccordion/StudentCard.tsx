@@ -43,6 +43,9 @@ export function StudentCard({ student, index, isSelected, onSelect }: StudentCar
         <div className="flex flex-col">
           <div className={`font-medium ${isDisabled ? "text-gray-500" : "text-gray-800"}`}>{student.name}</div>
           <div className={`text-sm ${isDisabled ? "text-gray-400" : "text-gray-700"}`}>{student.age}</div>
+          <div className={`text-xs mt-1 ${isDisabled ? "text-gray-400" : "text-gray-600"}`}>
+            {sessionsAvailable} {sessionsAvailable === 1 ? "session" : "sessions"} remaining
+          </div>
         </div>
       </div>
     </button>

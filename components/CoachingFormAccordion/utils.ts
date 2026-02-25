@@ -14,14 +14,14 @@ export const avatarColors = [
   "bg-emerald-600",  // Emerald
 ];
 
-// Category descriptions from CSV
+// Category descriptions (topic copy for category cards)
 export const categoryDescriptions: { [key: string]: string } = {
-  "Intro to College Coach": "Learn how we can support you and discuss your goals",
-  "Education Planning": "Setting your student up for success in education and beyond",
-  "College Admissions": "Advice for college selection, applications and more",
-  "College Finance": "Advice on saving/paying for college, managing costs and aid",
-  "Career Planning": "Advice on navigating the transition to the workplace",
-  "Personal Finance": "Advice on building and maintaining smart money habits"
+  "Intro to College Coach": "An introduction to your benefit and how we can help your family",
+  "College Admissions": "Support for college planning, selection, applications and more",
+  "College Finance": "Guidance on college savings, managing tuition and maximizing aid",
+  "Personal Finance": "Assistance with building smart money habits in your family",
+  "Education Planning": "Advice that sets your student up for success in school and beyond",
+  "Career Planning": "Help for college students on preparing for the workforce"
 };
 
 // Category section descriptions

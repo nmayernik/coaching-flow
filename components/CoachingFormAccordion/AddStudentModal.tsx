@@ -32,9 +32,11 @@ interface AddStudentModalProps {
   };
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
+  /** When false, the "Add student" trigger is hidden (modal still openable via isOpen/onOpenChange). */
+  showAddStudentTrigger?: boolean;
 }
 
-export function AddStudentModal({ students, onAddStudent, prefillData, isOpen: externalIsOpen, onOpenChange }: AddStudentModalProps) {
+export function AddStudentModal({ students, onAddStudent, prefillData, isOpen: externalIsOpen, onOpenChange, showAddStudentTrigger = false }: AddStudentModalProps) {
   const [internalIsOpen, setInternalIsOpen] = React.useState(false);
   const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
   const setIsOpen = onOpenChange || setInternalIsOpen;
@@ -105,14 +107,16 @@ export function AddStudentModal({ students, onAddStudent, prefillData, isOpen: e
       setIsOpen(open);
       if (!open) resetForm();
     }}>
-      <DialogTrigger asChild>
-        <button className="flex items-center text-blue-700 hover:text-blue-800 mt-3 text-xs lg:text-sm font-medium transition-colors duration-200 ease-out">
-          <svg className="w-3 h-3 lg:w-4 lg:h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-          </svg>
-          Add student
-        </button>
-      </DialogTrigger>
+      {showAddStudentTrigger && (
+        <DialogTrigger asChild>
+          <button className="flex items-center text-blue-700 hover:text-blue-800 mt-3 text-xs lg:text-sm font-medium transition-colors duration-200 ease-out">
+            <svg className="w-3 h-3 lg:w-4 lg:h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            Add student
+          </button>
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-md rounded-xl lg:rounded-2xl p-6">
         <div className="mb-4">
           <DialogHeader className="flex-1">

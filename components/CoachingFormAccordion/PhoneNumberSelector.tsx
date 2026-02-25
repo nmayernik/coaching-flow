@@ -141,7 +141,7 @@ export function PhoneNumberSelector({ phone, onPhoneChange, teamsCallsMode = fal
           <div className="flex justify-center items-center">
             <div className="text-center flex items-center py-2">
               <div className="font-medium text-sm lg:text-base text-gray-800">
-                {teamsCallsMode ? "Add a one-time phone number" : "Add a one time phone number"}
+                Add a one-time phone number
               </div>
               <div className="text-sm lg:text-md text-gray-700 invisible select-none" aria-hidden>.</div>
             </div>
@@ -153,14 +153,14 @@ export function PhoneNumberSelector({ phone, onPhoneChange, teamsCallsMode = fal
       {selectedOption === 'custom' && (
         <div>
           <label className="block text-xs lg:text-sm font-medium text-gray-900 mb-2">
-            One time phone number
+            One-time phone number
           </label>
           <Input 
             type="tel" 
             value={customPhone} 
             onChange={e => handleCustomPhoneChange(e.target.value)} 
             placeholder="(000) 000-0000" 
-            className="rounded-lg lg:rounded-xl border-gray-200 text-sm" 
+            className="rounded-lg lg:rounded-xl border-gray-400 text-sm" 
           />
         </div>
       )}

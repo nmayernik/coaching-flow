@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { organizeTopics, getFeaturedTopicDescriptions, categorySectionDescriptions } from "./utils";
+import { organizeTopics, getFeaturedTopicDescriptions } from "./utils";
 import { NoTopicsEmptyState } from "./NoTopicsEmptyState";
 
 interface TopicSelectorProps {
@@ -30,7 +30,6 @@ export function TopicSelector({
   const childAge = selectedStudent?.age || "";
   const { featured, regular } = organizeTopics(availableTopics, category, childAge);
   const featuredTopicDescriptions = getFeaturedTopicDescriptions(category, childAge);
-  const sectionDescription = categorySectionDescriptions[category] || "Our expert coaches specialize in this area to provide you with the most relevant guidance.";
 
   if (availableTopics.length === 0) {
     return (
@@ -41,11 +40,7 @@ export function TopicSelector({
   return (
     <div className="space-y-4">
       <div>
-        <div className="mb-1 font-medium text-base leading-[125%] text-gray-800">What is the focus of your call? <span className="text-red-500">*</span></div>
-        <div className="mb-4 lg:mb-6 text-xs lg:text-sm text-gray-700">
-          {sectionDescription}
-        </div>
-        
+        <div className="mb-4 lg:mb-6 font-medium text-base leading-[125%] text-gray-800">What is the focus of your call? <span className="text-red-500">*</span></div>
         <div className="space-y-4 lg:space-y-6">
           {/* Featured Topics Section */}
           {featured.length > 0 && (
@@ -119,12 +114,12 @@ export function TopicSelector({
       </div>
       
       <div className="leading-4 mt-6">
-        <label htmlFor="coach-note" className="mb-2 font-medium text-base text-gray-800 block">Add a note to your coach (optional)</label>
+        <label htmlFor="coach-note" className="mb-2 font-medium text-base text-gray-800 block">Add a note for us <span className="text-gray-500 font-normal">(optional)</span></label>
         <Textarea 
           id="coach-note"
           value={note} 
           onChange={e => onNoteChange(e.target.value)} 
-          placeholder="Add any additional notes for your coach..." 
+          placeholder=""
           className="min-h-[80px] lg:min-h-[100px] rounded-lg lg:rounded-xl border-gray-200 text-sm" 
           aria-describedby="coach-note-description"
         />

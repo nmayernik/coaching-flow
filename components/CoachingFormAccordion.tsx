@@ -404,7 +404,7 @@ export default function CoachingFormAccordion({
                     ))}
                   </div>
 
-                  <AddStudentModal 
+                  <AddStudentModal
                     students={students}
                     onAddStudent={(student) => {
                       handleAddStudent(student);
@@ -414,29 +414,42 @@ export default function CoachingFormAccordion({
                     prefillData={modalPrefillData}
                     isOpen={isModalOpen}
                     onOpenChange={setIsModalOpen}
+                    showAddStudentTrigger={currentScenario === "with-existing-students"}
                   />
                 </div>
                 
                 <div>
                   <div className="mb-3 lg:mb-4 font-medium text-lg text-gray-800">Choose a topic <span className="text-red-500">*</span></div>
-                  {!selectedStudent && (
-                    <div className="p-3 lg:p-4 bg-gray-50 rounded-lg lg:rounded-xl border  text-center text-gray-700 text-sm">
-                      Please select a student first to see available topics
-                    </div>
-                  )}
                   {selectedStudent && currentScenario === "no-topics-available" ? (
                     <NoCategoriesEmptyState studentName={selectedStudent.name} />
-                  ) : selectedStudent && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
-                      {["Intro to College Coach", ...getAllCategories().filter(cat => cat !== "Intro to College Coach")].map((categoryName) => (
-                        <CategoryCard
-                          key={categoryName}
-                          categoryName={categoryName}
-                          selectedStudent={selectedStudent}
-                          selectedCategory={category}
-                          onSelect={setCategory}
-                        />
-                      ))}
+                  ) : (
+                    <div>
+                      {!selectedStudent && (
+                        <div className="p-3 lg:p-4 bg-gray-50 rounded-lg lg:rounded-xl border text-center text-gray-700 text-sm">
+                          Select a student to see available topics
+                        </div>
+                      )}
+
+                      <div
+                        className={cn(
+                          "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5 overflow-hidden transition-[max-height,opacity] duration-300 ease-out",
+                          selectedStudent ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0 pointer-events-none"
+                        )}
+                        aria-hidden={!selectedStudent}
+                      >
+                        {(currentScenario === "hide-intro-after-call"
+                          ? getAllCategories().filter(cat => cat !== "Intro to College Coach")
+                          : ["Intro to College Coach", ...getAllCategories().filter(cat => cat !== "Intro to College Coach")]
+                        ).map((categoryName) => (
+                          <CategoryCard
+                            key={categoryName}
+                            categoryName={categoryName}
+                            selectedStudent={selectedStudent}
+                            selectedCategory={category}
+                            onSelect={setCategory}
+                          />
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -486,12 +499,12 @@ export default function CoachingFormAccordion({
                   // Special step 2 for Intro to College Coach - only note field
                   <div className="space-y-4 lg:space-y-6">
                     <div>
-                      <label htmlFor="coach-note-intro" className="mb-3 lg:mb-4 font-medium text-lg lg:text-xl text-gray-900 block">Add a note to your coach (optional)</label>
+                      <label htmlFor="coach-note-intro" className="mb-3 lg:mb-4 font-medium text-lg lg:text-xl text-gray-900 block">Add a note for us <span className="text-gray-500 font-normal">(optional)</span></label>
                       <Textarea 
                         id="coach-note-intro"
                         value={note} 
                         onChange={e => setNote(e.target.value)} 
-                        placeholder="Add any additional notes for your coach..." 
+                        placeholder="" 
                         className="min-h-[80px] lg:min-h-[100px] rounded-lg lg:rounded-xl border-gray-200 text-sm" 
                         aria-describedby="coach-note-intro-description"
                       />
@@ -641,7 +654,10 @@ export default function CoachingFormAccordion({
                     )}
                   </div>
                 </div>
-                <Button type="button" size="lg" onClick={handleSubmit} className="w-full text-base lg:!text-lg bg-yellow-500 hover:bg-yellow-400 active:bg-yellow-600 text-blue-800 rounded-lg lg:rounded-xl font-semibold px-4 lg:px-6 py-4 sm:py-5 lg:!py-8 touch-manipulation" style={{ minHeight: '52px' }}>Schedule Appointment</Button>
+                <Button type="button" size="lg" onClick={handleSubmit} className="w-full text-base lg:!text-lg bg-yellow-500 hover:bg-yellow-400 active:bg-yellow-600 text-blue-800 rounded-lg lg:rounded-xl font-semibold px-4 lg:px-6 py-4 sm:py-5 lg:!py-8 touch-manipulation" style={{ minHeight: '52px' }}>Confirm and book</Button>
+                <p className="text-gray-600 text-xs lg:text-sm mt-2">
+                  Clicking above will secure your appointment. You may reschedule up to one business day in advance.
+                </p>
               </Accordion.Content>
             </Accordion.Item>
           </div>

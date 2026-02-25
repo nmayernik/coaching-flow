@@ -58,10 +58,7 @@ function CoachingFormContent() {
       <main className="flex-1 lg:max-w-7xl lg:mx-auto px-4 sm:px-6 lg:px-8 pt-2 sm:pt-3 lg:pt-12 pb-4 sm:pb-6 lg:pb-8 min-h-screen">
         {/* Mobile Header - Only visible on mobile */}
         <div className="lg:hidden">
-          <div className="space-y-2">
-            <h1 className="text-xl font-semibold text-blue-800">Schedule a Coaching Session</h1>
-            <p className="text-sm text-gray-700">Book a call with one of our experts to discuss your needs.</p>
-          </div>
+          <h1 className="text-xl font-semibold text-blue-800">Book an appointment</h1>
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-16">
@@ -69,9 +66,8 @@ function CoachingFormContent() {
           <div className="hidden lg:block lg:col-span-1">
             <div className="sticky top-8">
             {/* Header content moved to sidebar */}
-            <div className="mb-4 space-y-1">
-              <h1 className="text-2xl font-semibold text-blue-800">Schedule a Coaching Session</h1>
-              <p className="text-sm sm:text-base text-gray-700">Book a call with one of our experts to discuss your needs.</p>
+            <div className="mb-4">
+              <h1 className="text-2xl font-semibold text-blue-800">Book an appointment</h1>
             </div>
 
             {/* Progress Steps Container */}

@@ -24,7 +24,7 @@ export function ScenarioProvider({ children }: { children: React.ReactNode }) {
   // Get initial scenario from URL or default to "default"
   const getInitialScenario = (): Scenario => {
     const scenarioParam = searchParams.get('scenario')
-    if (scenarioParam && ['default', 'with-existing-students', 'no-appointments', 'no-topics-available', 'no-dates-available'].includes(scenarioParam)) {
+    if (scenarioParam && ['default', 'with-existing-students', 'no-appointments', 'no-topics-available', 'no-dates-available', 'hide-intro-after-call'].includes(scenarioParam)) {
       return scenarioParam as Scenario
     }
     return "default"
@@ -54,7 +54,7 @@ export function ScenarioProvider({ children }: { children: React.ReactNode }) {
   // Sync with URL changes (e.g., browser back/forward)
   React.useEffect(() => {
     const scenarioParam = searchParams.get('scenario')
-    if (scenarioParam && ['default', 'with-existing-students', 'no-appointments', 'no-topics-available', 'no-dates-available'].includes(scenarioParam)) {
+    if (scenarioParam && ['default', 'with-existing-students', 'no-appointments', 'no-topics-available', 'no-dates-available', 'hide-intro-after-call'].includes(scenarioParam)) {
       const newScenario = scenarioParam as Scenario
       if (newScenario !== currentScenario) {
         setCurrentScenario(newScenario)
