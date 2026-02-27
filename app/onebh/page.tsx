@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import {
   CalendarDays,
@@ -14,7 +14,7 @@ import { CoachingFormFeature } from "@/components/CoachingFormFeature"
 import { Button } from "@/components/ui/button"
 import Logo from "@/components/ui/logo"
 
-export default function OneBhPage() {
+function OneBhPageContent() {
   const [isBookingOpen, setIsBookingOpen] = useState(false)
   const searchParams = useSearchParams()
   const isBigCCoaching = searchParams.get("scenario") === "big-c-coaching"
@@ -91,7 +91,7 @@ export default function OneBhPage() {
                 <h2 className="text-base font-bold text-[#707070]">Benefit Summary</h2>
                 <div className="flex w-full flex-wrap gap-2 rounded-lg bg-[#fafafa] p-1 lg:w-auto">
                   <BenefitTab label="Back-Up Care" />
-                  <BenefitTab label={isBigCCoaching ? "Coach" : "College Coach"} active />
+                  <BenefitTab label={isBigCCoaching ? "Coaching" : "College Coach"} active />
                   <BenefitTab label="EdAssist" />
                   <BenefitTab label="Center Care" />
                 </div>
@@ -102,9 +102,9 @@ export default function OneBhPage() {
                   <div>
                     {isBigCCoaching ? (
                       <>
-                        <h3 className="text-[32px] font-bold text-[#1A475F]">Coach</h3>
+                        <h3 className="text-[32px] font-bold text-[#1A475F]">Coaching Hub</h3>
                         <p className="mt-3 max-w-xl text-base text-[#707070]">
-                          Free guidance on education, career, executive function, financial wellness and more. Both for you and your dependents.
+                          Supporting the success of you and your family across education, career, financial wellness and more.
                         </p>
                         <div className="mt-5 flex flex-wrap gap-3">
                           <Button
@@ -265,6 +265,34 @@ export default function OneBhPage() {
         </div>
       )}
     </div>
+  )
+}
+
+function OneBhPageFallback() {
+  return (
+    <div className="min-h-screen bg-white text-[#1A475F]">
+      <header className="border-b border-[#dddddd] bg-white">
+        <div className="mx-auto flex h-[72px] w-full max-w-[1440px] items-center justify-between px-7 md:px-10">
+          <div className="flex items-center gap-8">
+            <div className="flex items-center gap-2">
+              <Logo />
+              <span className="text-sm font-semibold text-[#1A475F]">myBrightHorizons.</span>
+            </div>
+          </div>
+        </div>
+      </header>
+      <main className="flex min-h-[60vh] items-center justify-center">
+        <p className="text-[#707070]">Loading...</p>
+      </main>
+    </div>
+  )
+}
+
+export default function OneBhPage() {
+  return (
+    <Suspense fallback={<OneBhPageFallback />}>
+      <OneBhPageContent />
+    </Suspense>
   )
 }
 
