@@ -2,11 +2,14 @@
 
 import * as React from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Scenario } from "@/components/ScenarioSwitcher"
+import { getScenarioCatalog, isValidScenario } from "@/lib/scenarios/catalogs"
+import { Scenario, ScenarioCatalogKey, ScenarioDefinition } from "@/lib/scenarios/types"
 
 interface ScenarioContextType {
+  scenarios: ScenarioDefinition[]
   currentScenario: Scenario
   setScenario: (scenario: Scenario) => void
+  scenarioCatalogKey: ScenarioCatalogKey
   isScenarioSwitcherOpen: boolean
   toggleScenarioSwitcher: () => void
   coachContinuityEnabled: boolean
@@ -17,15 +20,21 @@ interface ScenarioContextType {
 
 const ScenarioContext = React.createContext<ScenarioContextType | undefined>(undefined)
 
-export function ScenarioProvider({ children }: { children: React.ReactNode }) {
+interface ScenarioProviderProps {
+  children: React.ReactNode
+  scenarioCatalogKey?: ScenarioCatalogKey
+}
+
+export function ScenarioProvider({ children, scenarioCatalogKey = "default" }: ScenarioProviderProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const scenarios = React.useMemo(() => getScenarioCatalog(scenarioCatalogKey), [scenarioCatalogKey])
   
   // Get initial scenario from URL or default to "default"
   const getInitialScenario = (): Scenario => {
     const scenarioParam = searchParams.get('scenario')
-    if (scenarioParam && ['default', 'with-existing-students', 'no-appointments', 'no-topics-available', 'no-dates-available', 'hide-intro-after-call'].includes(scenarioParam)) {
-      return scenarioParam as Scenario
+    if (isValidScenario(scenarios, scenarioParam)) {
+      return scenarioParam
     }
     return "default"
   }
@@ -54,23 +63,25 @@ export function ScenarioProvider({ children }: { children: React.ReactNode }) {
   // Sync with URL changes (e.g., browser back/forward)
   React.useEffect(() => {
     const scenarioParam = searchParams.get('scenario')
-    if (scenarioParam && ['default', 'with-existing-students', 'no-appointments', 'no-topics-available', 'no-dates-available', 'hide-intro-after-call'].includes(scenarioParam)) {
-      const newScenario = scenarioParam as Scenario
+    if (isValidScenario(scenarios, scenarioParam)) {
+      const newScenario = scenarioParam
       if (newScenario !== currentScenario) {
         setCurrentScenario(newScenario)
       }
     } else if (currentScenario !== "default") {
       setCurrentScenario("default")
     }
-  }, [searchParams, currentScenario])
+  }, [searchParams, currentScenario, scenarios])
 
   const toggleScenarioSwitcher = () => {
     setIsScenarioSwitcherOpen(!isScenarioSwitcherOpen)
   }
 
   const value = {
+    scenarios,
     currentScenario,
     setScenario,
+    scenarioCatalogKey,
     isScenarioSwitcherOpen,
     toggleScenarioSwitcher,
     coachContinuityEnabled,

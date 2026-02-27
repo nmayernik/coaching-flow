@@ -34,6 +34,7 @@ import { CoachContinuityLine } from "./CoachingFormAccordion/CoachContinuityLine
 import { CoachContinuityDialog } from "./CoachingFormAccordion/CoachContinuityDialog";
 import { VideoCallsDialog } from "./CoachingFormAccordion/VideoCallsDialog";
 import { getPreviousCoachForTopic } from "@/lib/mockData";
+import { ONE_BH_TOPICS, getSubtopicsForOneBhTopic } from "@/lib/scenarios/oneBhTopics";
 
 export default function CoachingFormAccordion({ 
   onStepChange, 
@@ -45,6 +46,7 @@ export default function CoachingFormAccordion({
   // State for form values
   const [step, setStep] = React.useState(0); // 0, 1, 2
   const [completedSteps, setCompletedSteps] = React.useState<number[]>([]); // Track completed steps
+  const [focusTarget, setFocusTarget] = React.useState<"myself" | "dependent" | null>(null); // Big C Coaching only
   const [selectedStudent, setSelectedStudent] = React.useState<Student | null>(null);
   const [category, setCategory] = React.useState("");
   const [topic, setTopic] = React.useState("");
@@ -97,6 +99,16 @@ export default function CoachingFormAccordion({
 
   // Update available categories when student selection changes
   React.useEffect(() => {
+    if (currentScenario === "big-c-coaching") {
+      // Big C: topic list is ONE_BH_TOPICS, not driven by student; don't clear category/topic when student is null (Myself)
+      if (selectedStudent) {
+        const categories = getAvailableCategories(selectedStudent.age);
+        setAvailableCategories(categories);
+      } else {
+        setAvailableCategories([]);
+      }
+      return;
+    }
     if (selectedStudent) {
       const categories = getAvailableCategories(selectedStudent.age);
       setAvailableCategories(categories);
@@ -113,10 +125,23 @@ export default function CoachingFormAccordion({
       setTopic("");
       setAvailableTopics([]);
     }
-  }, [selectedStudent, category]);
+  }, [selectedStudent, category, currentScenario]);
 
   // Update available topics when category selection changes
   React.useEffect(() => {
+    if (currentScenario === "big-c-coaching" && category) {
+      const subtopics = getSubtopicsForOneBhTopic(category);
+      setAvailableTopics(subtopics);
+      if (topic && !subtopics.includes(topic)) {
+        setTopic("");
+      }
+      setUsePreviousCoach(false);
+      if (onCategoryChange && category) {
+        onCategoryChange(category);
+      }
+      return;
+    }
+
     if (selectedStudent && category) {
       // Use scenario-aware topics
       const scenarioTopics = getTopicsForScenario(currentScenario, category, selectedStudent.age);
@@ -220,6 +245,12 @@ export default function CoachingFormAccordion({
   // Validation per step
   function validateStep(idx: number) {
     if (idx === 0) {
+      if (currentScenario === "big-c-coaching") {
+        if (!focusTarget) return "Please select who will be the focus of your coaching session.";
+        if (focusTarget === "dependent" && !selectedStudent) return "Please select a dependent.";
+        if (!category) return "Please select a topic.";
+        return "";
+      }
       if (!selectedStudent) return "Please select a student.";
       if (!category) return "Please select a category.";
       // Additional validation for age-appropriate selections
@@ -228,6 +259,10 @@ export default function CoachingFormAccordion({
       }
     }
     if (idx === 1) {
+      // Big C Coaching: require subtopic when we have subtopics
+      if (currentScenario === "big-c-coaching" && availableTopics.length > 0 && !topic) {
+        return "Please select a focus area.";
+      }
       // For Intro to College Coach, we don't need topic validation since it's auto-set
       if (category === "Intro to College Coach") {
         // No validation needed for intro calls - they just need to proceed
@@ -268,14 +303,6 @@ export default function CoachingFormAccordion({
       if (!completedSteps.includes(0)) {
         setCompletedSteps([...completedSteps, 0]);
       }
-      
-      // For all categories, go to step 1 (topic/focus area selection)
-      setStep(1);
-      return;
-      
-      // Remove step 1 (topic selection) from completed steps so it reopens as accordion
-      // This ensures users can choose appropriate topics for the new student/category
-      setCompletedSteps(prev => prev.filter(s => s !== 1));
       setStep(1);
       return;
     }
@@ -312,6 +339,7 @@ export default function CoachingFormAccordion({
     setIsSubmitted(false);
     setStep(0);
     setCompletedSteps([]);
+    setFocusTarget(null);
     setSelectedStudent(null);
     setCategory("");
     setTopic("");
@@ -349,6 +377,7 @@ export default function CoachingFormAccordion({
           coachContinuityEnabled={coachContinuityEnabled}
           meetingWithPreviousCoach={usePreviousCoach}
           previousCoachName={usePreviousCoach && previousCoach ? previousCoach.coachName : undefined}
+          focusTarget={currentScenario === "big-c-coaching" ? focusTarget : undefined}
         />
       </div>
     );
@@ -369,6 +398,7 @@ export default function CoachingFormAccordion({
             selectedStudent={selectedStudent}
             category={category}
             onEdit={() => handleEdit(0)}
+            focusTarget={currentScenario === "big-c-coaching" ? focusTarget : undefined}
           />
         ) : (
           <div className="relative z-10 pointer-events-auto lg:bg-white lg:rounded-2xl lg:border lg:border-gray-100 lg:shadow-sm mb-3 lg:mb-4 transform transition-all duration-300 ease-out animate-in slide-in-from-bottom-4 fade-in">
@@ -380,6 +410,101 @@ export default function CoachingFormAccordion({
               <Accordion.Content className="lg:px-8 pt-1 lg:pt-6 pb-5 sm:pb-6 lg:pb-8 space-y-5 sm:space-y-6 lg:space-y-8 2xl:space-y-12 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-top-1 data-[state=open]:slide-in-from-top-1">
                 {error && <Alert variant="destructive" className="mb-4 text-sm">{error}</Alert>}
                 {currentScenario === "no-appointments" && <NoAppointmentsBanner />}
+
+                {currentScenario === "big-c-coaching" ? (
+                  <>
+                    <div>
+                      <div className="mb-3 lg:mb-4 font-medium text-lg text-gray-800">Who will be the focus of your coaching session? <span className="text-red-500">*</span></div>
+                      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-5">
+                        <button
+                          type="button"
+                          onClick={() => setFocusTarget("myself")}
+                          className={cn(
+                            "p-3 sm:p-4 lg:p-4 rounded-2xl lg:rounded-xl border text-left transition-colors duration-200 ease-out",
+                            focusTarget === "myself"
+                              ? "ring-blue-700 ring-2 border-white bg-blue-50 hover:bg-blue-25"
+                              : "border-gray-400 hover:bg-gray-50"
+                          )}
+                        >
+                          <span className="font-medium text-base text-gray-800">Myself</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setFocusTarget("dependent")}
+                          className={cn(
+                            "p-3 sm:p-4 lg:p-4 rounded-2xl lg:rounded-xl border text-left transition-colors duration-200 ease-out",
+                            focusTarget === "dependent"
+                              ? "ring-blue-700 ring-2 border-white bg-blue-50 hover:bg-blue-25"
+                              : "border-gray-400 hover:bg-gray-50"
+                          )}
+                        >
+                          <span className="font-medium text-base text-gray-800">Dependent</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {focusTarget === "dependent" && (
+                      <div>
+                        <div className="mb-3 lg:mb-4 font-medium text-lg text-gray-800">Choose a dependent <span className="text-red-500">*</span></div>
+                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
+                          {students.map((student, index) => (
+                            <StudentCard
+                              key={student.id}
+                              student={student}
+                              index={index}
+                              isSelected={selectedStudent?.id === student.id}
+                              onSelect={setSelectedStudent}
+                            />
+                          ))}
+                          {filteredExistingStudents.map((existingStudent) => (
+                            <ExistingStudentCard
+                              key={existingStudent.id}
+                              existingStudent={existingStudent}
+                              onAdd={handleAddExistingStudent}
+                            />
+                          ))}
+                        </div>
+                        <AddStudentModal
+                          students={students}
+                          onAddStudent={(student) => {
+                            handleAddStudent(student);
+                            setModalPrefillData(undefined);
+                            setIsModalOpen(false);
+                          }}
+                          prefillData={modalPrefillData}
+                          isOpen={isModalOpen}
+                          onOpenChange={setIsModalOpen}
+                          showAddStudentTrigger
+                          useDependentLabels
+                        />
+                      </div>
+                    )}
+
+                    <div className="pr-1 sm:pr-2">
+                      <div className="mb-3 lg:mb-4 font-medium text-lg text-gray-800">Choose a topic <span className="text-red-500">*</span></div>
+                      {focusTarget === "myself" || (focusTarget === "dependent" && selectedStudent) ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
+                          {ONE_BH_TOPICS.map((categoryName) => (
+                            <CategoryCard
+                              key={categoryName}
+                              categoryName={categoryName}
+                              selectedStudent={null}
+                              selectedCategory={category}
+                              onSelect={setCategory}
+                              forceAvailable
+                              hideDescription
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="p-3 lg:p-4 bg-gray-50 rounded-lg lg:rounded-xl border text-center text-gray-700 text-sm">
+                          Select a person to view topics
+                        </div>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <>
                 <div>
                   <div className="mb-3 lg:mb-4 font-medium text-lg text-gray-800">Choose a student <span className="text-red-500">*</span></div>
                   
@@ -418,7 +543,7 @@ export default function CoachingFormAccordion({
                   />
                 </div>
                 
-                <div>
+                <div className="pr-1 sm:pr-2">
                   <div className="mb-3 lg:mb-4 font-medium text-lg text-gray-800">Choose a topic <span className="text-red-500">*</span></div>
                   {selectedStudent && currentScenario === "no-topics-available" ? (
                     <NoCategoriesEmptyState studentName={selectedStudent.name} />
@@ -432,7 +557,7 @@ export default function CoachingFormAccordion({
 
                       <div
                         className={cn(
-                          "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5 overflow-hidden transition-[max-height,opacity] duration-300 ease-out",
+                          "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5 overflow-x-visible overflow-y-hidden transition-[max-height,opacity] duration-300 ease-out",
                           selectedStudent ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0 pointer-events-none"
                         )}
                         aria-hidden={!selectedStudent}
@@ -453,6 +578,8 @@ export default function CoachingFormAccordion({
                     </div>
                   )}
                 </div>
+                  </>
+                )}
                 
                 <Button 
                   type="button" 
@@ -461,7 +588,8 @@ export default function CoachingFormAccordion({
                   onClick={() => handleContinue(0)} 
                   disabled={
                     (currentScenario === "no-appointments" && students.every(student => student.sessionsAvailable === 0)) ||
-                    (currentScenario === "no-topics-available" && !!selectedStudent)
+                    (currentScenario === "no-topics-available" && !!selectedStudent) ||
+                    (currentScenario === "big-c-coaching" && (!focusTarget || (focusTarget === "dependent" && !selectedStudent) || !category))
                   }
                   className="w-full text-base lg:!text-lg bg-yellow-500 hover:bg-yellow-400 active:bg-yellow-600 text-blue-800 rounded-lg lg:rounded-xl font-semibold px-4 lg:px-6 py-4 sm:py-5 lg:!py-8 touch-manipulation" 
                   style={{ minHeight: '52px' }}

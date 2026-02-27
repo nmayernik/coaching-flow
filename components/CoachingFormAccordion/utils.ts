@@ -21,7 +21,13 @@ export const categoryDescriptions: { [key: string]: string } = {
   "College Finance": "Guidance on college savings, managing tuition and maximizing aid",
   "Personal Finance": "Assistance with building smart money habits in your family",
   "Education Planning": "Advice that sets your student up for success in school and beyond",
-  "Career Planning": "Help for college students on preparing for the workforce"
+  "Career Planning": "Help for college students on preparing for the workforce",
+  // Big C Coaching (onebh) topics
+  "Education for Working Learners": "Support for degree planning and balancing work and school",
+  "Career / Non-Degree": "Career exploration and non-degree pathways",
+  "Skills + Learning": "Skill assessments and learning pathways",
+  "Financial": "Tuition, aid, and budgeting for education",
+  "Executive": "Leadership and executive education",
 };
 
 // Category section descriptions

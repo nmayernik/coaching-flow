@@ -16,10 +16,14 @@ interface CategoryCardProps {
   selectedStudent: Student | null;
   selectedCategory: string;
   onSelect: (category: string) => void;
+  /** When true, card is always available (e.g. Big C Coaching topics) */
+  forceAvailable?: boolean;
+  /** When true, do not show the description subtitle (e.g. Big C Coaching topic grid) */
+  hideDescription?: boolean;
 }
 
-export function CategoryCard({ categoryName, selectedStudent, selectedCategory, onSelect }: CategoryCardProps) {
-  const isAvailable = selectedStudent ? (categoryName === "Intro to College Coach" ? true : isCategoryAvailable(categoryName, selectedStudent.age)) : false;
+export function CategoryCard({ categoryName, selectedStudent, selectedCategory, onSelect, forceAvailable = false, hideDescription = false }: CategoryCardProps) {
+  const isAvailable = forceAvailable || (selectedStudent ? (categoryName === "Intro to College Coach" ? true : isCategoryAvailable(categoryName, selectedStudent.age)) : false);
   const availableTopicsCount = selectedStudent ? (categoryName === "Intro to College Coach" ? 1 : getAvailableTopics(categoryName, selectedStudent.age).length) : 0;
   
   const description = categoryDescriptions[categoryName] || "Category description";
@@ -50,7 +54,7 @@ export function CategoryCard({ categoryName, selectedStudent, selectedCategory, 
         checked={selectedCategory === categoryName}
         onChange={() => handleClick()}
         className="sr-only"
-        aria-label={`Select category: ${categoryName} - ${description}`}
+        aria-label={`Select category: ${categoryName}${hideDescription ? "" : ` - ${description}`}`}
       />
       
       {/* Recommended tag - positioned inline with icon */}
@@ -80,11 +84,13 @@ export function CategoryCard({ categoryName, selectedStudent, selectedCategory, 
         <div className={`font-medium text-base ${isAvailable ? "text-gray-800" : "text-gray-500"}`}>
           {categoryName}
         </div>
-        <div className={`text-xs lg:text-sm mt-1 ${isAvailable ? "text-gray-700" : "text-gray-400"}`}>
-          {description}
-        </div>
+        {!hideDescription && (
+          <div className={`text-xs lg:text-sm mt-1 ${isAvailable ? "text-gray-700" : "text-gray-400"}`}>
+            {description}
+          </div>
+        )}
 
-        {!isAvailable && selectedStudent && (
+        {!isAvailable && selectedStudent && !forceAvailable && (
           <div className="text-xs text-gray-400 mt-1 lg:mt-2">
             Not available for {selectedStudent.age}
           </div>

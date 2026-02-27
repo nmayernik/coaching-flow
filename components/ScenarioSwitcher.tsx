@@ -2,22 +2,16 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { Settings, X, Copy, Check, Paintbrush } from "lucide-react"
+import { X, Copy, Check, Paintbrush } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { useSearchParams } from "next/navigation"
-
-export type Scenario = 
-  | "default" 
-  | "no-appointments" 
-  | "no-topics-available" 
-  | "with-existing-students"
-  | "no-dates-available"
-  | "hide-intro-after-call"
+import { Scenario, ScenarioDefinition } from "@/lib/scenarios/types"
 
 interface ScenarioSwitcherProps {
+  scenarios: ScenarioDefinition[]
   currentScenario: Scenario
   onScenarioChange: (scenario: Scenario) => void
   isOpen: boolean
@@ -28,46 +22,7 @@ interface ScenarioSwitcherProps {
   onTeamsCallsChange: (enabled: boolean) => void
 }
 
-const scenarios = [
-  {
-    id: "default" as Scenario,
-    name: "Default",
-    description: "Normal flow with all features available",
-    url: "/"
-  },
-  {
-    id: "with-existing-students" as Scenario,
-    name: "With Existing Students",
-    description: "Students from other services are available to add",
-    url: "/?scenario=with-existing-students"
-  },
-  {
-    id: "no-appointments" as Scenario,
-    name: "No Appointments",
-    description: "All students have 0/3 sessions available",
-    url: "/?scenario=no-appointments"
-  },
-  {
-    id: "no-topics-available" as Scenario,
-    name: "No Topics Available",
-    description: "No topics available for selected student",
-    url: "/?scenario=no-topics-available"
-  },
-  {
-    id: "no-dates-available" as Scenario,
-    name: "No Dates Available",
-    description: "No dates/times available for selected topic",
-    url: "/?scenario=no-dates-available"
-  },
-  {
-    id: "hide-intro-after-call" as Scenario,
-    name: "Hide Intro (student has had calls)",
-    description: "Intro to College Coach hidden for students with >0 prior calls",
-    url: "/?scenario=hide-intro-after-call"
-  }
-]
-
-export function ScenarioSwitcher({ currentScenario, onScenarioChange, isOpen, onToggle, coachContinuityEnabled, onCoachContinuityChange, teamsCallsEnabled, onTeamsCallsChange }: ScenarioSwitcherProps) {
+export function ScenarioSwitcher({ scenarios, currentScenario, onScenarioChange, isOpen, onToggle, coachContinuityEnabled, onCoachContinuityChange, teamsCallsEnabled, onTeamsCallsChange }: ScenarioSwitcherProps) {
   const searchParams = useSearchParams()
   const [copiedUrl, setCopiedUrl] = React.useState<string | null>(null)
 

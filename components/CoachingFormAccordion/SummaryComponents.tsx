@@ -20,10 +20,19 @@ interface Step1SummaryProps {
   selectedStudent: Student | null;
   category: string;
   onEdit: () => void;
+  /** Big C Coaching: who is the focus (myself vs dependent) */
+  focusTarget?: "myself" | "dependent" | null;
 }
 
-export function Step1Summary({ selectedStudent, category, onEdit }: Step1SummaryProps) {
+export function Step1Summary({ selectedStudent, category, onEdit, focusTarget }: Step1SummaryProps) {
   const iconData = categoryIcons[category];
+  const forLine =
+    focusTarget === "myself"
+      ? "For yourself"
+      : selectedStudent
+        ? `For ${selectedStudent.name} (${selectedStudent.age})`
+        : "";
+  const subtitle = forLine ? `${forLine} · 45 minutes` : "45 minutes";
 
   return (
     <div className="border border-gray-100 rounded-xl lg:rounded-2xl p-4 lg:p-6 mb-3 lg:mb-4 bg-white">
@@ -44,7 +53,7 @@ export function Step1Summary({ selectedStudent, category, onEdit }: Step1Summary
           )}
           <div className="space-y-1">
             <p className="font-medium text-sm lg:text-base text-gray-800">{category} appointment</p>
-            <p className="text-gray-700 text-xs lg:text-sm">For {selectedStudent?.name} ({selectedStudent?.age}) · 45 minutes</p>
+            <p className="text-gray-700 text-xs lg:text-sm">{subtitle}</p>
           </div>
         </div>
         <Button
@@ -118,6 +127,8 @@ interface SuccessScreenProps {
   meetingWithPreviousCoach?: boolean;
   /** Name of the previous coach; when set, shown in the badge as "Meeting with previous coach, {name}" */
   previousCoachName?: string;
+  /** Big C Coaching: when "myself", show "For yourself" instead of student name */
+  focusTarget?: "myself" | "dependent" | null;
 }
 
 export function SuccessScreen({ 
@@ -132,13 +143,16 @@ export function SuccessScreen({
   teamsCallsMode = false,
   coachContinuityEnabled = false,
   meetingWithPreviousCoach = false,
-  previousCoachName
+  previousCoachName,
+  focusTarget
 }: SuccessScreenProps) {
   const showPreviousCoachBadge = coachContinuityEnabled && meetingWithPreviousCoach;
   const previousCoachBadgeLabel = previousCoachName
     ? `Meeting with previous coach, ${previousCoachName}`
     : "Meeting with previous coach";
   const iconData = categoryIcons[category];
+  const forLabel = focusTarget === "myself" ? "yourself" : selectedStudent?.name ?? "";
+  const forDisplayText = forLabel ? `For ${forLabel}` : "";
   const shortDate = formatShortDateForBadge(date);
   const appointmentTypeLabel = `${category} Appointment`;
   const startTimeDisplay = convertValueTimeToDisplay(time);
@@ -242,9 +256,11 @@ export function SuccessScreen({
               {category !== "Intro to College Coach" && (
                 <p className="text-gray-700 text-xs lg:text-sm mt-0.5">{topic}</p>
               )}
-              <p className="text-gray-700 text-xs lg:text-sm mt-1">
-                For {selectedStudent?.name}
-              </p>
+              {forDisplayText && (
+                <p className="text-gray-700 text-xs lg:text-sm mt-1">
+                  {forDisplayText}
+                </p>
+              )}
               {showPreviousCoachBadge && (
                 <Badge variant="session" className="mt-1.5 w-fit">
                   {previousCoachBadgeLabel}
@@ -316,9 +332,11 @@ export function SuccessScreen({
                 {category !== "Intro to College Coach" && (
                   <p className="text-gray-700 text-xs lg:text-sm mt-0.5">{topic}</p>
                 )}
-                <p className="text-gray-700 text-xs lg:text-sm mt-1">
-                  For {selectedStudent?.name}
-                </p>
+                {forDisplayText && (
+                  <p className="text-gray-700 text-xs lg:text-sm mt-1">
+                    {forDisplayText}
+                  </p>
+                )}
                 {showPreviousCoachBadge && (
                   <Badge variant="session" className="mt-1.5 w-fit">
                     {previousCoachBadgeLabel}

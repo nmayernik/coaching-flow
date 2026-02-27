@@ -34,9 +34,13 @@ interface AddStudentModalProps {
   onOpenChange?: (open: boolean) => void;
   /** When false, the "Add student" trigger is hidden (modal still openable via isOpen/onOpenChange). */
   showAddStudentTrigger?: boolean;
+  /** When true, use "dependent" instead of "student" in labels (Big C Coaching). */
+  useDependentLabels?: boolean;
 }
 
-export function AddStudentModal({ students, onAddStudent, prefillData, isOpen: externalIsOpen, onOpenChange, showAddStudentTrigger = false }: AddStudentModalProps) {
+export function AddStudentModal({ students, onAddStudent, prefillData, isOpen: externalIsOpen, onOpenChange, showAddStudentTrigger = false, useDependentLabels = false }: AddStudentModalProps) {
+  const entityLabel = useDependentLabels ? "dependent" : "student";
+  const EntityLabel = entityLabel.charAt(0).toUpperCase() + entityLabel.slice(1);
   const [internalIsOpen, setInternalIsOpen] = React.useState(false);
   const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
   const setIsOpen = onOpenChange || setInternalIsOpen;
@@ -76,7 +80,7 @@ export function AddStudentModal({ students, onAddStudent, prefillData, isOpen: e
     if (!form.firstName.trim()) return "First name is required.";
     if (!form.lastName.trim()) return "Last name is required.";
     if (!form.yearOfGraduation) return "Year of graduation is required.";
-    if (!form.relationshipToStudent) return "Relationship to student is required.";
+    if (!form.relationshipToStudent) return useDependentLabels ? "Relationship to dependent is required." : "Relationship to student is required.";
     return "";
   };
 
@@ -113,14 +117,14 @@ export function AddStudentModal({ students, onAddStudent, prefillData, isOpen: e
             <svg className="w-3 h-3 lg:w-4 lg:h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
-            Add student
+            Add {entityLabel}
           </button>
         </DialogTrigger>
       )}
       <DialogContent className="sm:max-w-md rounded-xl lg:rounded-2xl p-6">
         <div className="mb-4">
           <DialogHeader className="flex-1">
-            <DialogTitle className="text-xl font-semibold text-gray-800">Student Details</DialogTitle>
+            <DialogTitle className="text-xl font-semibold text-gray-800">{EntityLabel} Details</DialogTitle>
             <p className="text-sm text-gray-700">
               An asterisk (<span className="text-red-500">*</span> ) indicates a required field.
             </p>
@@ -184,7 +188,7 @@ export function AddStudentModal({ students, onAddStudent, prefillData, isOpen: e
           {/* Relationship to Student */}
           <div>
             <Label htmlFor="relationshipToStudent" className="text-sm font-medium text-gray-800 mb-2 block">
-              Relationship to Student <span className="text-red-500">*</span>
+              Relationship to {EntityLabel} <span className="text-red-500">*</span>
             </Label>
             <Select value={form.relationshipToStudent} onValueChange={(value) => setForm(prev => ({ ...prev, relationshipToStudent: value }))}>
               <SelectTrigger>
@@ -211,7 +215,7 @@ export function AddStudentModal({ students, onAddStudent, prefillData, isOpen: e
               className="rounded border-gray-300"
             />
             <Label htmlFor="inviteStudent" className="text-sm text-gray-800 leading-5">
-              Invite your student to set up their own College Coach login
+              Invite your {entityLabel} to set up their own College Coach login
             </Label>
           </div>
 

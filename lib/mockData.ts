@@ -1,4 +1,4 @@
-import { Scenario } from "@/components/ScenarioSwitcher"
+import { Scenario } from "@/lib/scenarios/types"
 import { Coach, PreviousCoachSession } from "@/components/CoachingFormAccordion/types"
 import { getAvailableTopics } from "@/lib/topicLogicData"
 
