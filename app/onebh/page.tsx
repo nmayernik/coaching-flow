@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useSearchParams } from "next/navigation"
 import {
   CalendarDays,
   ChevronDown,
@@ -15,6 +16,8 @@ import Logo from "@/components/ui/logo"
 
 export default function OneBhPage() {
   const [isBookingOpen, setIsBookingOpen] = useState(false)
+  const searchParams = useSearchParams()
+  const isBigCCoaching = searchParams.get("scenario") === "big-c-coaching"
 
   useEffect(() => {
     if (isBookingOpen) {
@@ -88,7 +91,7 @@ export default function OneBhPage() {
                 <h2 className="text-base font-bold text-[#707070]">Benefit Summary</h2>
                 <div className="flex w-full flex-wrap gap-2 rounded-lg bg-[#fafafa] p-1 lg:w-auto">
                   <BenefitTab label="Back-Up Care" />
-                  <BenefitTab label="College Coach" active />
+                  <BenefitTab label={isBigCCoaching ? "Coach" : "College Coach"} active />
                   <BenefitTab label="EdAssist" />
                   <BenefitTab label="Center Care" />
                 </div>
@@ -97,6 +100,27 @@ export default function OneBhPage() {
               <div className="mt-4 rounded-2xl border border-[#f2f2f2] p-6">
                 <div className="grid gap-6 md:grid-cols-[1fr_220px]">
                   <div>
+                    {isBigCCoaching ? (
+                      <>
+                        <h3 className="text-[32px] font-bold text-[#1A475F]">Coach</h3>
+                        <p className="mt-3 max-w-xl text-base text-[#707070]">
+                          Free guidance on education, career, executive function, financial wellness and more. Both for you and your dependents.
+                        </p>
+                        <div className="mt-5 flex flex-wrap gap-3">
+                          <Button
+                            type="button"
+                            className="bg-[#f0bd1b] text-[#1A475F] hover:bg-[#f2c840]"
+                            onClick={() => setIsBookingOpen(true)}
+                          >
+                            Book Appointment
+                          </Button>
+                          <Button type="button" variant="secondary" className="border-[#b3b3b3] text-[#215A78]">
+                            Learn More
+                          </Button>
+                        </div>
+                      </>
+                    ) : (
+                      <>
                     <h3 className="text-[18px] font-bold text-[#1A475F]">College Coach</h3>
                     <div className="mt-1 flex items-end gap-2">
                       <p className="text-[32px] font-bold leading-none text-[#1A475F]">3/3</p>
@@ -117,6 +141,8 @@ export default function OneBhPage() {
                         Learn More
                       </Button>
                     </div>
+                      </>
+                    )}
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 self-end">
