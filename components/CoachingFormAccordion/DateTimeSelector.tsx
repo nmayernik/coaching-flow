@@ -1,7 +1,15 @@
 "use client"
 
 import * as React from "react";
+import { Check, ChevronDown } from "lucide-react";
 import { getCoachAvailableDates, getCoachAvailableTimesForDate } from "@/lib/mockData";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 
 // Format date as local YYYY-MM-DD (avoids UTC timezone shift)
 function toLocalDateString(date: Date): string {
@@ -155,6 +163,24 @@ export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onT
     setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
   };
 
+  // Months to show in the month dropdown: from first available date through end of that calendar year
+  const selectableMonths = React.useMemo(() => {
+    if (availableDates.length === 0) return [];
+    const first = availableDates[0];
+    const startYear = first.getFullYear();
+    const startMonth = first.getMonth();
+    const months: { year: number; month: number }[] = [];
+    for (let month = startMonth; month <= 11; month++) {
+      months.push({ year: startYear, month });
+    }
+    return months;
+  }, [availableDates]);
+
+  const monthTitleLabel = new Date(currentMonth.getFullYear(), currentMonth.getMonth()).toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+  });
+
   return (
     <div>
       {!hideSectionLabel && (
@@ -176,12 +202,41 @@ export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onT
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
-              <h2 className="font-medium text-sm lg:text-base text-gray-900">
-                {new Date(currentMonth.getFullYear(), currentMonth.getMonth()).toLocaleDateString('en-US', { 
-                  month: 'long', 
-                  year: 'numeric' 
-                })}
-              </h2>
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  className="inline-flex items-center gap-1 font-medium text-sm lg:text-base text-gray-900 hover:bg-blue-25 rounded-lg px-2 py-2 transition-colors duration-200 ease-out touch-manipulation focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 data-[state=open]:bg-blue-25"
+                  style={{ minHeight: '44px' }}
+                  aria-label={`Choose month, currently ${monthTitleLabel}`}
+                >
+                  <span>{monthTitleLabel}</span>
+                  <ChevronDown className="h-4 w-4 text-gray-500 shrink-0" aria-hidden />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="center"
+                  className="min-w-[220px] w-[220px] max-h-[min(70vh,360px)] overflow-y-auto"
+                >
+                  {selectableMonths.map(({ year, month }) => {
+                    const label = new Date(year, month).toLocaleDateString("en-US", {
+                      month: "long",
+                      year: "numeric",
+                    });
+                    const isCurrent = currentMonth.getFullYear() === year && currentMonth.getMonth() === month;
+                    return (
+                      <DropdownMenuItem
+                        key={`${year}-${month}`}
+                        onSelect={() => setCurrentMonth(new Date(year, month))}
+                        className={cn(
+                          "flex items-center justify-between gap-2 py-2",
+                          isCurrent && "bg-blue-50 font-medium text-blue-700"
+                        )}
+                      >
+                        <span>{label}</span>
+                        {isCurrent && <Check className="h-4 w-4 shrink-0 text-blue-700" aria-hidden />}
+                      </DropdownMenuItem>
+                    );
+                  })}
+                </DropdownMenuContent>
+              </DropdownMenu>
               <button 
                 onClick={nextMonth} 
                 className="px-3 py-2 bg-white hover:bg-blue-25 rounded-lg transition-colors duration-200 ease-out touch-manipulation"

@@ -480,10 +480,10 @@ export default function CoachingFormAccordion({
                       </div>
                     )}
 
-                    <div className="pr-1 sm:pr-2">
+                    <div className="pr-2 sm:pr-3">
                       <div className="mb-3 lg:mb-4 font-medium text-lg text-gray-800">Choose a topic <span className="text-red-500">*</span></div>
                       {focusTarget === "myself" || (focusTarget === "dependent" && selectedStudent) ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5 p-[2px]">
                           {ONE_BH_TOPICS.map((categoryName) => (
                             <CategoryCard
                               key={categoryName}
@@ -543,7 +543,7 @@ export default function CoachingFormAccordion({
                   />
                 </div>
                 
-                <div className="pr-1 sm:pr-2">
+                <div className="pr-2 sm:pr-3">
                   <div className="mb-3 lg:mb-4 font-medium text-lg text-gray-800">Choose a topic <span className="text-red-500">*</span></div>
                   {selectedStudent && currentScenario === "no-topics-available" ? (
                     <NoCategoriesEmptyState studentName={selectedStudent.name} />
@@ -557,7 +557,7 @@ export default function CoachingFormAccordion({
 
                       <div
                         className={cn(
-                          "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5 overflow-x-visible overflow-y-hidden transition-[max-height,opacity] duration-300 ease-out",
+                          "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5 p-[2px] overflow-x-visible overflow-y-hidden transition-[max-height,opacity] duration-300 ease-out",
                           selectedStudent ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0 pointer-events-none"
                         )}
                         aria-hidden={!selectedStudent}
