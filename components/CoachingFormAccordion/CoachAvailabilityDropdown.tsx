@@ -23,10 +23,10 @@ export function CoachAvailabilityDropdown({
 }: CoachAvailabilityDropdownProps) {
   const [open, setOpen] = React.useState(false);
 
-  const triggerText = value === "previous" ? "Previous coach only" : "All coaches";
+  const triggerText = value === "previous" ? "Previous counselor only" : "All counselors";
   const ariaLabel = value === "previous"
-    ? "Showing availability for Previous coach only"
-    : "Showing availability for All coaches";
+    ? "Showing availability for Previous counselor only"
+    : "Showing availability for All counselors";
 
   const handleSelect = (newValue: CoachAvailabilityValue) => {
     onChange(newValue);
@@ -67,13 +67,13 @@ export function CoachAvailabilityDropdown({
             <User className="w-5 h-5 text-blue-700 flex-shrink-0 mt-0.5" aria-hidden />
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-medium text-gray-800">All coaches</span>
+                <span className="font-medium text-gray-800">All counselors</span>
                 <Badge variant="session" className="text-xs font-medium shrink-0">
                   Recommended
                 </Badge>
               </div>
               <p className="text-sm text-gray-700 mt-0.5">
-                We&apos;ll assign a coach based on availability and share all your previous notes with them.
+                We&apos;ll assign a counselor based on availability and share all your previous notes with them.
               </p>
             </div>
             <div className="flex-shrink-0 w-6 flex justify-end items-center self-stretch">
@@ -95,9 +95,9 @@ export function CoachAvailabilityDropdown({
           >
             <RotateCw className="w-5 h-5 text-blue-700 flex-shrink-0 mt-0.5" aria-hidden />
             <div className="flex-1 min-w-0">
-              <div className="font-medium text-gray-800">Previous coach only</div>
+              <div className="font-medium text-gray-800">Previous counselor only</div>
               <p className="text-sm text-gray-700 mt-0.5">
-                We&apos;ll assign a coach that you&apos;ve worked with before.
+                We&apos;ll show availability for the most recent person you&apos;ve met with who can cover the selected topic.
               </p>
             </div>
             <div className="flex-shrink-0 w-6 flex justify-end items-center self-stretch">
