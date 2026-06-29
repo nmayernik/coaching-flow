@@ -2,11 +2,12 @@
 
 import * as React from "react";
 import { Button } from "@/components/ui/button";
-import { Calendar, CircleCheck, Copy } from "lucide-react";
+import { Calendar, CircleCheck, Copy, RotateCcw } from "lucide-react";
 import { AlertCircle, Dotpoints01 } from "@untitledui/icons";
 import { Badge } from "@/components/ui/badge";
 import { formatDateForDisplay, formatShortDateForBadge, convertValueTimeToDisplay } from "./utils";
 import { categoryIcons } from "./categoryIcons";
+import { CoachRoleLabels, getCoachRoleLabels } from "@/lib/coachRoleLabels";
 
 const MOCK_TEAMS_LINK = "https://teams.microsoft.com/l/meetup-join/19%3ameeting_MOCK1234%40thread.v2/0?context=%7b%22Tid%22%3a%22mock_tenant_id%22%2c%22Oid%22%3a%22mock_user_id%22%7d";
 
@@ -127,6 +128,7 @@ interface SuccessScreenProps {
   meetingWithPreviousCoach?: boolean;
   /** Name of the previous coach; when set, shown in the badge as "Meeting with previous coach, {name}" */
   previousCoachName?: string;
+  coachRoleLabels?: CoachRoleLabels;
   /** Big C Coaching: when "myself", show "For yourself" instead of student name */
   focusTarget?: "myself" | "dependent" | null;
 }
@@ -144,12 +146,18 @@ export function SuccessScreen({
   coachContinuityEnabled = false,
   meetingWithPreviousCoach = false,
   previousCoachName,
-  focusTarget
+  focusTarget,
+  coachRoleLabels = getCoachRoleLabels()
 }: SuccessScreenProps) {
   const showPreviousCoachBadge = coachContinuityEnabled && meetingWithPreviousCoach;
+  const previousRole = coachRoleLabels.previous;
   const previousCoachBadgeLabel = previousCoachName
-    ? `Meeting with previous coach, ${previousCoachName}`
-    : "Meeting with previous coach";
+    ? `Meeting with ${previousRole}, ${previousCoachName}`
+    : `Meeting with ${previousRole}`;
+  const previousCoachSuccessName = previousCoachName ?? `your ${previousRole}`;
+  const previousCoachSuccessTitle = previousCoachName
+    ? `Rebooked with your ${previousRole}, ${previousCoachName}`
+    : `Rebooked with your ${previousRole}`;
   const iconData = categoryIcons[category];
   const forLabel = focusTarget === "myself" ? "yourself" : selectedStudent?.name ?? "";
   const forDisplayText = forLabel ? `For ${forLabel}` : "";
@@ -269,6 +277,22 @@ export function SuccessScreen({
             </div>
           </div>
 
+          {showPreviousCoachBadge && (
+            <div className="flex gap-4 rounded-xl border border-[var(--bhds-colors-gray-200)] bg-white p-4 text-left lg:p-5">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-100">
+                <RotateCcw className="h-6 w-6 text-blue-700" strokeWidth={1.5} aria-hidden />
+              </div>
+              <div className="min-w-0">
+                <p className="font-semibold text-gray-800 text-sm lg:text-base">
+                  {previousCoachSuccessTitle}
+                </p>
+                <p className="mt-0.5 text-xs text-gray-700 lg:text-sm">
+                  In the rare case your preferred {coachRoleLabels.singular} is unavailable, we&apos;ll do our best to assign another for that time. You will be able to rebook with {previousCoachSuccessName} for future sessions.
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Card 3: Reschedule info */}
           <div className="rounded-xl border border-[var(--bhds-colors-blue-300)] bg-[var(--bhds-colors-blue-50)] p-4 lg:p-5 flex gap-3">
             <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-blue-100">
@@ -346,6 +370,22 @@ export function SuccessScreen({
             </div>
           </div>
 
+          {showPreviousCoachBadge && (
+            <div className="mb-6 flex gap-4 rounded-xl border border-[var(--bhds-colors-gray-200)] bg-white p-4 text-left lg:mb-8 lg:p-5">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-100">
+                <RotateCcw className="h-6 w-6 text-blue-700" strokeWidth={1.5} aria-hidden />
+              </div>
+              <div className="min-w-0">
+                <p className="font-semibold text-gray-800 text-sm lg:text-base">
+                  {previousCoachSuccessTitle}
+                </p>
+                <p className="mt-0.5 text-xs text-gray-700 lg:text-sm">
+                  In the rare case your preferred {coachRoleLabels.singular} is unavailable, we&apos;ll do our best to assign another for that time. You will be able to rebook with {previousCoachSuccessName} for future sessions.
+                </p>
+              </div>
+            </div>
+          )}
+
           <div className="rounded-xl border border-[var(--bhds-colors-blue-300)] bg-[var(--bhds-colors-blue-50)] p-4 lg:p-5 mb-6 lg:mb-8 text-left flex gap-3 text-[var(--bhds-colors-blue-50)]">
             <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center">
               <AlertCircle className="w-5 h-5 text-[var(--bhds-colors-blue-700)]" aria-hidden />
@@ -380,4 +420,4 @@ export function SuccessScreen({
       </div>
     </div>
   );
-} 
+}

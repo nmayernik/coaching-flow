@@ -36,6 +36,9 @@ function CoachingFormContent({
     toggleScenarioSwitcher,
     coachContinuityEnabled,
     setCoachContinuityEnabled,
+    coachRoleVariant,
+    coachRoleLabels,
+    setCoachRoleVariant,
     teamsCallsEnabled,
     setTeamsCallsEnabled,
   } = useScenario()
@@ -95,6 +98,9 @@ function CoachingFormContent({
           onToggle={toggleScenarioSwitcher}
           coachContinuityEnabled={coachContinuityEnabled}
           onCoachContinuityChange={setCoachContinuityEnabled}
+          coachRoleVariant={coachRoleVariant}
+          coachRoleLabels={coachRoleLabels}
+          onCoachRoleVariantChange={setCoachRoleVariant}
           teamsCallsEnabled={teamsCallsEnabled}
           onTeamsCallsChange={setTeamsCallsEnabled}
         />
@@ -267,4 +273,3 @@ export function CoachingFormFeature({
     </ScenarioProvider>
   )
 }
-

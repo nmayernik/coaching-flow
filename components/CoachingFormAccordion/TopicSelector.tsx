@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { organizeTopics, getFeaturedTopicDescriptions } from "./utils";
 import { NoTopicsEmptyState } from "./NoTopicsEmptyState";
+import { CoachRoleLabels, getCoachRoleLabels } from "@/lib/coachRoleLabels";
 
 interface TopicSelectorProps {
   category: string;
@@ -15,6 +16,7 @@ interface TopicSelectorProps {
   onTopicChange: (topic: string) => void;
   onNoteChange: (note: string) => void;
   selectedStudent?: { age: string };
+  coachRoleLabels?: CoachRoleLabels;
 }
 
 export function TopicSelector({ 
@@ -25,7 +27,8 @@ export function TopicSelector({
   studentName,
   onTopicChange, 
   onNoteChange,
-  selectedStudent
+  selectedStudent,
+  coachRoleLabels = getCoachRoleLabels()
 }: TopicSelectorProps) {
   const childAge = selectedStudent?.age || "";
   const { featured, regular } = organizeTopics(availableTopics, category, childAge);
@@ -123,7 +126,7 @@ export function TopicSelector({
           className="min-h-[80px] lg:min-h-[100px] rounded-lg lg:rounded-xl border-gray-200 text-sm" 
           aria-describedby="coach-note-description"
         />
-        <div id="coach-note-description" className="sr-only">Optional field for additional notes to your coach</div>
+        <div id="coach-note-description" className="sr-only">Optional field for additional notes to your {coachRoleLabels.singular}</div>
       </div>
     </div>
   );

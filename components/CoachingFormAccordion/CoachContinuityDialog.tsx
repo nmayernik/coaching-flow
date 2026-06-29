@@ -9,15 +9,18 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { RotateCw, Calendar, Lightbulb, Clock, Globe } from "lucide-react";
+import { CoachRoleLabels, getCoachRoleLabels } from "@/lib/coachRoleLabels";
 
 interface CoachContinuityDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  coachRoleLabels?: CoachRoleLabels;
 }
 
 export function CoachContinuityDialog({
   isOpen,
-  onOpenChange
+  onOpenChange,
+  coachRoleLabels = getCoachRoleLabels()
 }: CoachContinuityDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -28,11 +31,11 @@ export function CoachContinuityDialog({
               <RotateCw className="w-5 h-5 text-blue-700" />
             </div>
             <DialogTitle className="text-lg lg:text-xl font-semibold text-blue-900">
-              Coach Continuity in College Coach
+              {coachRoleLabels.titleSingular} continuity in College Coach
             </DialogTitle>
           </div>
           <DialogDescription className="text-sm lg:text-base text-gray-700 mt-2">
-            You can now schedule sessions with a coach you've met with before.
+            You can now schedule sessions with a {coachRoleLabels.singular} you&apos;ve met with before.
           </DialogDescription>
         </DialogHeader>
         
@@ -50,7 +53,7 @@ export function CoachContinuityDialog({
                 </div>
               </div>
               <p className="text-sm lg:text-base text-gray-700 flex-1">
-                If you've already had a session with a coach on a topic, you can choose to schedule a follow-up session with the same coach.
+                If you&apos;ve already had a session with a {coachRoleLabels.singular} on a topic, you can choose to schedule a follow-up session with the same {coachRoleLabels.singular}.
               </p>
             </div>
             
@@ -62,7 +65,7 @@ export function CoachContinuityDialog({
                 </div>
               </div>
               <p className="text-sm lg:text-base text-gray-700 flex-1">
-                Certain coaches specialize in certain topics, so you may not be able to have every session with the same coach.
+                Certain {coachRoleLabels.plural} specialize in certain topics, so you may not be able to have every session with the same {coachRoleLabels.singular}.
               </p>
             </div>
             
@@ -74,7 +77,7 @@ export function CoachContinuityDialog({
                 </div>
               </div>
               <p className="text-sm lg:text-base text-gray-700 flex-1">
-                For quicker appointment times, you can still book with any coach on our team. We share all our notes about your past interactions so we can pick up right where you left off.
+                For quicker appointment times, you can still book with {coachRoleLabels.any} on our team. We share all our notes about your past interactions so we can pick up right where you left off.
               </p>
             </div>
           </div>

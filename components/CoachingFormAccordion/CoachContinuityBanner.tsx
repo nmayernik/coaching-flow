@@ -4,19 +4,22 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { PreviousCoachSession } from "./types";
 import { Calendar, RotateCw } from "lucide-react";
+import { CoachRoleLabels, getCoachRoleLabels } from "@/lib/coachRoleLabels";
 
 interface CoachContinuityBannerProps {
   previousCoach: PreviousCoachSession | null;
   isPreviousCoachSelected: boolean;
   onToggle: () => void;
   onMoreDetails: () => void;
+  coachRoleLabels?: CoachRoleLabels;
 }
 
 export function CoachContinuityBanner({
   previousCoach,
   isPreviousCoachSelected,
   onToggle,
-  onMoreDetails
+  onMoreDetails,
+  coachRoleLabels = getCoachRoleLabels()
 }: CoachContinuityBannerProps) {
   if (!previousCoach) {
     return null;
@@ -38,7 +41,7 @@ export function CoachContinuityBanner({
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
           <div className="flex-1">
             <div className="text-sm lg:text-base font-medium text-gray-800 mb-1">
-              Showing availability for all coaches.
+              Showing availability for {coachRoleLabels.all}.
             </div>
             <div className="text-xs lg:text-sm text-gray-700">
               We share notes from any past sessions.
@@ -49,7 +52,7 @@ export function CoachContinuityBanner({
               More details
             </Button>
             <Button variant="secondary" size="default" onClick={onToggle}>
-              Switch to your previous coach
+              Switch to your {coachRoleLabels.previous}
             </Button>
           </div>
         </div>
@@ -58,7 +61,7 @@ export function CoachContinuityBanner({
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
           <div className="flex-1 min-w-0">
             <div className="text-sm lg:text-base font-medium text-gray-900 mb-2">
-              Matching you with a previous coach
+              Matching you with a {coachRoleLabels.previous}
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
@@ -80,7 +83,7 @@ export function CoachContinuityBanner({
               More details
             </Button>
             <Button variant="secondary" size="default" onClick={onToggle}>
-              Switch to any coach
+              Switch to {coachRoleLabels.any}
             </Button>
           </div>
         </div>

@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { useSearchParams } from "next/navigation"
 import { Scenario, ScenarioDefinition } from "@/lib/scenarios/types"
+import { COACH_ROLE_VARIANTS, CoachRoleLabels, CoachRoleVariant, getCoachRoleLabels } from "@/lib/coachRoleLabels"
 
 interface ScenarioSwitcherProps {
   scenarios: ScenarioDefinition[]
@@ -18,11 +19,14 @@ interface ScenarioSwitcherProps {
   onToggle: () => void
   coachContinuityEnabled: boolean
   onCoachContinuityChange: (enabled: boolean) => void
+  coachRoleVariant: CoachRoleVariant
+  coachRoleLabels: CoachRoleLabels
+  onCoachRoleVariantChange: (variant: CoachRoleVariant) => void
   teamsCallsEnabled: boolean
   onTeamsCallsChange: (enabled: boolean) => void
 }
 
-export function ScenarioSwitcher({ scenarios, currentScenario, onScenarioChange, isOpen, onToggle, coachContinuityEnabled, onCoachContinuityChange, teamsCallsEnabled, onTeamsCallsChange }: ScenarioSwitcherProps) {
+export function ScenarioSwitcher({ scenarios, currentScenario, onScenarioChange, isOpen, onToggle, coachContinuityEnabled, onCoachContinuityChange, coachRoleVariant, coachRoleLabels, onCoachRoleVariantChange, teamsCallsEnabled, onTeamsCallsChange }: ScenarioSwitcherProps) {
   const searchParams = useSearchParams()
   const [copiedUrl, setCopiedUrl] = React.useState<string | null>(null)
 
@@ -82,12 +86,12 @@ export function ScenarioSwitcher({ scenarios, currentScenario, onScenarioChange,
               <div className="flex items-center justify-between gap-3">
                 <div className="flex-1 min-w-0">
                   <Label htmlFor="coach-continuity" className="text-sm font-medium text-gray-800 cursor-pointer">
-                    Coach Continuity
+                    {coachRoleLabels.titleSingular} continuity
                   </Label>
                   <p className="text-xs text-gray-600 mt-0.5">
                     {coachContinuityEnabled
-                      ? "Banner and option to book with previous coach are shown."
-                      : "All coaches’ availability shown; no coach continuity messaging."}
+                      ? `Banner and option to book with ${coachRoleLabels.previous} are shown.`
+                      : `${coachRoleLabels.titlePlural} availability is shown without continuity messaging.`}
                   </p>
                 </div>
                 <Switch
@@ -96,6 +100,34 @@ export function ScenarioSwitcher({ scenarios, currentScenario, onScenarioChange,
                   onCheckedChange={onCoachContinuityChange}
                   aria-label="Enable Coach Continuity"
                 />
+              </div>
+            </div>
+
+            {/* Role title selector */}
+            <div className="mb-4 p-4 rounded-lg border border-gray-200 bg-gray-50">
+              <Label className="text-sm font-medium text-gray-800">
+                Role title
+              </Label>
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                {COACH_ROLE_VARIANTS.map((variant) => {
+                  const labels = getCoachRoleLabels(variant)
+                  const isActive = coachRoleVariant === variant
+
+                  return (
+                    <button
+                      key={variant}
+                      type="button"
+                      onClick={() => onCoachRoleVariantChange(variant)}
+                      className={`rounded-lg border px-3 py-2 text-left text-sm font-medium transition-colors ${
+                        isActive
+                          ? "border-blue-500 bg-blue-50 text-blue-800"
+                          : "border-gray-200 bg-white text-gray-800 hover:border-gray-300"
+                      }`}
+                    >
+                      {labels.titleSingular}
+                    </button>
+                  )
+                })}
               </div>
             </div>
 

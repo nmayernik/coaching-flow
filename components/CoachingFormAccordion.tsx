@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import * as Accordion from "@radix-ui/react-accordion";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -41,7 +42,8 @@ export default function CoachingFormAccordion({
   onCompletedStepsChange,
   onCategoryChange 
 }: CoachingFormAccordionProps) {
-  const { currentScenario, coachContinuityEnabled, teamsCallsEnabled } = useScenario();
+  const { currentScenario, coachContinuityEnabled, coachRoleLabels, teamsCallsEnabled } = useScenario();
+  const searchParams = useSearchParams();
   
   // State for form values
   const [step, setStep] = React.useState(0); // 0, 1, 2
@@ -77,6 +79,7 @@ export default function CoachingFormAccordion({
   const [usePreviousCoach, setUsePreviousCoach] = React.useState(false);
   const [isCoachDialogOpen, setIsCoachDialogOpen] = React.useState(false);
   const [isVideoCallsDialogOpen, setIsVideoCallsDialogOpen] = React.useState(false);
+  const hasAppliedDeepLink = React.useRef(false);
   
   // Get scenario-aware data
   const baseStudents = getStudentsForScenario(currentScenario);
@@ -86,6 +89,30 @@ export default function CoachingFormAccordion({
   
   // Combine base students with added students
   const students = [...baseStudents, ...addedStudents];
+
+  React.useEffect(() => {
+    if (hasAppliedDeepLink.current) {
+      return;
+    }
+
+    const shouldStartAtContinuity = searchParams.get("startAt") === "continuity" || searchParams.get("step") === "3";
+    if (!shouldStartAtContinuity) {
+      return;
+    }
+
+    const defaultStudent = students.find((student) => student.id === 1) ?? students[0];
+    if (!defaultStudent) {
+      return;
+    }
+
+    hasAppliedDeepLink.current = true;
+    setSelectedStudent(defaultStudent);
+    setCategory("College Admissions");
+    setTopic("Preparing College Applications");
+    setStep(2);
+    setCompletedSteps([0, 1]);
+    setUsePreviousCoach(searchParams.get("coachSelection") === "previous");
+  }, [searchParams, students]);
   
   // Filter out removed existing students
   const filteredExistingStudents = existingStudents.filter(existing => {
@@ -121,9 +148,11 @@ export default function CoachingFormAccordion({
       }
     } else {
       setAvailableCategories([]);
-      setCategory("");
-      setTopic("");
-      setAvailableTopics([]);
+      if (!hasAppliedDeepLink.current) {
+        setCategory("");
+        setTopic("");
+        setAvailableTopics([]);
+      }
     }
   }, [selectedStudent, category, currentScenario]);
 
@@ -176,17 +205,21 @@ export default function CoachingFormAccordion({
       }
     } else {
       setAvailableTopics([]);
-      setTopic("");
+      if (!hasAppliedDeepLink.current) {
+        setTopic("");
+      }
     }
     
-    // Reset coach selection when student, category, or topic changes
-    setUsePreviousCoach(false);
+    // Reset coach selection when student, category, or topic changes, unless a deep link explicitly preselects it.
+    if (!(hasAppliedDeepLink.current && searchParams.get("coachSelection") === "previous")) {
+      setUsePreviousCoach(false);
+    }
     
     // Notify parent component of category change
     if (onCategoryChange && category) {
       onCategoryChange(category);
     }
-  }, [category, selectedStudent, topic, onCategoryChange, currentScenario]);
+  }, [category, selectedStudent, topic, onCategoryChange, currentScenario, searchParams]);
 
   // Notify parent of step changes
   React.useEffect(() => {
@@ -377,6 +410,7 @@ export default function CoachingFormAccordion({
           coachContinuityEnabled={coachContinuityEnabled}
           meetingWithPreviousCoach={usePreviousCoach}
           previousCoachName={usePreviousCoach && previousCoach ? previousCoach.coachName : undefined}
+          coachRoleLabels={coachRoleLabels}
           focusTarget={currentScenario === "big-c-coaching" ? focusTarget : undefined}
         />
       </div>
@@ -636,7 +670,7 @@ export default function CoachingFormAccordion({
                         className="min-h-[80px] lg:min-h-[100px] rounded-lg lg:rounded-xl border-gray-200 text-sm" 
                         aria-describedby="coach-note-intro-description"
                       />
-                      <div id="coach-note-intro-description" className="sr-only">Optional field for additional notes to your coach</div>
+                      <div id="coach-note-intro-description" className="sr-only">Optional field for additional notes to your {coachRoleLabels.singular}</div>
                     </div>
                   </div>
                 ) : (
@@ -649,6 +683,7 @@ export default function CoachingFormAccordion({
                     onTopicChange={setTopic}
                     onNoteChange={setNote}
                     selectedStudent={selectedStudent || undefined}
+                    coachRoleLabels={coachRoleLabels}
                   />
                 )}
                 <Button type="button" size="lg" onClick={() => handleContinue(1)} className="w-full text-base lg:!text-lg bg-yellow-500 hover:bg-yellow-400 active:bg-yellow-600 text-blue-800 rounded-lg lg:rounded-xl font-semibold px-4 lg:px-6 py-4 sm:py-5 lg:!py-8 touch-manipulation" style={{ minHeight: '52px' }}>Continue</Button>
@@ -670,19 +705,20 @@ export default function CoachingFormAccordion({
 
                 {coachContinuityEnabled && previousCoach ? (
                   <>
-                    <div className="flex justify-between items-center gap-4 mb-3">
+                    <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                       <span className="font-medium text-base text-gray-800">Choose a date and time <span className="text-red-500">*</span></span>
-                      <span className="inline-flex items-center gap-2 text-base text-gray-800">
-                        Showing availability for:
+                      <span className="flex min-w-0 flex-col gap-1.5 text-base text-gray-800 sm:flex-row sm:items-center sm:gap-2">
+                        <span className="shrink-0">Showing availability for:</span>
                         <CoachAvailabilityDropdown
                           value={usePreviousCoach ? "previous" : "all"}
                           onChange={(value) => setUsePreviousCoach(value === "previous")}
                           onMoreDetails={() => setIsCoachDialogOpen(true)}
                           previousCoach={previousCoach}
+                          coachRoleLabels={coachRoleLabels}
                         />
                       </span>
                     </div>
-                    {usePreviousCoach && <CoachContinuityLine previousCoach={previousCoach} />}
+                    {usePreviousCoach && <CoachContinuityLine previousCoach={previousCoach} coachRoleLabels={coachRoleLabels} />}
                     <DateTimeSelector
                       selectedDate={date}
                       selectedTime={time}
@@ -797,6 +833,7 @@ export default function CoachingFormAccordion({
         <CoachContinuityDialog
           isOpen={isCoachDialogOpen}
           onOpenChange={setIsCoachDialogOpen}
+          coachRoleLabels={coachRoleLabels}
         />
       )}
       {/* Video Calls (Teams) Dialog - only when Teams calls is enabled */}
@@ -808,4 +845,4 @@ export default function CoachingFormAccordion({
       )}
     </div>
   );
-} 
+}
