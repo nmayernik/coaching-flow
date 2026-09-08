@@ -2,7 +2,8 @@
 
 import * as Accordion from "@radix-ui/react-accordion"
 import * as React from "react"
-import { Calendar, CircleCheck, CircleDollarSign, FileText } from "lucide-react"
+import Link from "next/link"
+import { Calendar, CircleCheck, CircleDollarSign, Copy, ExternalLink, FileText, Video } from "lucide-react"
 
 import { BUC_FAMILY_MEMBERS, type BucFamilyMember } from "@/lib/bucData"
 import { cn } from "@/lib/utils"
@@ -23,8 +24,10 @@ import { DateTimeSelector } from "./DateTimeSelector"
 import { PhoneNumberSelector } from "./PhoneNumberSelector"
 import type { CoachingFormAccordionProps } from "./types"
 import { convertValueTimeToDisplay, formatDateForDisplay } from "./utils"
+import { VideoCallsDialog } from "./VideoCallsDialog"
 
 const BUC_TOPICS = ["College Admissions", "College Finance", "Career Planning"]
+const MOCK_TEAMS_LINK = "https://teams.microsoft.com/l/meetup-join/19%3ameeting_MOCK1234%40thread.v2/0?context=%7b%22Tid%22%3a%22mock_tenant_id%22%2c%22Oid%22%3a%22mock_user_id%22%7d"
 
 export function BucCollegeCoachForm({
   onStepChange,
@@ -44,6 +47,7 @@ export function BucCollegeCoachForm({
   const [isDragging, setIsDragging] = React.useState(false)
   const [error, setError] = React.useState("")
   const [isSubmitted, setIsSubmitted] = React.useState(false)
+  const [isVideoCallsDialogOpen, setIsVideoCallsDialogOpen] = React.useState(false)
   const fileInputRef = React.useRef<HTMLInputElement>(null)
 
   React.useEffect(() => {
@@ -92,21 +96,6 @@ export function BucCollegeCoachForm({
     setIsSubmitted(true)
   }
 
-  const resetForm = () => {
-    setStep(0)
-    setCompletedSteps([])
-    setSelectedMember(null)
-    setTopic("")
-    setNote("")
-    setDate("")
-    setTime("")
-    setPhone("")
-    setTermsAccepted(false)
-    setAttachedFileName(null)
-    setError("")
-    setIsSubmitted(false)
-  }
-
   if (isSubmitted) {
     return (
       <BucBookingSuccess
@@ -115,7 +104,6 @@ export function BucCollegeCoachForm({
         date={date}
         time={time}
         phone={phone}
-        onScheduleAnother={resetForm}
       />
     )
   }
@@ -238,9 +226,14 @@ export function BucCollegeCoachForm({
 
                 <section aria-labelledby="buc-phone-heading">
                   <h2 id="buc-phone-heading" className="mb-3 text-base font-medium text-gray-800">
-                    Where should we call you? <span className="text-red-500">*</span>
+                    Where should we call you if we run into issues connecting? <span className="text-red-500">*</span>
                   </h2>
-                  <PhoneNumberSelector phone={phone} onPhoneChange={setPhone} />
+                  <PhoneNumberSelector
+                    phone={phone}
+                    onPhoneChange={setPhone}
+                    teamsCallsMode
+                    onLearnMore={() => setIsVideoCallsDialogOpen(true)}
+                  />
                 </section>
 
                 <section aria-labelledby="buc-attachment-heading">
@@ -318,6 +311,10 @@ export function BucCollegeCoachForm({
           </div>
         )}
       </Accordion.Root>
+      <VideoCallsDialog
+        isOpen={isVideoCallsDialogOpen}
+        onOpenChange={setIsVideoCallsDialogOpen}
+      />
     </div>
   )
 }
@@ -415,15 +412,25 @@ function BucBookingSuccess({
   date,
   time,
   phone,
-  onScheduleAnother,
 }: {
   student: BucFamilyMember | null
   topic: string
   date: string
   time: string
   phone: string
-  onScheduleAnother: () => void
 }) {
+  const [copiedLink, setCopiedLink] = React.useState(false)
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(MOCK_TEAMS_LINK)
+      setCopiedLink(true)
+      window.setTimeout(() => setCopiedLink(false), 2000)
+    } catch {
+      setCopiedLink(false)
+    }
+  }
+
   return (
     <div className="animate-in rounded-xl border border-gray-100 bg-white p-6 text-center shadow-sm fade-in slide-in-from-bottom-4 lg:rounded-2xl lg:p-8">
       <div className="mb-5 flex justify-center">
@@ -432,7 +439,18 @@ function BucBookingSuccess({
         </span>
       </div>
       <h2 className="text-xl font-semibold text-gray-800 lg:text-2xl">Your session is booked!</h2>
-      <p className="mt-2 text-sm text-gray-600 lg:text-base">2 credits were used and your 365 days of College Coach access are now active.</p>
+      <p className="mt-2 text-sm text-gray-600 lg:text-base">Your 365 days of College Coach access are now active.</p>
+
+      <div className="mx-auto mt-6 grid max-w-md grid-cols-2 gap-3 text-left">
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+          <p className="text-xs font-medium uppercase text-gray-600">Credits used</p>
+          <p className="mt-1 text-2xl font-semibold text-blue-800">2</p>
+        </div>
+        <div className="rounded-lg border border-gray-200 bg-white p-4">
+          <p className="text-xs font-medium uppercase text-gray-600">Credits available</p>
+          <p className="mt-1 text-2xl font-semibold text-gray-800">23</p>
+        </div>
+      </div>
 
       <div className="my-7 grid gap-4 text-left sm:grid-cols-2">
         <div className="flex gap-3 rounded-lg border border-gray-200 p-4">
@@ -440,7 +458,28 @@ function BucBookingSuccess({
           <div>
             <p className="font-medium text-gray-800">{formatDateForDisplay(date)}</p>
             <p className="mt-1 text-sm text-gray-700">{convertValueTimeToDisplay(time)} EST</p>
-            <p className="mt-1 text-sm text-gray-700">We&apos;ll call {phone}</p>
+            <div className="mt-3 flex items-start gap-2">
+              <Video className="mt-0.5 h-4 w-4 shrink-0 text-blue-700" aria-hidden="true" />
+              <div>
+                <a
+                  href={MOCK_TEAMS_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-blue-700 underline underline-offset-2 hover:text-blue-800"
+                >
+                  Join Microsoft Teams meeting
+                </a>
+                <button
+                  type="button"
+                  onClick={handleCopyLink}
+                  className="mt-2 flex items-center gap-1.5 text-sm font-medium text-blue-700 hover:underline"
+                >
+                  <Copy className="h-4 w-4" aria-hidden="true" />
+                  {copiedLink ? "Copied!" : "Copy meeting link"}
+                </button>
+              </div>
+            </div>
+            <p className="mt-3 text-sm text-gray-700">If we can&apos;t connect, we&apos;ll call {phone}.</p>
           </div>
         </div>
         <div className="flex gap-3 rounded-lg border border-gray-200 p-4">
@@ -453,9 +492,17 @@ function BucBookingSuccess({
         </div>
       </div>
 
-      <Button type="button" variant="secondary" size="lg" onClick={onScheduleAnother} className="w-full sm:w-auto">
-        Schedule another appointment
-      </Button>
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <Button asChild variant="secondary" size="lg" className="flex-1">
+          <Link href="/buc/">Back to Benefits</Link>
+        </Button>
+        <Button asChild size="lg" className="flex-1">
+          <Link href="/buc/college-coach/portal/">
+            Visit College Coach
+            <ExternalLink aria-hidden="true" />
+          </Link>
+        </Button>
+      </div>
     </div>
   )
 }
