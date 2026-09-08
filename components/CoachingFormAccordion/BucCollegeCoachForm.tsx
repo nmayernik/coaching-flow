@@ -338,7 +338,7 @@ function BucFamilyMemberCard({
       aria-label={`${member.name}, ${member.ageLabel}${eligible ? ", eligible for College Coach" : ", not eligible for College Coach"}`}
       onClick={() => onSelect(member)}
       className={cn(
-        "flex min-h-[116px] w-full flex-col items-start justify-between rounded-xl border p-4 text-left transition-colors",
+        "flex min-h-[116px] w-full flex-col items-start justify-center rounded-xl border p-4 text-left transition-colors",
         eligible && !selected && "border-gray-400 bg-white hover:bg-gray-50",
         eligible && selected && "border-white bg-blue-50 ring-2 ring-blue-700",
         !eligible && "cursor-not-allowed border-gray-200 bg-gray-50 text-gray-400"
@@ -347,9 +347,6 @@ function BucFamilyMemberCard({
       <span>
         <span className={cn("block font-medium", eligible ? "text-gray-800" : "text-gray-500")}>{member.name}</span>
         <span className={cn("mt-1 block text-sm", eligible ? "text-gray-700" : "text-gray-400")}>{member.ageLabel}</span>
-      </span>
-      <span className={cn("mt-3 text-xs font-medium", eligible ? "text-blue-700" : "text-gray-400")}>
-        {eligible ? "Eligible" : "Not eligible (ages 14-18)"}
       </span>
     </button>
   )
