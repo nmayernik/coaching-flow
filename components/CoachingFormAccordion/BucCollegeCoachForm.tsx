@@ -177,26 +177,19 @@ export function BucCollegeCoachForm({
                   <h2 id="buc-topic-heading" className="mb-4 text-lg font-medium text-gray-800">
                     Choose a topic <span className="text-red-500">*</span>
                   </h2>
-                  {!selectedMember && (
-                    <div className="rounded-lg border bg-gray-50 p-4 text-center text-sm text-gray-700">
-                      Select an eligible student to see available topics
-                    </div>
-                  )}
-                  {selectedMember && (
-                    <div className="grid animate-in grid-cols-1 gap-3 p-[2px] fade-in sm:grid-cols-3 sm:gap-4 lg:gap-5">
-                      {BUC_TOPICS.map((topicName) => (
-                        <CategoryCard
-                          key={topicName}
-                          categoryName={topicName}
-                          selectedStudent={null}
-                          selectedCategory={topic}
-                          onSelect={setTopic}
-                          forceAvailable
-                          hideDescription
-                        />
-                      ))}
-                    </div>
-                  )}
+                  <div className="grid grid-cols-1 gap-3 p-[2px] sm:grid-cols-3 sm:gap-4 lg:gap-5">
+                    {BUC_TOPICS.map((topicName) => (
+                      <CategoryCard
+                        key={topicName}
+                        categoryName={topicName}
+                        selectedStudent={null}
+                        selectedCategory={topic}
+                        onSelect={setTopic}
+                        forceAvailable
+                        hideDescription
+                      />
+                    ))}
+                  </div>
                 </section>
 
                 <section aria-labelledby="buc-note-heading">
