@@ -111,13 +111,14 @@ export function CollegeCoachBenefit() {
         <DialogContent className="h-dvh w-screen max-w-none gap-0 overflow-hidden rounded-none border-0 p-0 [&>button]:hidden">
           <DialogHeader className="sr-only">
             <DialogTitle>Book a College Coach appointment</DialogTitle>
-            <DialogDescription>Select a student, focus area, date, and time for your first appointment.</DialogDescription>
+            <DialogDescription>Select a student, topic, date, and time for your first appointment.</DialogDescription>
           </DialogHeader>
           <Suspense fallback={<div className="flex h-full items-center justify-center text-[#176080]">Loading appointment options...</div>}>
             <CoachingFormFeature
               showChrome={false}
               showScenarioSwitcher={false}
               allowCoachContinuity={false}
+              flowVariant="buc-college-coach"
               onRequestClose={() => setBookingOpen(false)}
             />
           </Suspense>

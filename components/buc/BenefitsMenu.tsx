@@ -22,9 +22,10 @@ import type { LucideIcon } from "lucide-react"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { cn } from "@/lib/utils"
+import { BUC_FAMILY_MEMBERS, type BucAudience } from "@/lib/bucData"
 import { useMemo, useState } from "react"
 
-type Audience = "baby" | "preschool" | "school" | "teen" | "adult" | "senior" | "pets"
+type Audience = BucAudience
 
 type Benefit = {
   title: string
@@ -110,17 +111,6 @@ const benefits: Benefit[] = [
     href: "/buc/college-coach/",
     image: "/buc/college-coach-hero.png",
   },
-]
-
-const familyMembers: Array<{ id: string; label: string; audience: Audience; disabled?: boolean }> = [
-  { id: "homer", label: "Homer Simpson, 39", audience: "adult", disabled: true },
-  { id: "marge", label: "Marge Simpson, 36", audience: "adult" },
-  { id: "bart", label: "Bart Simpson, 10", audience: "school" },
-  { id: "lisa", label: "Lisa Simpson, 8", audience: "school" },
-  { id: "maggie", label: "Maggie Simpson, 6 mo", audience: "baby" },
-  { id: "abe", label: "Abe Simpson, 83", audience: "senior" },
-  { id: "mona", label: "Mona Simpson, 70", audience: "senior" },
-  { id: "pets", label: "Pets", audience: "pets" },
 ]
 
 const ageGroups: Array<{ label: string; value: Audience }> = [
@@ -218,7 +208,7 @@ export function BenefitsMenu() {
               type="single"
               value={selectedPerson}
               onValueChange={(value) => {
-                const member = familyMembers.find((item) => item.id === value)
+                const member = BUC_FAMILY_MEMBERS.find((item) => item.id === value)
                 if (!member) return
                 setSelectedPerson(member.id)
                 setSelectedAge("")
@@ -227,7 +217,7 @@ export function BenefitsMenu() {
               className="flex flex-wrap justify-start gap-2"
               aria-label="Select a family member"
             >
-              {familyMembers.map((member) => (
+              {BUC_FAMILY_MEMBERS.map((member) => (
                 <ToggleGroupItem
                   key={member.id}
                   value={member.id}
@@ -235,7 +225,7 @@ export function BenefitsMenu() {
                   variant="outline"
                   className="h-10 rounded-lg border-[#9f9f9f] bg-white px-3 text-[15px] text-[#176080] hover:bg-[#f3faff] data-[state=on]:border-[#176080] data-[state=on]:bg-[#e8f6fc] data-[state=on]:text-[#124c67]"
                 >
-                  {member.label}
+                  {member.menuLabel}
                   {member.disabled && <span className="text-xs font-normal text-[#89909e]">Not eligible</span>}
                 </ToggleGroupItem>
               ))}

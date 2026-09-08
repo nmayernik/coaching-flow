@@ -36,8 +36,17 @@ import { CoachContinuityDialog } from "./CoachingFormAccordion/CoachContinuityDi
 import { VideoCallsDialog } from "./CoachingFormAccordion/VideoCallsDialog";
 import { getPreviousCoachForTopic } from "@/lib/mockData";
 import { ONE_BH_TOPICS, getSubtopicsForOneBhTopic } from "@/lib/scenarios/oneBhTopics";
+import { BucCollegeCoachForm } from "./CoachingFormAccordion/BucCollegeCoachForm";
 
-export default function CoachingFormAccordion({ 
+export default function CoachingFormAccordion(props: CoachingFormAccordionProps) {
+  if (props.flowVariant === "buc-college-coach") {
+    return <BucCollegeCoachForm {...props} />;
+  }
+
+  return <DefaultCoachingFormAccordion {...props} />;
+}
+
+function DefaultCoachingFormAccordion({
   onStepChange, 
   onCompletedStepsChange,
   onCategoryChange 

@@ -9,11 +9,13 @@ import { ScenarioProvider, useScenario } from "@/contexts/ScenarioContext"
 import { ScenarioSwitcher } from "@/components/ScenarioSwitcher"
 import { Button } from "@/components/ui/button"
 import { ScenarioCatalogKey } from "@/lib/scenarios/types"
+import type { CoachingFlowVariant } from "@/components/CoachingFormAccordion/types"
 
 interface CoachingFormContentProps {
   showChrome?: boolean
   showScenarioSwitcher?: boolean
   onRequestClose?: () => void
+  flowVariant?: CoachingFlowVariant
 }
 
 interface CoachingFormFeatureProps extends CoachingFormContentProps {
@@ -25,6 +27,7 @@ function CoachingFormContent({
   showChrome = true,
   showScenarioSwitcher = true,
   onRequestClose,
+  flowVariant = "default",
 }: CoachingFormContentProps) {
   const [currentStep, setCurrentStep] = useState(0)
   const [completedSteps, setCompletedSteps] = useState<number[]>([])
@@ -44,15 +47,20 @@ function CoachingFormContent({
     setTeamsCallsEnabled,
   } = useScenario()
 
-  const steps = [
-    {
-      number: 1,
-      title: currentScenario === "big-c-coaching" ? "Focus and topic" : "Student and topic",
-      description: "Description",
-    },
-    { number: 2, title: "Focus area", description: "Description" },
-    { number: 3, title: "Date and time", description: "Description" },
-  ]
+  const steps = flowVariant === "buc-college-coach"
+    ? [
+        { number: 1, title: "Student and topic", description: "Description" },
+        { number: 2, title: "Date, time, and credits", description: "Description" },
+      ]
+    : [
+        {
+          number: 1,
+          title: currentScenario === "big-c-coaching" ? "Focus and topic" : "Student and topic",
+          description: "Description",
+        },
+        { number: 2, title: "Focus area", description: "Description" },
+        { number: 3, title: "Date and time", description: "Description" },
+      ]
 
   const getStepState = (stepIndex: number) => {
     if (completedSteps.includes(stepIndex)) return "completed"
@@ -248,6 +256,7 @@ function CoachingFormContent({
               onStepChange={setCurrentStep}
               onCompletedStepsChange={setCompletedSteps}
               onCategoryChange={setSelectedCategory}
+              flowVariant={flowVariant}
             />
           </div>
         </div>
@@ -264,6 +273,7 @@ export function CoachingFormFeature({
   showScenarioSwitcher = true,
   allowCoachContinuity = true,
   onRequestClose,
+  flowVariant = "default",
 }: CoachingFormFeatureProps) {
   return (
     <ScenarioProvider
@@ -274,6 +284,7 @@ export function CoachingFormFeature({
         showChrome={showChrome}
         showScenarioSwitcher={showScenarioSwitcher}
         onRequestClose={onRequestClose}
+        flowVariant={flowVariant}
       />
     </ScenarioProvider>
   )

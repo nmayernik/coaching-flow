@@ -18,8 +18,11 @@ export interface PreviousCoachSession {
   lastMeetingDate: string; // ISO date string
 }
 
+export type CoachingFlowVariant = "default" | "buc-college-coach";
+
 export interface CoachingFormAccordionProps {
   onStepChange?: (step: number) => void;
   onCompletedStepsChange?: (completedSteps: number[]) => void;
   onCategoryChange?: (category: string) => void;
-} 
+  flowVariant?: CoachingFlowVariant;
+}
