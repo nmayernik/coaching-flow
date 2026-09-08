@@ -439,13 +439,13 @@ function BucBookingSuccess({
       <p className="mt-2 text-sm text-gray-600 lg:text-base">Your 365 days of College Coach access are now active.</p>
 
       <div className="mx-auto mt-6 grid max-w-md grid-cols-2 gap-3 text-left">
-        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-          <p className="text-xs font-medium uppercase text-gray-600">Credits used</p>
-          <p className="mt-1 text-2xl font-semibold text-blue-800">2</p>
-        </div>
         <div className="rounded-lg border border-gray-200 bg-white p-4">
-          <p className="text-xs font-medium uppercase text-gray-600">Credits available</p>
+          <p className="text-sm font-medium text-gray-600">Credits available</p>
           <p className="mt-1 text-2xl font-semibold text-gray-800">23</p>
+        </div>
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+          <p className="text-sm font-medium text-gray-600">Credits used</p>
+          <p className="mt-1 text-2xl font-semibold text-blue-800">2</p>
         </div>
       </div>
 
