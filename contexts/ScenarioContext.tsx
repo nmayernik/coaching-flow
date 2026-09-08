@@ -27,9 +27,14 @@ const ScenarioContext = React.createContext<ScenarioContextType | undefined>(und
 interface ScenarioProviderProps {
   children: React.ReactNode
   scenarioCatalogKey?: ScenarioCatalogKey
+  allowCoachContinuity?: boolean
 }
 
-export function ScenarioProvider({ children, scenarioCatalogKey = "default" }: ScenarioProviderProps) {
+export function ScenarioProvider({
+  children,
+  scenarioCatalogKey = "default",
+  allowCoachContinuity = true,
+}: ScenarioProviderProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const scenarios = React.useMemo(() => getScenarioCatalog(scenarioCatalogKey), [scenarioCatalogKey])
@@ -44,6 +49,8 @@ export function ScenarioProvider({ children, scenarioCatalogKey = "default" }: S
   }
 
   const getInitialCoachContinuity = (): boolean => {
+    if (!allowCoachContinuity) return false
+
     const continuityParam = searchParams.get("coachContinuity") ?? searchParams.get("continuity")
     return ["true", "1", "on", "yes"].includes(continuityParam?.toLowerCase() ?? "")
   }
@@ -77,10 +84,11 @@ export function ScenarioProvider({ children, scenarioCatalogKey = "default" }: S
   }
 
   const setCoachContinuityEnabled = (enabled: boolean) => {
-    setCoachContinuityEnabledState(enabled)
+    const nextEnabled = allowCoachContinuity && enabled
+    setCoachContinuityEnabledState(nextEnabled)
 
     const params = new URLSearchParams(searchParams.toString())
-    if (enabled) {
+    if (nextEnabled) {
       params.set("coachContinuity", "true")
     } else {
       params.delete("coachContinuity")
@@ -128,7 +136,7 @@ export function ScenarioProvider({ children, scenarioCatalogKey = "default" }: S
     if (nextRoleVariant !== coachRoleVariant) {
       setCoachRoleVariantState(nextRoleVariant)
     }
-  }, [searchParams, currentScenario, scenarios, coachContinuityEnabled, coachRoleVariant])
+  }, [searchParams, currentScenario, scenarios, coachContinuityEnabled, coachRoleVariant, allowCoachContinuity])
 
   const toggleScenarioSwitcher = () => {
     setIsScenarioSwitcherOpen(!isScenarioSwitcherOpen)

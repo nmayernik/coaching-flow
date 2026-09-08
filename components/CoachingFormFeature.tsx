@@ -18,6 +18,7 @@ interface CoachingFormContentProps {
 
 interface CoachingFormFeatureProps extends CoachingFormContentProps {
   scenarioCatalogKey?: ScenarioCatalogKey
+  allowCoachContinuity?: boolean
 }
 
 function CoachingFormContent({
@@ -261,10 +262,14 @@ export function CoachingFormFeature({
   scenarioCatalogKey = "default",
   showChrome = true,
   showScenarioSwitcher = true,
+  allowCoachContinuity = true,
   onRequestClose,
 }: CoachingFormFeatureProps) {
   return (
-    <ScenarioProvider scenarioCatalogKey={scenarioCatalogKey}>
+    <ScenarioProvider
+      scenarioCatalogKey={scenarioCatalogKey}
+      allowCoachContinuity={allowCoachContinuity}
+    >
       <CoachingFormContent
         showChrome={showChrome}
         showScenarioSwitcher={showScenarioSwitcher}
