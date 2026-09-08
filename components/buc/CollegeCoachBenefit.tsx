@@ -27,22 +27,15 @@ export function CollegeCoachBenefit() {
 
   return (
     <main className="min-h-screen bg-white text-[#2f3033]">
-      <div className="border-b border-[#d9e4e9] bg-white">
-        <div className="mx-auto flex h-[76px] w-full max-w-[1232px] items-center justify-between px-5 sm:px-8 lg:px-10">
+      <div className="bg-[#f7fbfe]">
+        <div className="mx-auto flex h-[64px] w-full max-w-[960px] items-center px-5 sm:px-8">
           <Link
             href="/buc/"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[#0577b9] transition-colors hover:text-[#035f94]"
+            className="inline-flex items-center gap-2 text-[15px] font-semibold text-[#0577b9] transition-colors hover:text-[#035f94]"
           >
             <ChevronLeft aria-hidden="true" />
             All benefits
           </Link>
-          <Image
-            src="/BHLogo@2x.png"
-            alt="Bright Horizons"
-            width={160}
-            height={27}
-            priority
-          />
         </div>
       </div>
 
