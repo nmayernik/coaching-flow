@@ -3,10 +3,11 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Suspense, useState } from "react"
-import { ArrowRight, Check, ChevronLeft, GraduationCap } from "lucide-react"
+import { ArrowRight, ChevronDown, ChevronLeft } from "lucide-react"
 
 import { CoachingFormFeature } from "@/components/CoachingFormFeature"
 import { Button } from "@/components/ui/button"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import {
   Dialog,
   DialogContent,
@@ -14,98 +15,146 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { cn } from "@/lib/utils"
 
-const coachingTopics = [
-  "Build a balanced college list",
-  "Create an application timeline",
-  "Strengthen essays and applications",
-  "Understand financial aid and college costs",
+const benefitDetails = [
+  "Available for high school students ages 14-18.",
+  "Includes 365 days of College Coach app access.",
+  "Includes one 45-minute coaching session.",
+]
+
+const howItWorks = [
+  {
+    title: "Book a coaching session",
+    description: "Choose your student, a topic, and a time that works for your family.",
+  },
+  {
+    title: "Get expert college guidance",
+    description: "Meet one-on-one with a College Coach expert for a focused 45-minute session.",
+  },
+  {
+    title: "Use College Coach for a full year",
+    description: "Your app access stays active for 365 days. Book another session to renew for another year.",
+  },
 ]
 
 export function CollegeCoachBenefit() {
   const [bookingOpen, setBookingOpen] = useState(false)
+  const [creditsOpen, setCreditsOpen] = useState(false)
 
   return (
-    <main className="min-h-screen bg-white text-[#2f3033]">
-      <div className="bg-[#f7fbfe]">
-        <div className="mx-auto flex h-[64px] w-full max-w-[960px] items-center px-5 sm:px-8">
-          <Link
-            href="/buc/"
-            className="inline-flex items-center gap-2 text-[15px] font-semibold text-[#0577b9] transition-colors hover:text-[#035f94]"
-          >
-            <ChevronLeft aria-hidden="true" />
-            All benefits
-          </Link>
-        </div>
-      </div>
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_#edf8ff_0,_#f8fcff_42%,_#f7fbfe_82%)] text-[#2f3033]">
+      <div className="mx-auto w-full max-w-[1024px] px-5 pb-16 pt-10 sm:px-8 sm:pb-24 sm:pt-12">
+        <Link
+          href="/buc/"
+          className="inline-flex min-h-10 items-center gap-2 text-[15px] font-semibold text-[#176080] transition-colors hover:text-[#0f4d69] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#176080] focus-visible:ring-offset-2"
+        >
+          <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+          Back to all benefits
+        </Link>
 
-      <section className="relative isolate min-h-[430px] overflow-hidden bg-[#123f58] sm:min-h-[500px]" aria-labelledby="college-coach-title">
-        <Image
-          src="/buc/college-coach-hero.png"
-          alt="A high school student and parent meeting with a college counselor online"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-[62%_center]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#123f58]/95 via-[#123f58]/80 to-[#123f58]/5" />
-        <div className="relative mx-auto flex min-h-[430px] w-full max-w-[1232px] items-center px-5 py-16 sm:min-h-[500px] sm:px-8 lg:px-10">
-          <div className="max-w-[570px] text-white">
-            <span className="mb-5 inline-flex size-12 items-center justify-center rounded-full bg-[#f8d447] text-[#123f58]">
-              <GraduationCap aria-hidden="true" />
-            </span>
-            <p className="mb-3 text-sm font-semibold uppercase text-[#d8f1fb]">Education benefit</p>
-            <h1 id="college-coach-title" className="text-4xl font-semibold leading-tight sm:text-5xl">College Coach</h1>
-            <p className="mt-5 max-w-[520px] text-lg leading-7 text-white sm:text-xl sm:leading-8">
-              One-on-one guidance that helps your high school student move from college questions to a clear plan.
+        <div className="mt-6 space-y-8 sm:mt-7 sm:space-y-9">
+          <section
+            className="overflow-hidden rounded-[18px] border border-[#d9dde0] bg-white shadow-[0_1px_2px_rgba(20,58,78,0.04)]"
+            aria-labelledby="college-coach-title"
+          >
+            <div className="relative h-[220px] w-full sm:h-[312px]">
+              <Image
+                src="/buc/college-coach-hero.png"
+                alt="A high school student and parent meeting with a college counselor online"
+                fill
+                priority
+                sizes="(max-width: 640px) 100vw, 960px"
+                className="object-cover object-[56%_45%]"
+              />
+            </div>
+            <div className="px-6 py-7 sm:px-8 sm:py-8">
+              <h1 id="college-coach-title" className="text-[28px] font-semibold leading-9 text-[#173f54]">
+                College Coach
+              </h1>
+              <p className="mt-2 text-[17px] leading-7 text-[#6a7180] sm:text-lg">
+                Personal college guidance for high school students ages 14-18
+              </p>
+            </div>
+          </section>
+
+          <section
+            className="rounded-[18px] border border-[#d9dde0] bg-white px-6 py-8 shadow-[0_1px_2px_rgba(20,58,78,0.04)] sm:px-8 sm:py-9"
+            aria-labelledby="usage-rate-heading"
+          >
+            <p className="inline-flex rounded-full bg-[#173f54] px-4 py-2 text-xs font-semibold uppercase leading-none text-white">
+              Usage rate
             </p>
+            <h2 id="usage-rate-heading" className="mt-5 max-w-[820px] text-[25px] font-semibold leading-[1.35] text-[#173f54] sm:text-[28px]">
+              Two credits give you one year of College Coach access and one coaching session.
+            </h2>
+
+            <ul className="mt-5 space-y-2 pl-6 text-[16px] leading-6 text-[#6a7180] [list-style:disc] sm:text-[17px]">
+              {benefitDetails.map((detail) => (
+                <li key={detail} className="pl-1">{detail}</li>
+              ))}
+            </ul>
+
+            <div className="my-6 h-px bg-[#d9dde0]" />
+
+            <p className="text-[16px] leading-6 text-[#6a7180] sm:text-[17px]">
+              <span className="font-semibold text-[#173f54]">Credit cost:</span> 2 back-up care credits
+            </p>
+
+            <Collapsible open={creditsOpen} onOpenChange={setCreditsOpen} className="mt-6">
+              <CollapsibleTrigger asChild>
+                <button
+                  type="button"
+                  className="flex min-h-[92px] w-full items-center justify-between gap-4 rounded-[16px] bg-[#f5fafc] px-6 py-5 text-left text-[18px] font-semibold text-[#173f54] transition-colors hover:bg-[#edf7fb] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#176080] focus-visible:ring-offset-2 sm:px-8 sm:text-[20px]"
+                >
+                  <span>You have 25 credits available</span>
+                  <ChevronDown
+                    className={cn("h-6 w-6 shrink-0 text-[#111827] transition-transform duration-200", creditsOpen && "rotate-180")}
+                    aria-hidden="true"
+                  />
+                </button>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="px-6 pb-2 pt-5 text-[15px] leading-6 text-[#5f6877] data-[state=open]:animate-in data-[state=open]:fade-in sm:px-8 sm:text-base">
+                <p>After booking your first session, you will have 23 credits remaining.</p>
+                <p className="mt-2">Essay Reviews cost 1 credit per essay. One College List is available for 1 credit during each membership year.</p>
+              </CollapsibleContent>
+            </Collapsible>
+          </section>
+
+          <section
+            className="rounded-[18px] border border-[#d9dde0] bg-white px-6 py-8 shadow-[0_1px_2px_rgba(20,58,78,0.04)] sm:px-8 sm:py-9"
+            aria-labelledby="how-it-works-title"
+          >
+            <h2 id="how-it-works-title" className="text-[25px] font-semibold leading-8 text-[#173f54] sm:text-[27px]">
+              How it works
+            </h2>
+
+            <ol className="mt-7 space-y-7">
+              {howItWorks.map((item, index) => (
+                <li key={item.title} className="flex items-start gap-4 sm:gap-5">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#173f54] text-base font-semibold text-white">
+                    {index + 1}
+                  </span>
+                  <div className="pt-1">
+                    <h3 className="text-[17px] font-semibold leading-6 text-[#173f54] sm:text-lg">{item.title}</h3>
+                    <p className="mt-1 text-[15px] leading-6 text-[#6a7180] sm:text-base">{item.description}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+
             <Button
               type="button"
               size="lg"
               onClick={() => setBookingOpen(true)}
-              className="mt-8 h-12 px-6 text-base"
+              className="mt-8 h-12 w-full px-6 text-base sm:w-auto"
             >
               Book your first appointment
               <ArrowRight data-icon="inline-end" aria-hidden="true" />
             </Button>
-          </div>
+          </section>
         </div>
-      </section>
-
-      <section className="bg-[#f4fafc]">
-        <div className="mx-auto grid w-full max-w-[1232px] gap-10 px-5 py-14 sm:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:px-10 lg:py-20">
-          <div>
-            <p className="text-sm font-semibold uppercase text-[#176080]">Who is eligible</p>
-            <h2 className="mt-3 text-3xl font-semibold leading-tight text-[#173f54]">Support for the high school years</h2>
-            <p className="mt-5 text-lg leading-8 text-[#4c535d]">
-              College Coach is available for high school students ages 14-18 through your Bright Horizons benefits.
-            </p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {coachingTopics.map((topic) => (
-              <div key={topic} className="flex min-h-[88px] items-start gap-3 rounded-lg border border-[#c9dce5] bg-white p-5">
-                <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full bg-[#e8f6fc] text-[#176080]">
-                  <Check aria-hidden="true" />
-                </span>
-                <p className="font-semibold leading-6 text-[#284c5f]">{topic}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto w-full max-w-[1232px] px-5 py-14 sm:px-8 lg:px-10 lg:py-20" aria-labelledby="how-it-works-title">
-        <div className="max-w-[760px]">
-          <h2 id="how-it-works-title" className="text-3xl font-semibold text-[#173f54]">Personal guidance for what comes next</h2>
-          <p className="mt-5 text-lg leading-8 text-[#4c535d]">
-            Meet with a college admissions expert who can help your family prioritize decisions, answer questions, and turn the process into manageable next steps. Your first appointment starts with the student and topic you want to focus on.
-          </p>
-          <Button type="button" size="lg" onClick={() => setBookingOpen(true)} className="mt-8 h-12 px-6 text-base">
-            Book your first appointment
-            <ArrowRight data-icon="inline-end" aria-hidden="true" />
-          </Button>
-        </div>
-      </section>
+      </div>
 
       <Dialog open={bookingOpen} onOpenChange={setBookingOpen}>
         <DialogContent className="h-dvh w-screen max-w-none gap-0 overflow-hidden rounded-none border-0 p-0 [&>button]:hidden">
