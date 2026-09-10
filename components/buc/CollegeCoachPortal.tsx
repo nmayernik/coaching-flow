@@ -14,6 +14,7 @@ import {
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { CollegeCoachBookingDialog } from "@/components/buc/CollegeCoachBookingDialog"
 import {
   Card,
   CardContent,
@@ -41,6 +42,7 @@ const MOCK_TEAMS_LINK =
   "https://teams.microsoft.com/l/meetup-join/19%3ameeting_MOCK1234%40thread.v2/0?context=%7b%22Tid%22%3a%22mock_tenant_id%22%2c%22Oid%22%3a%22mock_user_id%22%7d"
 
 export function CollegeCoachPortal() {
+  const [bookingOpen, setBookingOpen] = React.useState(false)
   const [studentId, setStudentId] = React.useState(
     eligibleStudents[0]?.id ?? ""
   )
@@ -73,7 +75,8 @@ export function CollegeCoachPortal() {
               Welcome back, {selectedStudent?.name.split(" ")[0] ?? "student"}
             </h1>
             <p className="mt-2 text-base text-[#5e7079]">
-              Your College Coach membership is active.
+              Your College Coach membership is active for 364 more days,
+              through September 9, 2027.
             </p>
           </div>
 
@@ -113,7 +116,10 @@ export function CollegeCoachPortal() {
           </TabsList>
 
           <TabsContent value="appointments" className="mt-8">
-            <AppointmentsView studentName={selectedStudent?.name ?? "Alex Simpson"} />
+            <AppointmentsView
+              studentName={selectedStudent?.name ?? "Alex Simpson"}
+              onBookAppointment={() => setBookingOpen(true)}
+            />
           </TabsContent>
 
           <TabsContent value="essay-reviews" className="mt-8">
@@ -137,6 +143,11 @@ export function CollegeCoachPortal() {
           </TabsContent>
         </Tabs>
       </main>
+
+      <CollegeCoachBookingDialog
+        open={bookingOpen}
+        onOpenChange={setBookingOpen}
+      />
     </div>
   )
 }
@@ -158,7 +169,13 @@ function PortalTab({
   )
 }
 
-function AppointmentsView({ studentName }: { studentName: string }) {
+function AppointmentsView({
+  studentName,
+  onBookAppointment,
+}: {
+  studentName: string
+  onBookAppointment: () => void
+}) {
   return (
     <section aria-labelledby="appointments-heading">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
@@ -170,8 +187,8 @@ function AppointmentsView({ studentName }: { studentName: string }) {
             Your upcoming coaching sessions for {studentName}.
           </p>
         </div>
-        <Button asChild variant="secondary">
-          <Link href="/buc/college-coach/">Book an appointment</Link>
+        <Button type="button" variant="secondary" onClick={onBookAppointment}>
+          Book an appointment
         </Button>
       </div>
 

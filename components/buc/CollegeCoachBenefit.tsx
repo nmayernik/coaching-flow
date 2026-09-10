@@ -2,19 +2,12 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { Suspense, useState } from "react"
+import { useState } from "react"
 import { ArrowRight, ChevronDown, ChevronLeft } from "lucide-react"
 
-import { CoachingFormFeature } from "@/components/CoachingFormFeature"
+import { CollegeCoachBookingDialog } from "@/components/buc/CollegeCoachBookingDialog"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 
 const benefitDetails = [
@@ -156,23 +149,10 @@ export function CollegeCoachBenefit() {
         </div>
       </div>
 
-      <Dialog open={bookingOpen} onOpenChange={setBookingOpen}>
-        <DialogContent className="h-dvh w-screen max-w-none gap-0 overflow-hidden rounded-none border-0 p-0 [&>button]:hidden">
-          <DialogHeader className="sr-only">
-            <DialogTitle>Book a College Coach appointment</DialogTitle>
-            <DialogDescription>Select a student, topic, date, and time for your first appointment.</DialogDescription>
-          </DialogHeader>
-          <Suspense fallback={<div className="flex h-full items-center justify-center text-[#176080]">Loading appointment options...</div>}>
-            <CoachingFormFeature
-              showChrome={false}
-              showScenarioSwitcher={false}
-              allowCoachContinuity={false}
-              flowVariant="buc-college-coach"
-              onRequestClose={() => setBookingOpen(false)}
-            />
-          </Suspense>
-        </DialogContent>
-      </Dialog>
+      <CollegeCoachBookingDialog
+        open={bookingOpen}
+        onOpenChange={setBookingOpen}
+      />
     </main>
   )
 }
