@@ -109,7 +109,8 @@ export const convertValueTimeToDisplay = (valueTime: string): string => {
 // Function to format date for display
 export const formatDateForDisplay = (dateString: string): string => {
   if (!dateString) return '';
-  return new Date(dateString).toLocaleDateString('en-US', { 
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString('en-US', {
     year: 'numeric', 
     month: 'long', 
     day: 'numeric' 
@@ -119,9 +120,10 @@ export const formatDateForDisplay = (dateString: string): string => {
 // Short date for success screen badge (e.g. { month: "Oct", day: "1" })
 export const formatShortDateForBadge = (dateString: string): { month: string; day: string } => {
   if (!dateString) return { month: '', day: '' };
-  const d = new Date(dateString);
+  const [year, month, day] = dateString.split('-').map(Number);
+  const d = new Date(year, month - 1, day);
   return {
     month: d.toLocaleDateString('en-US', { month: 'short' }),
     day: d.getDate().toString(),
   };
-}; 
+};
