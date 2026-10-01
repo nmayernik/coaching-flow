@@ -25,7 +25,6 @@ export default function Header() {
               <HeaderItem>Essay Reviews</HeaderItem>
               <HeaderItem>College Lists</HeaderItem>
               <HeaderItem>Resource Library</HeaderItem>
-              <HeaderItem>Benefit Overview</HeaderItem>
             </nav>
           </div>
 
