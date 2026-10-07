@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { useTeamsNamingStudy } from "@/contexts/TeamsNamingStudyContext"
+import { getBookingHeading } from "@/lib/teamsNamingStudy"
 import { X } from "lucide-react"
 import Header from "@/components/ui/header/header"
 import Footer from "@/components/ui/footer"
@@ -25,6 +27,8 @@ function CoachingFormContent({
   showScenarioSwitcher = true,
   onRequestClose,
 }: CoachingFormContentProps) {
+  const study = useTeamsNamingStudy()
+  const bookingHeading = study ? getBookingHeading(study.session.assignedVariant) : "Book an appointment"
   const [currentStep, setCurrentStep] = useState(0)
   const [completedSteps, setCompletedSteps] = useState<number[]>([])
   const [selectedCategory, setSelectedCategory] = useState<string>("")
@@ -68,10 +72,10 @@ function CoachingFormContent({
       {showChrome && <Header />}
 
       {!showChrome && (
-        <div className="border-b border-[#dddddd] bg-white">
+        <header className="border-b border-[#dddddd] bg-white">
           <div className="mx-auto w-full max-w-[1440px] px-6 md:px-10">
             <div className="relative flex h-[64px] items-center justify-center">
-              <div className="text-sm font-semibold text-[#1A475F]">New Appointment</div>
+              <div className="text-sm font-semibold text-[#1A475F]">{study ? "New session" : "New Appointment"}</div>
               {onRequestClose && (
                 <Button
                   type="button"
@@ -86,7 +90,7 @@ function CoachingFormContent({
               )}
             </div>
           </div>
-        </div>
+        </header>
       )}
 
       {showScenarioSwitcher && (
@@ -110,14 +114,14 @@ function CoachingFormContent({
         className={`flex-1 lg:max-w-7xl lg:mx-auto px-4 sm:px-6 lg:px-8 pt-2 sm:pt-3 lg:pt-12 pb-4 sm:pb-6 lg:pb-8 ${isModal ? "min-h-0 overflow-y-auto" : "min-h-screen"}`}
       >
         <div className="lg:hidden">
-          <h1 className="text-xl font-semibold text-blue-800">Book an appointment</h1>
+          <h1 className="text-xl font-semibold text-blue-800">{bookingHeading}</h1>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-16">
           <div className="hidden lg:block lg:col-span-1">
             <div className="sticky top-8">
               <div className="mb-4">
-                <h1 className="text-2xl font-semibold text-blue-800">Book an appointment</h1>
+                <h1 className="text-2xl font-semibold text-blue-800">{bookingHeading}</h1>
               </div>
 
               <div className="w-full py-4 lg:py-6">

@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useTeamsNamingStudy } from "@/contexts/TeamsNamingStudyContext"
 import { useRouter, useSearchParams } from "next/navigation"
 import { getScenarioCatalog, isValidScenario } from "@/lib/scenarios/catalogs"
 import { Scenario, ScenarioCatalogKey, ScenarioDefinition } from "@/lib/scenarios/types"
@@ -30,13 +31,15 @@ interface ScenarioProviderProps {
 }
 
 export function ScenarioProvider({ children, scenarioCatalogKey = "default" }: ScenarioProviderProps) {
+  const study = useTeamsNamingStudy()
   const router = useRouter()
   const searchParams = useSearchParams()
   const scenarios = React.useMemo(() => getScenarioCatalog(scenarioCatalogKey), [scenarioCatalogKey])
   
   // Get initial scenario from URL or default to "default"
   const getInitialScenario = (): Scenario => {
-    const scenarioParam = searchParams.get('scenario')
+    if (study) return "default"
+    const scenarioParam = study ? null : searchParams.get('scenario')
     if (isValidScenario(scenarios, scenarioParam)) {
       return scenarioParam
     }
@@ -44,11 +47,13 @@ export function ScenarioProvider({ children, scenarioCatalogKey = "default" }: S
   }
 
   const getInitialCoachContinuity = (): boolean => {
+    if (study) return false
     const continuityParam = searchParams.get("coachContinuity") ?? searchParams.get("continuity")
     return ["true", "1", "on", "yes"].includes(continuityParam?.toLowerCase() ?? "")
   }
 
   const getInitialCoachRoleVariant = (): CoachRoleVariant => {
+    if (study) return "coach"
     const roleParam = searchParams.get("roleTitle") ?? searchParams.get("role")
     return isCoachRoleVariant(roleParam) ? roleParam : "coach"
   }
@@ -57,7 +62,7 @@ export function ScenarioProvider({ children, scenarioCatalogKey = "default" }: S
   const [isScenarioSwitcherOpen, setIsScenarioSwitcherOpen] = React.useState(false)
   const [coachContinuityEnabled, setCoachContinuityEnabledState] = React.useState(getInitialCoachContinuity)
   const [coachRoleVariant, setCoachRoleVariantState] = React.useState<CoachRoleVariant>(getInitialCoachRoleVariant)
-  const [teamsCallsEnabled, setTeamsCallsEnabled] = React.useState(false)
+  const [teamsCallsEnabled, setTeamsCallsEnabled] = React.useState(Boolean(study))
   const coachRoleLabels = React.useMemo(() => getCoachRoleLabels(coachRoleVariant), [coachRoleVariant])
 
   // Update URL when scenario changes
@@ -109,7 +114,7 @@ export function ScenarioProvider({ children, scenarioCatalogKey = "default" }: S
 
   // Sync with URL changes (e.g., browser back/forward)
   React.useEffect(() => {
-    const scenarioParam = searchParams.get('scenario')
+    const scenarioParam = study ? null : searchParams.get('scenario')
     if (isValidScenario(scenarios, scenarioParam)) {
       const newScenario = scenarioParam
       if (newScenario !== currentScenario) {

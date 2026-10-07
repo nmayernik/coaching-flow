@@ -10,6 +10,7 @@ interface PhoneNumberSelectorProps {
   teamsCallsMode?: boolean;
   /** Called when user clicks "Learn more" (only used when teamsCallsMode is true) */
   onLearnMore?: () => void;
+  serviceName?: string;
 }
 
 const PHONE_OPTIONS_DEFAULT = [
@@ -24,8 +25,14 @@ const PHONE_OPTIONS_TEAMS = [
   { id: 'work', label: 'Work', number: '(000) 000-0000' }
 ];
 
-export function PhoneNumberSelector({ phone, onPhoneChange, teamsCallsMode = false, onLearnMore }: PhoneNumberSelectorProps) {
-  const existingPhoneNumbers = teamsCallsMode ? PHONE_OPTIONS_TEAMS : PHONE_OPTIONS_DEFAULT;
+const PHONE_OPTIONS_STUDY = [
+  { id: 'home', label: 'Home', number: '(202) 555-0147' },
+  { id: 'mobile', label: 'Mobile', number: '(202) 555-0162' },
+  { id: 'work', label: 'Work', number: '(202) 555-0188' }
+];
+
+export function PhoneNumberSelector({ phone, onPhoneChange, teamsCallsMode = false, onLearnMore, serviceName }: PhoneNumberSelectorProps) {
+  const existingPhoneNumbers = serviceName ? PHONE_OPTIONS_STUDY : teamsCallsMode ? PHONE_OPTIONS_TEAMS : PHONE_OPTIONS_DEFAULT;
 
   const [selectedOption, setSelectedOption] = React.useState<string>('');
   const [customPhone, setCustomPhone] = React.useState('');
@@ -41,7 +48,7 @@ export function PhoneNumberSelector({ phone, onPhoneChange, teamsCallsMode = fal
         setCustomPhone(phone);
       }
     }
-  }, [phone]);
+  }, [phone, existingPhoneNumbers]);
 
   const handleOptionChange = (optionId: string) => {
     setSelectedOption(optionId);
@@ -82,14 +89,14 @@ export function PhoneNumberSelector({ phone, onPhoneChange, teamsCallsMode = fal
     <div className="space-y-3 lg:space-y-4">
       {teamsCallsMode && (
         <p className="text-sm text-gray-700 mb-2">
-          Your appointment will take place over video call, but we&apos;ll reach out by phone if we run into issues.{" "}
-          <button
+          {serviceName ? "We’ll call this number if you have trouble connecting to Microsoft Teams. " : "Your appointment will take place over video call, but we’ll reach out by phone if we run into issues. "}
+          {onLearnMore && <button
             type="button"
             onClick={onLearnMore}
             className="text-blue-700 hover:text-blue-800 underline font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
           >
             Learn more
-          </button>
+          </button>}
         </p>
       )}
       <div className={`grid gap-3 lg:gap-3 ${teamsCallsMode ? "grid-cols-1 sm:grid-cols-3" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"}`}>

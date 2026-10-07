@@ -122,6 +122,7 @@ interface SuccessScreenProps {
   onViewCalendar: () => void;
   /** When true, shows vertical stacked layout with Teams meeting link and backup phone copy */
   teamsCallsMode?: boolean;
+  serviceName?: string;
   /** When true, shows "Meeting with previous coach" badge below "For [name]" in appointment card */
   coachContinuityEnabled?: boolean;
   /** When true (and coachContinuityEnabled), user chose to meet with previous coach */
@@ -143,6 +144,7 @@ export function SuccessScreen({
   onScheduleAnother, 
   onViewCalendar,
   teamsCallsMode = false,
+  serviceName,
   coachContinuityEnabled = false,
   meetingWithPreviousCoach = false,
   previousCoachName,
@@ -166,6 +168,7 @@ export function SuccessScreen({
   const startTimeDisplay = convertValueTimeToDisplay(time);
   const endTimeDisplay = startTimeDisplay.replace(/(\d+):00/, "$1:45");
   const [copiedLink, setCopiedLink] = React.useState(false);
+  const [joinPreview, setJoinPreview] = React.useState(false);
 
   const handleCopyLink = async () => {
     try {
@@ -187,7 +190,7 @@ export function SuccessScreen({
       </div>
 
       <h2 className="text-xl lg:text-2xl font-semibold text-gray-800 mb-2">
-        Your session is booked!
+        {serviceName ? `Your ${serviceName.toLowerCase()} session is booked!` : "Your session is booked!"}
       </h2>
       <p className="text-gray-600 text-sm lg:text-base mb-6 lg:mb-8">
         Here are the details:
@@ -207,9 +210,16 @@ export function SuccessScreen({
                 {formatDateForDisplay(date)}
               </p>
               <p className="text-gray-700 text-xs lg:text-sm">
-                {startTimeDisplay} - {endTimeDisplay} EST
+                {startTimeDisplay} - {endTimeDisplay} {serviceName ? "Eastern Time" : "EST"}
               </p>
               <p className="text-gray-700 text-xs lg:text-sm font-medium mt-2">Join your meeting here:</p>
+              {serviceName ? (
+                <div className="space-y-2">
+                  <Button type="button" variant="secondary" onClick={() => setJoinPreview(true)}>Join on Microsoft Teams</Button>
+                  <p className="text-xs lg:text-sm text-gray-700">Your camera is optional.</p>
+                  {joinPreview && <p role="status" className="text-xs lg:text-sm text-gray-700">This is a preview of the Teams join action. No meeting has been opened.</p>}
+                </div>
+              ) : (
               <a
                 href={MOCK_TEAMS_LINK}
                 target="_blank"
@@ -218,27 +228,28 @@ export function SuccessScreen({
               >
                 {MOCK_TEAMS_LINK}
               </a>
+              )}
               <div className="flex flex-col items-start gap-3 mt-2">
-                <button
+                {!serviceName && <button
                   type="button"
                   className="inline-flex items-center gap-1.5 text-blue-700 text-xs lg:text-sm font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
                   onClick={handleCopyLink}
                 >
                   <Copy className="w-4 h-4" strokeWidth={1.5} aria-hidden />
                   {copiedLink ? "Copied!" : "Copy link"}
-                </button>
+                </button>}
                 <span className="text-gray-700 text-xs lg:text-sm">
                   If we can&apos;t connect, we&apos;ll call you at {phone}
                 </span>
               </div>
-              <button
+              {!serviceName && <button
                 type="button"
                 className="inline-flex items-center gap-1.5 text-blue-700 text-xs lg:text-sm font-medium mt-1 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
                 onClick={() => {}}
               >
                 <Calendar className="w-4 h-4" strokeWidth={1.5} aria-hidden />
                 Add to calendar
-              </button>
+              </button>}
             </div>
           </div>
 
@@ -319,7 +330,7 @@ export function SuccessScreen({
                   {formatDateForDisplay(date)}
                 </p>
                 <p className="text-gray-700 text-xs lg:text-sm mt-0.5">
-                  {startTimeDisplay} - {endTimeDisplay} EST
+                  {startTimeDisplay} - {endTimeDisplay} {serviceName ? "Eastern Time" : "EST"}
                 </p>
                 <p className="text-gray-700 text-xs lg:text-sm mt-1">
                   We&apos;ll call you at {phone}
@@ -401,7 +412,7 @@ export function SuccessScreen({
       )}
 
       {/* Actions */}
-      <div className="flex flex-col sm:flex-row gap-3 lg:gap-4">
+      {!serviceName && <div className="flex flex-col sm:flex-row gap-3 lg:gap-4">
         <Button
           variant="secondary"
           size="lg"
@@ -417,7 +428,7 @@ export function SuccessScreen({
         >
           Manage appointments
         </Button>
-      </div>
+      </div>}
     </div>
   );
 }

@@ -34,9 +34,10 @@ interface DateTimeSelectorProps {
   selectedCoachId?: string | null;
   /** When true, do not render the "Choose a date and time" section label (parent renders it). */
   hideSectionLabel?: boolean;
+  readOnly?: boolean;
 }
 
-export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onTimeChange, category, selectedCoachId = null, hideSectionLabel = false }: DateTimeSelectorProps) {
+export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onTimeChange, category, selectedCoachId = null, hideSectionLabel = false, readOnly = false }: DateTimeSelectorProps) {
   // Get available dates based on coach selection (first date is tomorrow)
   const availableDates = React.useMemo(() => {
     return getCoachAvailableDates(selectedCoachId);
@@ -48,7 +49,7 @@ export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onT
   };
 
   // Open calendar on month of first available date (tomorrow)
-  const initialMonth = availableDates.length > 0 ? new Date(availableDates[0]) : new Date();
+  const initialMonth = readOnly && selectedDate ? parseLocalDateString(selectedDate) : availableDates.length > 0 ? new Date(availableDates[0]) : new Date();
   const [currentMonth, setCurrentMonth] = React.useState(initialMonth);
   const [selectedDateObj, setSelectedDateObj] = React.useState<Date | null>(
     selectedDate ? parseLocalDateString(selectedDate) : null
@@ -56,7 +57,7 @@ export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onT
 
   // Default to first available date (tomorrow) when none selected or selection invalid
   React.useEffect(() => {
-    if (availableDates.length > 0) {
+    if (!readOnly && availableDates.length > 0) {
       const firstAvailableDate = availableDates[0];
       const firstDateString = toLocalDateString(firstAvailableDate);
       const selectedInList = selectedDate && availableDates.some((d) => toLocalDateString(d) === selectedDate);
@@ -69,7 +70,7 @@ export function DateTimeSelector({ selectedDate, selectedTime, onDateChange, onT
         setSelectedDateObj(parseLocalDateString(selectedDate));
       }
     }
-  }, [selectedDate, availableDates, onDateChange, selectedCoachId]);
+  }, [selectedDate, availableDates, onDateChange, selectedCoachId, readOnly]);
 
   // Calendar generation
   const generateCalendar = () => {

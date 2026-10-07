@@ -13,11 +13,13 @@ import { Link, Monitor, VideoOff, Phone, Crosshair, ArrowUp } from "lucide-react
 interface VideoCallsDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  serviceName?: string;
 }
 
 export function VideoCallsDialog({
   isOpen,
-  onOpenChange
+  onOpenChange,
+  serviceName
 }: VideoCallsDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -30,10 +32,10 @@ export function VideoCallsDialog({
             
           </div>
           <DialogTitle className="text-lg lg:text-2xl font-semibold text-blue-800">
-              Video Calls in College Coach
+              {serviceName ? `About ${serviceName.toLowerCase()}` : "Video Calls in College Coach"}
             </DialogTitle>
           <DialogDescription className="text-base text-gray-700">
-            Coaching sessions now take place through Microsoft Teams.
+            {serviceName ? `Your ${serviceName.toLowerCase()} session takes place through Microsoft Teams.` : "Coaching sessions now take place through Microsoft Teams."}
           </DialogDescription>
         </DialogHeader>
 
@@ -90,7 +92,7 @@ export function VideoCallsDialog({
           </div>
         </div>
 
-        <div className="mt-4">
+        {!serviceName && <div className="mt-4">
           <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 flex items-center gap-2">
 
             <p className="text-sm lg:text-base text-gray-700">
@@ -107,7 +109,7 @@ export function VideoCallsDialog({
               </a>
             </p>
           </div>
-        </div>
+        </div>}
       </DialogContent>
     </Dialog>
   );

@@ -15,8 +15,9 @@ import {
 } from "../lib/topicLogicData";
 
 // Extracted components
-import { DateTimeSelector } from "./CoachingFormAccordion/DateTimeSelector";
-import { PhoneNumberSelector } from "./CoachingFormAccordion/PhoneNumberSelector";
+import { SchedulingFields } from "./CoachingFormAccordion/SchedulingFields";
+import { useTeamsNamingStudy } from "@/contexts/TeamsNamingStudyContext";
+import { STUDY_STUDENTS } from "@/lib/teamsNamingStudy";
 import { AddStudentModal } from "./CoachingFormAccordion/AddStudentModal";
 import { StudentCard } from "./CoachingFormAccordion/StudentCard";
 import { CategoryCard } from "./CoachingFormAccordion/CategoryCard";
@@ -30,8 +31,6 @@ import { getStudentsForScenario, getExistingStudentsForScenario, getTopicsForSce
 import { Alert } from "@/components/ui/alert";
 import { NoAppointmentsBanner } from "./CoachingFormAccordion/NoAppointmentsBanner";
 import { NoCategoriesEmptyState } from "./CoachingFormAccordion/NoCategoriesEmptyState";
-import { CoachAvailabilityDropdown } from "./CoachingFormAccordion/CoachAvailabilityDropdown";
-import { CoachContinuityLine } from "./CoachingFormAccordion/CoachContinuityLine";
 import { CoachContinuityDialog } from "./CoachingFormAccordion/CoachContinuityDialog";
 import { VideoCallsDialog } from "./CoachingFormAccordion/VideoCallsDialog";
 import { getPreviousCoachForTopic } from "@/lib/mockData";
@@ -44,6 +43,7 @@ export default function CoachingFormAccordion({
 }: CoachingFormAccordionProps) {
   const { currentScenario, coachContinuityEnabled, coachRoleLabels, teamsCallsEnabled } = useScenario();
   const searchParams = useSearchParams();
+  const study = useTeamsNamingStudy();
   
   // State for form values
   const [step, setStep] = React.useState(0); // 0, 1, 2
@@ -82,8 +82,8 @@ export default function CoachingFormAccordion({
   const hasAppliedDeepLink = React.useRef(false);
   
   // Get scenario-aware data
-  const baseStudents = getStudentsForScenario(currentScenario);
-  const existingStudents = getExistingStudentsForScenario(currentScenario);
+  const baseStudents = study ? STUDY_STUDENTS : getStudentsForScenario(currentScenario);
+  const existingStudents = study ? [] : getExistingStudentsForScenario(currentScenario);
   const [addedStudents, setAddedStudents] = React.useState<Student[]>([]);
   const [removedExistingStudents, setRemovedExistingStudents] = React.useState<string[]>([]);
   
@@ -91,7 +91,7 @@ export default function CoachingFormAccordion({
   const students = [...baseStudents, ...addedStudents];
 
   React.useEffect(() => {
-    if (hasAppliedDeepLink.current) {
+    if (study || hasAppliedDeepLink.current) {
       return;
     }
 
@@ -364,6 +364,10 @@ export default function CoachingFormAccordion({
     }
     setError("");
     
+    // Save only the displayed fictional booking context for the comparison.
+    if (study && selectedStudent) {
+      study.saveBooking({ selectedStudent, category, topic, date, time, phone });
+    }
     // Simulate form submission
     setIsSubmitted(true);
   }
@@ -407,6 +411,7 @@ export default function CoachingFormAccordion({
           onScheduleAnother={resetForm}
           onViewCalendar={() => {}} // Placeholder for view calendar action
           teamsCallsMode={teamsCallsEnabled}
+          serviceName={study?.serviceName}
           coachContinuityEnabled={coachContinuityEnabled}
           meetingWithPreviousCoach={usePreviousCoach}
           previousCoachName={usePreviousCoach && previousCoach ? previousCoach.coachName : undefined}
@@ -437,7 +442,7 @@ export default function CoachingFormAccordion({
         ) : (
           <div className="relative z-10 pointer-events-auto lg:bg-white lg:rounded-2xl lg:border lg:border-gray-100 lg:shadow-sm mb-3 lg:mb-4 transform transition-all duration-300 ease-out animate-in slide-in-from-bottom-4 fade-in">
             <Accordion.Item value="step0" className="border-none">
-              <Accordion.Header>
+              <Accordion.Header aria-hidden="true">
                 <Accordion.Trigger className="hidden md:show w-full text-left font-semibold text-lg">
                 </Accordion.Trigger>
               </Accordion.Header>
@@ -646,7 +651,7 @@ export default function CoachingFormAccordion({
         ) : step >= 1 && (
           <div className="lg:bg-white lg:rounded-2xl lg:border lg:border-gray-100 lg:shadow-sm mb-3 lg:mb-4 transform transition-all duration-300 ease-out animate-in slide-in-from-bottom-4 fade-in">
             <Accordion.Item value="step1" className="border-none">
-              <Accordion.Header>
+              <Accordion.Header aria-hidden="true">
                 <Accordion.Trigger className="hidden">
                 </Accordion.Trigger>
               </Accordion.Header>
@@ -696,61 +701,26 @@ export default function CoachingFormAccordion({
         {step >= 2 && (
           <div className="lg:bg-white lg:rounded-2xl lg:border lg:border-gray-100 lg:shadow-sm mb-3 lg:mb-4 transform transition-all duration-300 ease-out animate-in slide-in-from-bottom-4 fade-in">
             <Accordion.Item value="step2" className="border-none">
-              <Accordion.Header>
+              <Accordion.Header aria-hidden="true">
                 <Accordion.Trigger className="hidden">
                 </Accordion.Trigger>
               </Accordion.Header>
               <Accordion.Content className="lg:p-6 space-y-4 lg:space-y-6 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-top-1 data-[state=open]:slide-in-from-top-1">
                 {error && <Alert variant="destructive" className="mb-4 text-sm">{error}</Alert>}
 
-                {coachContinuityEnabled && previousCoach ? (
-                  <>
-                    <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                      <span className="font-medium text-base text-gray-800">Choose a date and time <span className="text-red-500">*</span></span>
-                      <span className="flex min-w-0 flex-col gap-1.5 text-base text-gray-800 sm:flex-row sm:items-center sm:gap-2">
-                        <span className="shrink-0">Showing availability for:</span>
-                        <CoachAvailabilityDropdown
-                          value={usePreviousCoach ? "previous" : "all"}
-                          onChange={(value) => setUsePreviousCoach(value === "previous")}
-                          onMoreDetails={() => setIsCoachDialogOpen(true)}
-                          previousCoach={previousCoach}
-                          coachRoleLabels={coachRoleLabels}
-                        />
-                      </span>
-                    </div>
-                    {usePreviousCoach && <CoachContinuityLine previousCoach={previousCoach} coachRoleLabels={coachRoleLabels} />}
-                    <DateTimeSelector
-                      selectedDate={date}
-                      selectedTime={time}
-                      onDateChange={setDate}
-                      onTimeChange={setTime}
-                      selectedCoachId={usePreviousCoach ? previousCoach?.coachId ?? null : null}
-                      hideSectionLabel
-                    />
-                  </>
-                ) : (
-                  <DateTimeSelector
-                    selectedDate={date}
-                    selectedTime={time}
-                    onDateChange={setDate}
-                    onTimeChange={setTime}
-                    selectedCoachId={null}
-                  />
-                )}
-                <div>
-                  <div className={cn("font-medium text-base text-gray-800", teamsCallsEnabled ? "mt-0.5 mb-0.5" : "mb-3")}>
-                    {teamsCallsEnabled
-                      ? "Where should we call you if we run into issues connecting? "
-                      : "Where should we call you? "}
-                    <span className="text-red-500">*</span>
-                  </div>
-                  <PhoneNumberSelector
-                    phone={phone}
-                    onPhoneChange={setPhone}
-                    teamsCallsMode={teamsCallsEnabled}
-                    onLearnMore={teamsCallsEnabled ? () => setIsVideoCallsDialogOpen(true) : undefined}
-                  />
-                </div>
+                <SchedulingFields
+                  date={date} time={time} phone={phone}
+                  onDateChange={setDate} onTimeChange={setTime} onPhoneChange={setPhone}
+                  teamsCallsEnabled={teamsCallsEnabled}
+                  serviceName={study?.serviceName}
+                  onLearnMore={teamsCallsEnabled ? () => setIsVideoCallsDialogOpen(true) : undefined}
+                  coachContinuityEnabled={coachContinuityEnabled}
+                  previousCoach={previousCoach}
+                  usePreviousCoach={usePreviousCoach}
+                  onPreviousCoachChange={setUsePreviousCoach}
+                  onCoachDetails={() => setIsCoachDialogOpen(true)}
+                  coachRoleLabels={coachRoleLabels}
+                />
                 <div>
                   <div className="mb-3 font-medium text-base text-gray-800">Attach a document (optional)</div>
                   <div
@@ -841,6 +811,7 @@ export default function CoachingFormAccordion({
         <VideoCallsDialog
           isOpen={isVideoCallsDialogOpen}
           onOpenChange={setIsVideoCallsDialogOpen}
+          serviceName={study?.serviceName}
         />
       )}
     </div>
