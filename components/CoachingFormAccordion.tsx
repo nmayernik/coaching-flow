@@ -1108,6 +1108,7 @@ export default function CoachingFormAccordion({
                     className="w-full"
                     onClick={() => {
                       if (bookedAppointment) {
+                        previousSelectionContext.current = `${bookedAppointment.selectedStudent?.id}:${bookedAppointment.category}:${bookedAppointment.topic}`;
                         setSelectedStudent(bookedAppointment.selectedStudent);
                         setCategory(bookedAppointment.category);
                         setTopic(bookedAppointment.topic);
