@@ -3,7 +3,7 @@ import { Mulish } from 'next/font/google'
 import './globals.css'
 import AccessibilityProvider from '@/components/AccessibilityProvider'
 
-const mulish = Mulish({ subsets: ['latin'] })
+const mulish = Mulish({ subsets: ['latin'], variable: '--font-mulish' })
 
 export const metadata: Metadata = {
   title: 'Coaching prototype',
@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={mulish.className}>
+      <body className={`${mulish.variable} ${mulish.className}`}>
         <AccessibilityProvider>
           {children}
         </AccessibilityProvider>

@@ -32,8 +32,9 @@ const mockPreviousCoachSessions: Record<string, PreviousCoachSession> = {
   "1-Preparing College Applications": {
     coachId: "coach-1",
     coachName: "Becky",
-    topic: "Preparing College Applications",
-    lastMeetingDate: "2025-09-01"
+    coachDisplayName: "Becky L",
+    topic: "Paying for College",
+    lastMeetingDate: "2025-08-08"
   },
   "1-Introduction to Your College Coach": {
     coachId: "coach-1",
@@ -195,8 +196,7 @@ export function getCoachAvailableDates(coachId: string | null): Date[] {
 // Get available times for a specific coach on a given date (more limited than all coaches)
 export function getCoachAvailableTimesForDate(coachId: string | null, date: Date): string[] {
   const allTimes = [
-    '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', 
-    '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM'
+    '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM'
   ];
   
   if (!coachId) {
@@ -210,7 +210,7 @@ export function getCoachAvailableTimesForDate(coachId: string | null, date: Date
   const dayOfMonth = date.getDate();
   const baseIndex = dayOfMonth % 3;
   // Return 2-3 time slots starting from different positions
-  const startIndex = baseIndex * 2;
+  const startIndex = baseIndex;
   return allTimes.slice(startIndex, startIndex + 3).filter(Boolean);
 }
 

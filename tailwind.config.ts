@@ -11,7 +11,7 @@ const config: Config = {
   theme: {
   	extend: {
   		fontFamily: {
-  			sans: ['Mulish', 'sans-serif'],
+            sans: ['var(--font-mulish)', 'sans-serif'],
   		},
   		colors: {
   			// Existing shadcn/ui colors
