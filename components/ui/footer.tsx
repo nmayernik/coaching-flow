@@ -1,42 +1,42 @@
-"use client"
+"use client";
+
+const links = [
+  "Home",
+  "Contact Us",
+  "Cookie Notice",
+  "Acceptable Use Policy",
+  "Privacy Notice",
+  "Trademark Policy",
+];
+
 export default function Footer() {
-    return (
-        <footer className="bg-[#ffffff] border-t border-[#dddddd]">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="flex flex-col items-center space-y-4">
-                    <div className="flex items-center space-x-2">
-                        <div className="w-8 h-8 bg-[#f0bd1b] rounded-full flex items-center justify-center">
-                        <div className="w-4 h-4 bg-[#ffffff] rounded-full"></div>
-                        </div>
-                        <span className="text-[#333333] font-semibold">Bright Horizons</span>
-                    </div>
-
-                <div className="flex flex-wrap justify-center space-x-6 text-sm text-[#707070]">
-                    <a href="#" className="transition-colors duration-200 ease-out hover:text-[#333333]">
-                        Home
-                    </a>
-                    <a href="#" className="transition-colors duration-200 ease-out hover:text-[#333333]">
-                        Contact Us
-                    </a>
-                    <a href="#" className="transition-colors duration-200 ease-out hover:text-[#333333]">
-                        Cookie Notice
-                    </a>
-                    <a href="#" className="transition-colors duration-200 ease-out hover:text-[#333333]">
-                        Accessible Use Policy
-                    </a>
-                    <a href="#" className="transition-colors duration-200 ease-out hover:text-[#333333]">
-                        Privacy Notice
-                    </a>
-                    <a href="#" className="transition-colors duration-200 ease-out hover:text-[#333333]">
-                        Trademark Policy
-                    </a>
-                </div>
-
-                <div className="text-xs text-[#707070] text-center">
-                    © 2023 Bright Horizons Family Solutions. All Rights Reserved.
-                </div>
-                </div>
-            </div>
-        </footer>
-    )
+  return (
+    <footer className="bg-white px-4 pb-12 pt-12 text-blue-700 md:px-8 md:pb-12 md:pt-16">
+      <div className="mx-auto max-w-[1216px]">
+        <div className="flex justify-start md:justify-center">
+          <img src="/handoff-assets/footer-logo.svg" alt="Bright Horizons" />
+        </div>
+        <nav
+          aria-label="Footer navigation"
+          className="flex flex-col mt-8 items-start gap-3 md:flex-row md:flex-wrap md:justify-center md:gap-8"
+        >
+          {links.map((label, index) => (
+            <a
+              key={label}
+              href={index === 0 ? "/" : "#"}
+              className="inline-flex items-center gap-1 text-base leading-6 underline underline-offset-2"
+            >
+              {label}
+              {index > 1 && (
+                <img src="/handoff-assets/external-link.svg" alt="" />
+              )}
+            </a>
+          ))}
+        </nav>
+        <p className="mt-12 border-t border-gray-200 pt-8 text-sm leading-6 text-gray-600 md:mt-16 md:text-center md:text-base">
+          © 2023 Bright Horizons Family Solutions. All Rights Reserved.
+        </p>
+      </div>
+    </footer>
+  );
 }

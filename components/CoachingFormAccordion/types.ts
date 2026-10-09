@@ -14,6 +14,7 @@ export interface Coach {
 export interface PreviousCoachSession {
   coachId: string;
   coachName: string;
+  coachDisplayName?: string;
   topic: string;
   lastMeetingDate: string; // ISO date string
 }

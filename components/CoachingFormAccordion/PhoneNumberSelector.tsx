@@ -1,169 +1,134 @@
-"use client"
+"use client";
 
 import * as React from "react";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 interface PhoneNumberSelectorProps {
   phone: string;
   onPhoneChange: (phone: string) => void;
-  /** When true, shows Teams-style backup phone UI (video call fallback) with "Learn more" link */
+  selectedOption: string;
+  onOptionChange: (option: string) => void;
   teamsCallsMode?: boolean;
-  /** Called when user clicks "Learn more" (only used when teamsCallsMode is true) */
   onLearnMore?: () => void;
 }
 
-const PHONE_OPTIONS_DEFAULT = [
-  { id: 'work', label: 'Work', number: '(555) 123-4567' },
-  { id: 'mobile', label: 'Mobile', number: '(555) 987-6543' },
-  { id: 'other', label: 'Other', number: '(555) 456-7890' }
+const PHONE_OPTIONS = [
+  { id: "home", label: "Home", number: "(000) 000-0000" },
+  { id: "mobile", label: "Mobile", number: "(000) 000-0000" },
+  { id: "work", label: "Work", number: "(000) 000-0000" },
 ];
 
-const PHONE_OPTIONS_TEAMS = [
-  { id: 'home', label: 'Home', number: '(000) 000-0000' },
-  { id: 'mobile', label: 'Mobile', number: '(000) 000-0000' },
-  { id: 'work', label: 'Work', number: '(000) 000-0000' }
-];
-
-export function PhoneNumberSelector({ phone, onPhoneChange, teamsCallsMode = false, onLearnMore }: PhoneNumberSelectorProps) {
-  const existingPhoneNumbers = teamsCallsMode ? PHONE_OPTIONS_TEAMS : PHONE_OPTIONS_DEFAULT;
-
-  const [selectedOption, setSelectedOption] = React.useState<string>('');
-  const [customPhone, setCustomPhone] = React.useState('');
-
-  // Initialize selected option based on current phone value
-  React.useEffect(() => {
-    if (phone) {
-      const existingMatch = existingPhoneNumbers.find(p => p.number === phone);
-      if (existingMatch) {
-        setSelectedOption(existingMatch.id);
-      } else {
-        setSelectedOption('custom');
-        setCustomPhone(phone);
-      }
-    }
-  }, [phone]);
-
-  const handleOptionChange = (optionId: string) => {
-    setSelectedOption(optionId);
-    
-    if (optionId === 'custom') {
-      onPhoneChange(customPhone);
-    } else {
-      const selectedNumber = existingPhoneNumbers.find(p => p.id === optionId);
-      if (selectedNumber) {
-        onPhoneChange(selectedNumber.number);
-      }
-    }
+export function PhoneNumberSelector({
+  phone,
+  onPhoneChange,
+  selectedOption,
+  onOptionChange,
+  teamsCallsMode = false,
+  onLearnMore,
+}: PhoneNumberSelectorProps) {
+  const [customPhone, setCustomPhone] = React.useState(
+    selectedOption === "custom" ? phone : "",
+  );
+  const options = PHONE_OPTIONS;
+  const select = (id: string) => {
+    onOptionChange(id);
+    onPhoneChange(
+      id === "custom"
+        ? customPhone
+        : (options.find((option) => option.id === id)?.number ?? ""),
+    );
   };
-
-  const formatPhoneNumber = (value: string) => {
-    // Remove all non-digit characters
-    const phoneNumber = value.replace(/\D/g, '');
-    
-    // Format as (XXX) XXX-XXXX
-    if (phoneNumber.length <= 3) {
-      return phoneNumber;
-    } else if (phoneNumber.length <= 6) {
-      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
-    } else {
-      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
-    }
-  };
-
-  const handleCustomPhoneChange = (value: string) => {
-    const formattedPhone = formatPhoneNumber(value);
-    setCustomPhone(formattedPhone);
-    if (selectedOption === 'custom') {
-      onPhoneChange(formattedPhone);
-    }
-  };
-
   return (
-    <div className="space-y-3 lg:space-y-4">
+    <div className="space-y-3">
       {teamsCallsMode && (
-        <p className="text-sm text-gray-700 mb-2">
-          Your appointment will take place over video call, but we&apos;ll reach out by phone if we run into issues.{" "}
-          <button
-            type="button"
-            onClick={onLearnMore}
-            className="text-blue-700 hover:text-blue-800 underline font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
-          >
-            Learn more
-          </button>
+        <p className="text-sm leading-[21px] text-gray-700">
+          Your appointment will take place over video call, but we&apos;ll reach
+          out by phone if we run into issues.
+          {onLearnMore && (
+            <>
+              {" "}
+              <button
+                type="button"
+                onClick={onLearnMore}
+                className="rounded text-blue-700 underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              >
+                Learn more
+              </button>
+            </>
+          )}
         </p>
       )}
-      <div className={`grid gap-3 lg:gap-3 ${teamsCallsMode ? "grid-cols-1 sm:grid-cols-3" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"}`}>
-        {/* Existing phone numbers */}
-        {existingPhoneNumbers.map((phoneOption) => (
-          <label 
-            key={phoneOption.id} 
-            className={`block p-4 lg:p-4 rounded-lg lg:rounded-xl border cursor-pointer transition-colors duration-200 ease-out touch-manipulation ${
-              selectedOption === phoneOption.id 
-                ? 'ring-blue-700 ring-2 border-white hover:bg-blue-25 active:bg-blue-100' 
-                : 'border-gray-400 hover:bg-gray-50 active:bg-gray-100'
-            }`}
-            style={{ minHeight: '60px' }}
+      <div
+        className="grid grid-cols-2 gap-x-3 gap-y-4 lg:grid-cols-3"
+        role="radiogroup"
+        aria-label={teamsCallsMode ? "Backup phone number" : "Phone number"}
+      >
+        {[
+          ...options,
+          { id: "custom", label: "Add a one-time phone number", number: "" },
+        ].map((option) => (
+          <label
+            key={option.id}
+            className={cn(
+              "flex min-h-[80px] cursor-pointer flex-col items-center justify-center rounded-xl border bg-white px-3 py-4 text-center shadow-sm hover:bg-blue-25 focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2",
+              selectedOption === option.id
+                ? "border-blue-700 ring-1 ring-blue-700"
+                : "border-gray-400",
+            )}
           >
             <input
               type="radio"
               name="phone"
-              value={phoneOption.id}
-              checked={selectedOption === phoneOption.id}
-              onChange={() => handleOptionChange(phoneOption.id)}
+              value={option.id}
+              checked={selectedOption === option.id}
+              onChange={() => select(option.id)}
               className="sr-only"
             />
-            <div className="flex justify-center items-center">
-              <div className="text-center">
-                <div className="font-medium text-sm lg:text-base text-gray-800">{phoneOption.label}</div>
-                <div className="text-sm lg:text-md text-gray-700">{phoneOption.number}</div>
-              </div>
-            </div>
+            <span className="text-base font-semibold leading-6 text-gray-800">
+              {option.label}
+            </span>
+            {option.number && (
+              <span className="whitespace-nowrap text-base leading-6 text-gray-700">
+                {option.number}
+              </span>
+            )}
           </label>
         ))}
-        
-        {/* Add one-time phone number option - single grid cell (same as other options) */}
-        <label
-          className={`block p-4 lg:p-4 rounded-lg lg:rounded-xl border cursor-pointer transition-colors duration-200 ease-out touch-manipulation ${
-            selectedOption === 'custom'
-              ? 'ring-blue-700 ring-2 border-white hover:bg-blue-25 active:bg-blue-100'
-              : 'border-gray-400 hover:bg-gray-50 active:bg-gray-100'
-          }`}
-          style={{ minHeight: '60px' }}
-        >
-          <input
-            type="radio"
-            name="phone"
-            value="custom"
-            checked={selectedOption === 'custom'}
-            onChange={() => handleOptionChange('custom')}
-            className="sr-only"
-          />
-          <div className="flex justify-center items-center">
-            <div className="text-center flex items-center py-2">
-              <div className="font-medium text-sm lg:text-base text-gray-800">
-                Add a one-time phone number
-              </div>
-              <div className="text-sm lg:text-md text-gray-700 invisible select-none" aria-hidden>.</div>
-            </div>
-          </div>
-        </label>
       </div>
-      
-      {/* Custom phone input - appears outside the grid when selected */}
-      {selectedOption === 'custom' && (
-        <div>
-          <label className="block text-xs lg:text-sm font-medium text-gray-900 mb-2">
+      {selectedOption === "custom" && (
+        <div className="space-y-2">
+          <label
+            htmlFor="custom-phone"
+            className="block text-sm font-medium text-gray-800"
+          >
             One-time phone number
           </label>
-          <Input 
-            type="tel" 
-            value={customPhone} 
-            onChange={e => handleCustomPhoneChange(e.target.value)} 
-            placeholder="(000) 000-0000" 
-            className="rounded-lg lg:rounded-xl border-gray-400 text-sm" 
+          <Input
+            id="custom-phone"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            placeholder="(000) 000-0000"
+            value={phone}
+            onChange={(event) => {
+              const digits = event.target.value.replace(/\D/g, "").slice(0, 10);
+              const formatted =
+                digits.length <= 3
+                  ? digits
+                  : digits.length <= 6
+                    ? `(${digits.slice(0, 3)}) ${digits.slice(3)}`
+                    : `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+              setCustomPhone(formatted);
+              onPhoneChange(formatted);
+            }}
+            className="h-12 rounded-lg border-gray-400"
           />
+          <p className="text-sm text-gray-700">
+            This number will only be used for this appointment.
+          </p>
         </div>
       )}
     </div>
   );
-} 
+}

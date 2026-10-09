@@ -6,7 +6,7 @@
 @tailwind utilities;
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-mulish), sans-serif;
 }
 
 @layer utilities {

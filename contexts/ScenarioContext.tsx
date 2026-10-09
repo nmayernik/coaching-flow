@@ -57,7 +57,15 @@ export function ScenarioProvider({ children, scenarioCatalogKey = "default" }: S
   const [isScenarioSwitcherOpen, setIsScenarioSwitcherOpen] = React.useState(false)
   const [coachContinuityEnabled, setCoachContinuityEnabledState] = React.useState(getInitialCoachContinuity)
   const [coachRoleVariant, setCoachRoleVariantState] = React.useState<CoachRoleVariant>(getInitialCoachRoleVariant)
-  const [teamsCallsEnabled, setTeamsCallsEnabled] = React.useState(false)
+  const getInitialTeamsCalls = () => ["true", "1", "on", "yes"].includes(searchParams.get("teamsCalls")?.toLowerCase() ?? "");
+  const [teamsCallsEnabled, setTeamsCallsEnabledState] = React.useState(getInitialTeamsCalls)
+  const setTeamsCallsEnabled = (enabled: boolean) => {
+    setTeamsCallsEnabledState(enabled);
+    const params = new URLSearchParams(searchParams.toString());
+    if (enabled) params.set("teamsCalls", "true");
+    else params.delete("teamsCalls");
+    router.replace(params.size ? `?${params}` : window.location.pathname, { scroll: false });
+  };
   const coachRoleLabels = React.useMemo(() => getCoachRoleLabels(coachRoleVariant), [coachRoleVariant])
 
   // Update URL when scenario changes
@@ -123,6 +131,8 @@ export function ScenarioProvider({ children, scenarioCatalogKey = "default" }: S
     if (continuityEnabled !== coachContinuityEnabled) {
       setCoachContinuityEnabledState(continuityEnabled)
     }
+
+    setTeamsCallsEnabledState(getInitialTeamsCalls());
 
     const nextRoleVariant = getInitialCoachRoleVariant()
     if (nextRoleVariant !== coachRoleVariant) {
